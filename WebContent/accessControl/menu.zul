@@ -1,0 +1,278 @@
+<?page title="ICEBERG - Administrativo, Financiero y Talento Humano" cacheable="false" 
+	language="xul/html" zscriptLanguage="Java" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+	<style dynamic="true">
+		.z-grid-body .z-cell{padding: 0px 0px;}
+		.z-caption-content{width: inherit}
+	</style>
+
+	<borderlayout width="100%" height="100%" id="idMenu"
+		use="com.mochila.MenuAction">
+		<!-- *********************************** -->
+		<!-- *********************************** -->
+		<north style="background-color:#f1f1f1; ">
+			<grid style="border-right: 0px">
+				<columns>
+					<column align="center" />
+					<column width="90px" align="right" />
+				</columns>
+				<rows>
+					<row style="border:none; vertical-align: middle;">
+						<div align="center"
+							style="margin-top: 1px; margin-bottom: 1px;">
+							<image src="/imagen/logoProducto.png"
+								onDoubleClick="" height="54px" />
+
+
+							<label value="DAFFA Administrativo"
+								style="color:gray;font-size:25px;font-weight:bold; vertical-align: middle;" />
+
+							<!-- 							<label id="idLbAmbiente" -->
+							<!-- 								onCreate="idLbAmbiente.setValue(idMNZWinMenu.getEtiquetaAmbiente())" -->
+							<!-- 								style="color:red;font-size:25px;font-weight:500; vertical-align: middle;" /> -->
+						</div>
+						<hbox align="center">
+							<hbox style="cursor:pointer;"
+								align="center">
+								<toolbarbutton label="Salir"
+									style="color:gray;font-size:12px;text-align: rigth"
+									image="/imagen/salir.png" onClick="idMenu.onSalir()" />
+							</hbox>
+
+						</hbox>
+
+					</row>
+				</rows>
+			</grid>
+		</north>
+
+		<!-- *********************************** -->
+		<!-- Menú de la aplicacion               -->
+		<!-- *********************************** -->
+		<west title="Menú" width="20%" splittable="true"
+			collapsible="true" open="true">
+			<borderlayout width="100%">
+				<center>
+					<panel width="100%" height="100%">
+						<panelchildren>
+							<menupopup id="idMNZPUPCerrarFormas">
+								<menuitem image="imagen/cancel.jpg"
+									label="Cerrar Todos" onClick="idMenu.onCerrarAllFormas()" />
+							</menupopup>
+
+							<separator />
+							<tree id="idMNZTreeMenuOpciones"
+								height="100%" fixedLayout="true" style="overflow: auto"
+								onSelect="idMenu.cargarVentana()">
+								<treecols sizable="true">
+									<treecol />
+									<treecol label="Valor"
+										visible="false" />
+								</treecols>
+								<treechildren>
+									<treeitem open="true"
+										visible="true">
+										<treerow>
+											<treecell label="GENERAL" />
+										</treerow>
+										<treechildren>
+											<treeitem open="false">
+												<treerow>
+													<treecell
+														label="Configuración" />
+												</treerow>
+												<treechildren>
+
+													<treeitem
+														open="false" visible="true">
+														<treerow>
+															<treecell
+																label="Parametros Generales"
+																tooltiptext="Parametros de usuarios y personas" />
+														</treerow>
+														<treechildren>
+															<treeitem
+																id="idMNZTitemUsuarios"
+																value="mochila/gen/usuario.zul">
+																<treerow>
+																	<treecell
+																		label="Información Usuarios"
+																		tooltiptext="Información Usuarios" />
+																</treerow>
+															</treeitem>
+
+															<treeitem
+																id="idMNZTitemPersonas"
+																value="mochila/gen/persona.zul">
+																<treerow>
+																	<treecell
+																		label="Información Personas"
+																		tooltiptext="Información Personas" />
+																</treerow>
+															</treeitem>
+
+															<treeitem
+																id="idMNZTitemTipoDistribuidor"
+																value="mochila/gen/tipo_distribuidor.zul">
+																<treerow>
+																	<treecell
+																		label="Tipo Distribuidores"
+																		tooltiptext="Tipo Distribuidores" />
+																</treerow>
+															</treeitem>
+
+
+														</treechildren>
+													</treeitem>
+													<treeitem
+														open="false" visible="true">
+														<treerow>
+															<treecell
+																label="Parametros Inventario"
+																tooltiptext="Parametros Inventario" />
+														</treerow>
+														<treechildren>
+															<treeitem
+																id="idMNZTitemTipoProducto"
+																value="mochila/inv/tipoProducto.zul">
+																<treerow>
+																	<treecell
+																		label="Tipo Producto" tooltiptext="Tipo Producto" />
+																</treerow>
+															</treeitem>
+
+															<treeitem
+																id="idMNZTitemProductos"
+																value="mochila/inv/producto.zul">
+																<treerow>
+																	<treecell
+																		label="Productos" tooltiptext="Productos" />
+																</treerow>
+															</treeitem>
+
+
+														</treechildren>
+													</treeitem>
+
+													
+
+												</treechildren>
+											</treeitem>
+
+											<treeitem open="false">
+												<treerow>
+													<treecell
+														label="Gestionar Inventario" />
+												</treerow>
+												<treechildren>
+													<treeitem
+														id="idMNZTitemEntradaMercancia"
+														value="mochila/inv/ingreso.zul">
+														<treerow>
+															<treecell
+																label="Gestionar Entrada de productos"
+																tooltiptext="Gestionar Entrada de productos" />
+														</treerow>
+													</treeitem>
+
+													<treeitem
+														id="idMNZTitemSalidaMercancia"
+														value="mochila/inv/salida.zul">
+														<treerow>
+															<treecell
+																label="Gestionar Salida de productos"
+																tooltiptext="Gestionar Salida de productos" />
+														</treerow>
+													</treeitem>
+
+													<treeitem
+														id="idMNZTitemproductoExistencia"
+														value="mochila/inv/productoExistencia.zul">
+														<treerow>
+															<treecell
+																label="Consultar existencia de productos"
+																tooltiptext="Consultar existencia de productos" />
+														</treerow>
+													</treeitem>
+												</treechildren>
+											</treeitem>
+											
+											
+											
+											
+											
+											<treeitem open="false">
+												<treerow>
+													<treecell
+														label="Reportes" />
+												</treerow>
+												<treechildren>
+													
+												<treeitem
+																id="idMNZTitemReporte"
+																value="mochila/gen/gez_reportes.zul">
+																<treerow>
+																	<treecell
+																		label="Generador de Reportes"
+																		tooltiptext="Generador de Reportes" />
+																</treerow>
+												</treeitem>	
+
+													
+												</treechildren>
+											</treeitem>
+											
+											
+
+										</treechildren>
+									</treeitem>
+
+
+
+								</treechildren>
+							</tree>
+						</panelchildren>
+					</panel>
+				</center>
+				<south height="80px">
+					<panel>
+						<panelchildren>
+							<div align="center" style="padding:3px">
+
+								<image src="/imagen/logoCliente.png"
+									width="120px" />
+							</div>
+						</panelchildren>
+					</panel>
+				</south>
+			</borderlayout>
+		</west>
+		<!-- *********************************** -->
+		<!-- Pie de página de la aplicacion      -->
+		<!-- *********************************** -->
+		<south>
+			<groupbox>
+				<grid>
+					<rows>
+						<row>
+							<hbox>
+								<label id="idMNZLblCuenta" value="" />
+							</hbox>
+						</row>
+					</rows>
+				</grid>
+			</groupbox>
+		</south>
+		<!-- *********************************** -->
+		<!-- Área de trabajo de la aplicacion    -->
+		<!-- *********************************** -->
+		<center id="idMNZCenterTrabajo" autoscroll="true">
+
+			<!--  este tabbox es el que se encarga de alojar los tabs por ventana -->
+			<tabbox id="idMNZTbxVentanas" width="100%" height="100%" />
+
+		</center>
+
+	</borderlayout>
+</zk>

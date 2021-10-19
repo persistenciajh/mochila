@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvIngresoMapper">
+
+	<resultMap id="resMapInvIngreso" type="aliasInvIngreso">
+
+		<result property="secuencia" column="secuencia" />
+		<result property="secuenciaPersona.secuencia" column="secuencia_persona" />
+		<result property="secuenciaPersona.nombres" column="nombres" />
+		<result property="secuenciaPersona.telefono" column="telefono" />
+		
+		<result property="secuenciaUsuario" column="secuencia_usuario" />
+		<result property="codigo" column="codigo" />
+		<result property="numero" column="numero" />
+		<result property="tipo" column="tipo" />
+		<result property="fecha" column="fecha" />
+		<result property="total" column="total" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+
+	</resultMap>
+
+	<select id="getInvIngreso" parameterType="aliasInvIngreso" resultMap="resMapInvIngreso">
+		select 
+ing.secuencia, 
+ing.secuencia_persona, 
+ing.secuencia_usuario, 
+ing.codigo, 
+ing.numero, 
+ing.tipo,
+ing.total, ing.estado,
+ing.descripcion,
+ing.fecha,
+ing.fecha_creacion,
+per.nombres,
+per.telefono
+from inv_ingreso ing
+LEFT JOIN gen_persona per  ON per.secuencia  = ing.secuencia_persona
+where 1=1
+
+<if test="secuencia != null ">
+	    		AND ing.secuencia = #{secuencia,jdbcType=NUMERIC}
+</if>
+
+<if test="codigo != null ">
+	    		AND ing.codigo like #{codigo,jdbcType=VARCHAR}
+</if>
+		  	
+	</select>
+
+
+	<select id="postInvIngreso" parameterType="aliasInvIngreso" resultMap="resMapInvIngreso">
+<![CDATA[
+INSERT INTO inv_ingreso(
+             secuencia,secuencia_persona, secuencia_usuario, codigo, numero, 
+            tipo, fecha, total, estado, descripcion,fecha_creacion)
+    VALUES (
+     #{secuencia,jdbcType=NUMERIC},
+     #{secuenciaPersona.secuencia,jdbcType=NUMERIC},
+    #{secuenciaUsuario,jdbcType=NUMERIC},
+     #{codigo,jdbcType=VARCHAR},
+   #{numero,jdbcType=NUMERIC},
+     #{tipo,jdbcType=VARCHAR},
+    #{fecha,jdbcType=DATE},
+     #{total,jdbcType=NUMERIC},
+     #{estado,jdbcType=VARCHAR},
+    #{descripcion,jdbcType=VARCHAR},
+    #{fechaCreacion,jdbcType=DATE}
+    )
+]]>
+	</select>
+	
+		<select id="putInvIngreso" parameterType="aliasInvIngreso" resultMap="resMapInvIngreso">
+<![CDATA[
+UPDATE inv_ingreso
+   SET    
+   secuencia_persona=#{secuenciaPersona.secuencia,jdbcType=NUMERIC},
+   secuencia_usuario=#{secuenciaUsuario,jdbcType=NUMERIC},
+   codigo=#{codigo,jdbcType=VARCHAR}, 
+   numero=#{numero,jdbcType=NUMERIC},
+   tipo=#{tipo,jdbcType=VARCHAR},
+   total=#{total,jdbcType=NUMERIC},
+   estado=#{estado,jdbcType=VARCHAR},
+   descripcion=#{descripcion,jdbcType=VARCHAR},
+   fecha=#{fecha,jdbcType=DATE},
+   fecha_creacion=#{fechaCreacion,jdbcType=DATE}
+ WHERE 
+ secuencia=#{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+<select id="invIngresoSiguientePK" statementType="CALLABLE" resultType="java.lang.Long" >
+	  	
+			select nextval('inv_ingreso_secuencia_seq') as secuencia
+		
+   	</select>
+   	
+   	<select id="deleteInvIngreso" parameterType="aliasInvIngreso" resultMap="resMapInvIngreso">
+   	
+   	DELETE FROM inv_ingreso 
+    WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+   	
+   	</select>
+
+</mapper>

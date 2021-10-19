@@ -1,0 +1,33 @@
+<?page title="Otros Pagos" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns:n="native">
+
+	<div apply=" org.zkoss.bind.BindComposer ">
+		<window use="com.mochila.movil.action.ClientesAction">
+
+
+		
+			<groupbox>
+<caption>
+<label value="Mis clientes" />			
+</caption>
+
+			<grid>
+			<columns>
+			<column label="Identificacion" width="45px" />
+			<column  label="Nombre" />
+			<column label="Tipo" />
+			<column label="Cantidad"  width="60px" />
+			</columns>
+			<rows id="idMisClientesMovilRws">
+			
+			</rows>
+			
+			</grid>
+			
+</groupbox>			
+
+		</window>
+	</div>
+</zk>

@@ -1,0 +1,88 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+
+		<borderlayout  use="com.mochila.gen.action.LoginAction" id="idWindowLogin"  width="100%"
+		height="100%">
+		 
+			<!-- *********************************** -->
+		<!-- cabezote de la aplicación           -->
+		<!-- *********************************** -->
+		<north>
+			<div align="center" style="margin-top: 1px; margin-bottom: 1px;">
+				<image src="/imagen/logoProducto.png" onDoubleClick=""
+										 height="54px" />
+				<label value="DAFFA - Adminsitrativo"
+					style="color:gray;font-size:25px;font-weight:bold; vertical-align: middle;" />
+					
+<!-- 					<label id="idLOGZLbAmbiente"  -->
+<!-- 				onCreate="idLOGZLbAmbiente.setValue(idZLOGWinLogin.getEtiquetaAmbiente())" -->
+<!-- 					style="color:red;font-size:25px;font-weight:500; vertical-align: middle;" /> -->
+							
+			</div>
+		</north>
+		<!-- *********************************** -->
+		<!-- Loggin              -->
+		<!-- ********************************    -->
+		<east width="20%" title="Autenticación">
+					
+					
+						
+							<groupbox>
+				<grid fixedLayout="true">
+					<rows>
+						<row>
+								<textbox id="idUsuario" value=""
+									placeholder="Nombre de Usuario o E-mail "
+									tooltiptext="Nombre de Usuario o E-mail" width="100%" />
+						</row>
+								<row>
+								<textbox id="idClave" value="" type="password"
+									placeholder="Clave" tooltiptext="Clave" width="100%" />
+								</row>
+						</rows>
+						
+						</grid>
+						<div align="center">
+					<vbox>
+						<button label="Ingresar"
+							onClick="idWindowLogin.iniciarSesion()" />
+					</vbox>
+					</div>
+					</groupbox>
+
+					
+				
+		
+		</east>
+			<west width="2%" border="0"></west>
+			
+			<center id="idCenter" autoscroll="true" >
+			<div align="center" height="100%">
+
+
+
+				<!-- 			 contenido -->
+
+				<include id="include" width="100%" src="" />
+
+
+
+
+
+
+				<!-- 		fin	 contenido -->
+
+
+			</div>
+			
+			</center>
+
+			<south height="10%" border="0"></south>
+		</borderlayout>
+
+
+
+
+
+</zk>

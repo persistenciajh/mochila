@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PersonaMapper">
+	<resultMap id="resMapPersona" type="aliasPersona">
+		<result property="secuencia" column="secuencia" />
+		<result property="identificacion" column="identificacion" />
+		<result property="nombres" column="nombres" />
+		<result property="apellidos" column="apellidos" />
+		<result property="direccion" column="direccion" />
+		<result property="telefono" column="telefono" />
+		<result property="fechaNacimiento" column="fecha_nacimiento" />
+		<result property="correoElectronico" column="correo_electronico" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+		<result property="fechaActualizacion" column="fecha_actualizacion" />
+		
+		
+		<result property="tipoIdentificacion" column="tipo_identificacion" />
+		<result property="etiquetaCliente" column="etiqueta_cliente" />
+		<result property="etiquetaProveedor" column="etiqueta_proveedor" />
+		<result property="etiquetaDistribuidor" column="etiqueta_vendedor" />
+		<result property="secuenciaTipoDistribuidor.secuencia" column="secuencia_tipo_distribuidor" />
+		<result property="secuenciaTipoDistribuidor.nombre" column="nombre_tipo_distribuidor" />
+		
+		<result property="secuenciaUsuarioCreacion" column="secuencia_usuario_creacion" />
+		<result property="secuenciaPersonaReferenciada" column="secuencia_persona_referenciada" />
+		<result property="wspTelefono" column="wsp_telefono" />
+
+	</resultMap>
+	
+
+
+
+
+	<select id="getPersona" parameterType="aliasPersona" resultMap="resMapPersona">
+	SELECT per.*, td.nombre nombre_tipo_distribuidor FROM gen_persona per
+		LEFT JOIN gen_tipo_distribuidor td ON td.secuencia =  per.secuencia_tipo_distribuidor		
+		where 1=1
+			<if test="nombres != null">
+				AND (nombres like #{nombres,jdbcType=VARCHAR} 
+				OR identificacion like #{nombres,jdbcType=VARCHAR})
+			</if>
+			<if test="identificacion != null">
+				AND identificacion like #{identificacion,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="secuencia != null">
+				AND secuencia = #{secuencia,jdbcType=NUMERIC}
+			</if>
+			
+			<if test="telefono != null">
+				AND telefono like #{telefono,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="direccion != null">
+				AND direccion like #{direccion,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="etiquetaCliente != null">
+				AND etiqueta_cliente = #{etiquetaCliente,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="etiquetaProveedor != null">
+				AND etiqueta_proveedor = #{etiquetaProveedor,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="etiquetaDistribuidor != null">
+				AND etiqueta_vendedor = #{etiquetaDistribuidor,jdbcType=VARCHAR}
+			</if>
+			
+			
+			<if test="secuenciaUsuarioCreacion != null">
+				AND secuencia_usuario_creacion = #{secuenciaUsuarioCreacion,jdbcType=NUMERIC}
+			</if>
+			
+		
+	</select>
+
+	<select id="postPersona" parameterType="aliasPersona" resultMap="resMapPersona">
+<![CDATA[
+INSERT INTO gen_persona(
+	 identificacion, nombres, apellidos, correo_electronico, direccion, telefono, fecha_nacimiento, genero, estado, descripcion, fecha_creacion, fecha_actualizacion,tipo_identificacion,etiqueta_cliente,etiqueta_proveedor,etiqueta_vendedor,
+	  secuencia_tipo_distribuidor, secuencia_usuario_creacion,secuencia_persona_referenciada,wsp_telefono)
+VALUES
+(
+
+#{identificacion,jdbcType=VARCHAR},
+#{nombres,jdbcType=VARCHAR},
+#{apellidos,jdbcType=VARCHAR},
+#{correoElectronico,jdbcType=VARCHAR},
+#{direccion,jdbcType=VARCHAR},
+#{telefono,jdbcType=VARCHAR},
+#{fechaNacimiento,jdbcType=DATE},
+#{genero,jdbcType=VARCHAR},
+#{estado,jdbcType=VARCHAR},
+#{descripcion,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE},
+
+#{tipoIdentificacion,jdbcType=VARCHAR},
+#{etiquetaCliente,jdbcType=VARCHAR},
+#{etiquetaProveedor,jdbcType=VARCHAR},
+#{etiquetaDistribuidor,jdbcType=VARCHAR},
+#{secuenciaTipoDistribuidor.secuencia, jdbcType=NUMERIC},
+#{secuenciaUsuarioCreacion, jdbcType=NUMERIC},
+#{secuenciaPersonaReferenciada, jdbcType=NUMERIC},
+#{wspTelefono,jdbcType=VARCHAR}
+)
+]]>
+	</select>   
+
+	<select id="putPersona" parameterType="aliasPersona" resultMap="resMapPersona">
+<![CDATA[
+UPDATE gen_persona SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+identificacion= #{identificacion,jdbcType=VARCHAR},
+nombres= #{nombres,jdbcType=VARCHAR},
+apellidos= #{apellidos,jdbcType=VARCHAR},
+correo_electronico= #{correoElectronico,jdbcType=VARCHAR},
+direccion= #{direccion,jdbcType=VARCHAR},
+telefono= #{telefono,jdbcType=VARCHAR},
+fecha_nacimiento= #{fechaNacimiento,jdbcType=DATE},
+genero= #{genero,jdbcType=VARCHAR},
+estado= #{estado,jdbcType=VARCHAR},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE},
+secuencia_tipo_distribuidor= #{secuenciaTipoDistribuidor.secuencia, jdbcType=NUMERIC},
+
+tipo_identificacion = #{tipoIdentificacion,jdbcType=VARCHAR},
+etiqueta_cliente = #{etiquetaCliente,jdbcType=VARCHAR},
+etiqueta_proveedor = #{etiquetaProveedor,jdbcType=VARCHAR},
+etiqueta_vendedor= #{etiquetaDistribuidor,jdbcType=VARCHAR},
+
+secuencia_usuario_creacion= #{secuenciaUsuarioCreacion, jdbcType=NUMERIC},
+secuencia_persona_referenciada= #{secuenciaPersonaReferenciada, jdbcType=NUMERIC},
+wsp_telefono= #{wspTelefono,jdbcType=VARCHAR}
+
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+	</select>
+
+
+	<select id="deletePersona" parameterType="aliasPersona"
+		resultMap="resMapPersona">
+<![CDATA[
+DELETE FROM gen_persona
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+</mapper>
+
+	
+
+
+

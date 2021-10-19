@@ -1,0 +1,119 @@
+<?page title="Tipo Distribuidor" contentType="text/html;charset=UTF-8"?>
+<zk>
+		<borderlayout id="idInvTipoDistribuidor" use="com.mochila.gen.action.TipoDistribuidorAction">
+		
+			<west title="Distribuidor" width="35%" splittable="true"
+			 collapsible="true" open="true">
+		
+				
+				
+				<box width="100%">
+					<hbox width="100%">
+						<image id="idInvDistribuidorBtnBuscar" src="imagen/xsearch.png"></image>
+						<textbox 
+							id="idInvDistribuidorTbxBusqueda" 
+							placeholder="Buscar distribuidor"
+							hflex="true" 
+							width="max" 
+							height="32px"
+							style="text-transform:uppercase"
+							onChanging="idInvTipoDistribuidor.onConsultar(event.value)"
+						/>
+					</hbox>
+				
+					<listbox id="idInvDistribuidorLbxBusquedaDist" width="100%"  height="100%"  mold="paging" pageSize="8" >
+						<listhead visible="true">
+							<listheader label="Estado" width="50px" align="center"/>
+							<listheader label="Nombre" sort="auto" />
+						</listhead>
+					</listbox>
+				</box>
+			
+			</west>
+		
+			<center>
+			
+				<borderlayout>
+			
+					<center>
+						<grid>
+						
+							<rows id="idInvDistribuidorFormulario">
+						
+								<row visible="false">
+									<hbox>
+										<textbox id="idInvDistribuidorTbxOperacion" disabled="true" style="text-transform:uppercase"/>
+										<textbox id="idInvDistribuidorTbxSecuencia" disabled="true" style="text-transform:uppercase"/>
+									</hbox>
+								</row>
+								
+								<row>
+									<toolbar align="start">
+										<toolbarbutton id="idInvDistribuidorBtnNuevo" label="Nuevo" onClick="idInvTipoDistribuidor.onNuevo();"></toolbarbutton>
+										<toolbarbutton id="idInvDistribuidorBtnEditar" label="Editar" disabled="true" onClick="idInvDistribuidorBtnNuevo.setDisabled(true);idInvTipoDistribuidor.onEditar();"></toolbarbutton>
+										<toolbarbutton id="idInvDistribuidorBtnGuardar" label="Guardar" disabled="true" onClick="idInvTipoDistribuidor.onGuardar()"></toolbarbutton>
+										<toolbarbutton id="idInvDistribuidorBtnBorrar" label="Borrar" disabled="true" onClick="idInvTipoDistribuidor.onBorrar()"></toolbarbutton>
+										<toolbarbutton id="idInvDistribuidorBtnCancelar" label="Cancelar" disabled="true" onClick="idInvTipoDistribuidor.onCancelar()"></toolbarbutton>
+									</toolbar>
+								</row>
+							
+								<row>
+									<hbox align="center">
+										<label value="Nombre: *" />
+										<separator width="15px"/>
+										<textbox 
+											id="idInvDistribuidorTbxNombre" 
+											placeholder="Nombre del distribuidor" 
+											width="300px"
+											height="30px"
+											disabled="true"
+											style="text-transform:uppercase"
+										/>
+									</hbox>
+								</row>
+								
+								<row>
+									<hbox>
+									
+										<label value="Clasificar como: "/>
+										<radiogroup id="idInvDistribuidorRgbEstado" visible="true">
+												<hbox>
+													<separator width="5px"/>
+													<radio id="idInvDistribuidorRbtnActivo" value="Activo"  label="Activo" checked="true"/>
+										            <separator width="10px"/>
+										            <radio id="idInvDistribuidorRbtnInactivo" value="Inactivo" label="Inactivo" checked="false" />
+												</hbox>
+									        
+										</radiogroup>
+									</hbox>
+								</row>
+								
+								<row>
+									<hbox>
+										<label value="Descripcion: "/>
+										<separator width="10px"/>
+										<textbox id="idInvDistribuidorTbxDescripcion" 
+											placeholder=""
+											multiline="true"
+											width="300px"
+											height="30px" 
+											disabled="true"
+											style="text-transform:uppercase"
+										/>
+									</hbox>
+								</row>
+								
+							</rows>
+						
+						
+						</grid>
+						
+					</center>
+				
+				</borderlayout>
+			
+			</center>
+		
+		
+		</borderlayout>
+</zk>

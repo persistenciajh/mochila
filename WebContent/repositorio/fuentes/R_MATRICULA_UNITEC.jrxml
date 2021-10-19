@@ -1,0 +1,1578 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="R_MATRICULA_UNITEC"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="612"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="Aplicacion"
+		 whenResourceMissingType="Error">
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CCP_INICIAL" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_PERIODO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_ORGANIZACION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_DOCUMENTO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_REPORT_DIR" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File("C:\\compilados_jasper\\")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_IMAGE_DIR" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File("C:\\compilados_jasper\\")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\tmp\\unitec\\r_matricula\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT
+upper('1. Realice el pago de su matrícula únicamente con este formato, el hacerlo con formato distintos (por ejemplo volante de consignación de la corporación u otro banco) , exija al cajero al momento de su pago 
+la devolución del desprendible de "Estudiante" este lo necesitara usted para llevarlo consigo en la semana de inscripciones de asignaturas.
+2. El pago de la matrícula debera efectuarse en efectivo o cheque girado a nombre de la  CORPORACIÓN UNIVERSITARIA UNITEC, en este caso anote al respaldo 
+los siguientes datos: nombre del estudiante, carrera o programa académico, cédula, dirección y teléfonos.
+3. La institución se reserva el derecho de abrir los cursos regulares en los cuales no se cuente con el numero de alumnos establecido por las disposiciones internas, asi 
+como modificar el pénsum académico y los contenidos de los diferentes programas con el proposito de mantener una política de actualización acorde con los permanentes 
+cambios que exige nuestra sociedad. (Artículo 11, Parágrafo, Reglamento Estudiantil) ')  texto3,
+'Nota: El pago del valor de la matrícula, no garantiza la aprobación académica del semestre en curso' texto4,
+'IMPORTANTE' texto5,
+upper('Una vez pagados los derechos de matrícula, no habrá devolución de dinero por ningún concepto. (artículo 28, reglamento estudiantil)') texto6,
+	' '	LLAMADO_FORMATO,
+	' '					ESPACIO1,
+	T2.departamento				L_PERS_DEPARTAMENTO,
+	T2.poblacion				L_PERS_POBLACION,
+	T2.pais					L_PERS_PAIS,
+	T2.tipo_identificacion			L_PERS_TIPO_IDENTIFICACION,
+	to_char(T0.orden)					LIQUIDACION1,
+		DECODE( 
+		T0.documento, 
+                                'OEAU', '1', 
+		'OENU', '2', 
+		'RPEE', '3', 
+		'RPEZ', '4', 
+		'RPR', '5', 
+		'RPCV', '6', 
+		'0' 
+	) || SUBSTR ( 
+		LPAD ( 
+			LTRIM ( 
+				RC.recibo_consignacion
+			), 7, '0'
+		), 1, 7 -- orden.orden,
+	)
+	|| LPAD(
+		LTRIM (
+			T0.cliente_solicitado
+		), 10, '0' 
+	) || LPAD(REPLACE(replace(replace(replace(replace(T0.periodo,'-',0),'D','3'),'J','4'),'L','5'),'E','6'), 6, '0') REFERENCIA1,
+	to_char(RC.fecha,'dd/mm/yyyy') fecha1 ,
+	DRC.documento_orden||' '||DRC.orden orden,
+	to_char(T0.cliente_solicitado)			CLIENTE1,
+	SUBSTR(
+ 	                sd_nivel_centro_costo (
+ 		        T0.centro_costo, 
+		        T0.organizacion_centro, 
+		        3
+	               ),
+                1,28
+                )
+						FACULTAD,
+	SUBSTR(
+                                sd_nivel_centro_costo (
+ 		T0.centro_costo, 
+		T0.organizacion_centro, 
+		4
+	                ),
+                1,28
+                )
+	DEPARTAMENTO,
+	nvl((select /*to_char(cod_unidad)||*/' '||nom_unidad from src_uni_academica 
+                where cod_unidad in(
+                select max(codigo_programa) 
+                from ordenes_academico where orden =t0.orden 
+                and documento=t0.documento)),
+                sd_nivel_centro_costo (
+ 		T0.centro_costo, 
+		T0.organizacion_centro, 
+		sd_centro_costo_estructura.nivel (
+ 			T0.organizacion_centro, 
+			T0.centro_costo 
+		) 
+	))					PROGRAMA,
+	T0.periodo				PERIODO1,
+	T3.pais					L_POBL_PAIS,
+	T3.departamento				L_POBL_DEPARTAMENTO,
+	T3.poblacion				L_POBL_POBLACION,
+	T2.identificacion				L_PERS_IDENTIFICACION,
+	T1.nombre_negocio				L_CLIENTE_NOMBRE_NEGOCIO,
+	T2.secuencia_persona			L_PERS_SECUENCIA_PERSONA,
+	T2.nombre_razon_social nombres,
+	T2.primer_apellido||' '||T2.segundo_apellido apellidos,
+	T1.direccion				L_CLIENTE_DIRECCION,
+	T1.telefono				L_CLIENTE_TELEFONO,
+	to_char(T1.cliente)					L_CLIENTE_CLIENTE,
+	T1.secuencia_persona			L_CLIENTE_SECUENCIA_PERSONA,
+	T3.nombre_poblacion			L_POBL_NOMBRE_POBLACION,
+	T0.condicion_comercial			CONDICION_COMERCIAL1,
+	T0.centro_costo				CENTRO_COSTO1,
+	T0.documento				DOCUMENTO1,
+	T0.organizacion				ORGANIZACION1,
+	T0.fecha_liquidacion fecha,
+	T2.identificacion,
+	to_char(RC.recibo_consignacion) REFERENCIA5
+FROM
+	impresion_periodo			T,
+	orden				T0,
+	recibo_consignacion		RC,
+	detalle_recibo_consignacion		DRC,
+	cliente				T1,
+	persona				T2,
+	poblacion				T3
+WHERE
+	T0.estado = 'V'
+-- AND	T.impreso = 'N'
+AND	T0.documento = UPPER($P{CCP_DOCUMENTO})
+--AND	T0.organizacion = :p_organizacion
+--AND        T0.centro_costo=nvl(:p_centro_costo,T0.centro_costo)
+AND        T0.periodo=nvl($P{CCP_PERIODO},T0.PERIODO)
+AND	T0.orden =NVL($P{CCP_INICIAL},T0.orden) 
+--AND        T0.orden<=nvl(:p_final,T0.ORDEN)
+/*AND        decode(
+		cw_total_simulacion(
+			T0.organizacion,
+			T0.documento,
+			T0.orden,
+			NULL,
+			T0.periodo
+        		),
+		0,'No',
+		'Todos'
+	) != :P_SALDO_CERO*/
+AND	T.periodo(+) = T0.periodo
+AND	T.cliente(+) = T0.cliente_solicitado
+AND	DRC.documento_orden = T0.documento
+AND	DRC.organizacion_orden = T0.organizacion
+AND	DRC.orden = T0.orden
+AND	RC.estado = 'I'
+AND	RC.recibo_consignacion = DRC.recibo_consignacion
+AND	T0.cliente_solicitado = T1.cliente
+AND	T2.secuencia_persona = T1.secuencia_persona
+AND	T3.departamento (+)= T2.departamento 
+AND	T3.pais (+)= T2.pais
+AND	T3.poblacion (+)= T2.poblacion
+--AND        T0.centro_costo = NVL (:p_centro_costo, T0.centro_costo)
+UNION ALL
+SELECT
+' ' texto3,
+' ' texto4,
+' ' texto5,
+' ' texto6,
+	' ' 		LLAMADO_FORMATO,
+	' '					ESPACIO1,
+	0					L_PERS_DEPARTAMENTO,
+	0					L_PERS_POBLACION,
+	0					L_PERS_PAIS,
+	' '					L_PERS_TIPO_IDENTIFICACION,
+	to_char(rownum)					LIQUIDACION1,
+	'0'			 	REFERENCIA1,
+	to_char(sysdate,'dd/mm/yyyy')  fecha1,
+	' '  orden,
+	to_char(rownum  + $P{CCP_INICIAL}  - 1)			CLIENTE1,
+	' '					FACULTAD,
+	' '					DEPARTAMENTO,
+	' '					PROGRAMA,
+	$P{CCP_PERIODO}				PERIODO1,
+	0					L_POBL_PAIS,
+	0					L_POBL_DEPARTAMENTO,
+	0					L_POBL_POBLACION,
+	' '					IDENTIFICACION,
+	' '					nombre,
+	0					secuencia_persona,
+	' ' nombres,
+	' ' apellidos,
+	' '					L_CLIENTE_DIRECCION,
+	' '					L_CLIENTE_TELEFONO,
+	'0'					L_CLIENTE_CLIENTE,
+	0					L_CLIENTE_SECUENCIA_PERSONA,
+	' '					L_POBL_NOMBRE_POBLACION,
+	' '					CONDICION_COMERCIAL1,
+	' '					CENTRO_COSTO1,
+	'X'					DOCUMENTO1,
+	'X'					ORGANIZACION1,
+	sysdate fecha,
+	' ' identificacion,
+	'0' REFERENCIA5
+FROM
+	CLIENTE
+WHERE
+	rownum <= $P{CCP_INICIAL} - $P{CCP_INICIAL} + 1
+AND	$P{CCP_DOCUMENTO} IS NULL
+ORDER BY 
+	18 -- Centro Costo
+	, 27  -- Apellido
+	, 26  -- Nombres
+	,35,11]]></queryString>
+
+	<field name="TEXTO3" class="java.lang.String"/>
+	<field name="TEXTO4" class="java.lang.String"/>
+	<field name="TEXTO5" class="java.lang.String"/>
+	<field name="TEXTO6" class="java.lang.String"/>
+	<field name="LLAMADO_FORMATO" class="java.lang.String"/>
+	<field name="ESPACIO1" class="java.lang.String"/>
+	<field name="L_PERS_DEPARTAMENTO" class="java.math.BigDecimal"/>
+	<field name="L_PERS_POBLACION" class="java.math.BigDecimal"/>
+	<field name="L_PERS_PAIS" class="java.math.BigDecimal"/>
+	<field name="L_PERS_TIPO_IDENTIFICACION" class="java.lang.String"/>
+	<field name="LIQUIDACION1" class="java.lang.String"/>
+	<field name="REFERENCIA1" class="java.lang.String"/>
+	<field name="FECHA1" class="java.lang.String"/>
+	<field name="ORDEN" class="java.lang.String"/>
+	<field name="CLIENTE1" class="java.lang.String"/>
+	<field name="FACULTAD" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="PROGRAMA" class="java.lang.String"/>
+	<field name="PERIODO1" class="java.lang.String"/>
+	<field name="L_POBL_PAIS" class="java.math.BigDecimal"/>
+	<field name="L_POBL_DEPARTAMENTO" class="java.math.BigDecimal"/>
+	<field name="L_POBL_POBLACION" class="java.math.BigDecimal"/>
+	<field name="L_PERS_IDENTIFICACION" class="java.lang.String"/>
+	<field name="L_CLIENTE_NOMBRE_NEGOCIO" class="java.lang.String"/>
+	<field name="L_PERS_SECUENCIA_PERSONA" class="java.math.BigDecimal"/>
+	<field name="NOMBRES" class="java.lang.String"/>
+	<field name="APELLIDOS" class="java.lang.String"/>
+	<field name="L_CLIENTE_DIRECCION" class="java.lang.String"/>
+	<field name="L_CLIENTE_TELEFONO" class="java.lang.String"/>
+	<field name="L_CLIENTE_CLIENTE" class="java.lang.String"/>
+	<field name="L_CLIENTE_SECUENCIA_PERSONA" class="java.math.BigDecimal"/>
+	<field name="L_POBL_NOMBRE_POBLACION" class="java.lang.String"/>
+	<field name="CONDICION_COMERCIAL1" class="java.lang.String"/>
+	<field name="CENTRO_COSTO1" class="java.lang.String"/>
+	<field name="DOCUMENTO1" class="java.lang.String"/>
+	<field name="ORGANIZACION1" class="java.lang.String"/>
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="IDENTIFICACION" class="java.lang.String"/>
+	<field name="REFERENCIA5" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="792"  isSplitAllowed="true" >
+				<rectangle>
+					<reportElement
+						mode="Transparent"
+						x="24"
+						y="313"
+						width="561"
+						height="56"
+						backcolor="#FFFFFF"
+						key="rectangle-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<image  scaleImage="RetainShape" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="21"
+						y="27"
+						width="100"
+						height="74"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.File"><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCliente.jpg")]]></imageExpression>
+				</image>
+				<rectangle>
+					<reportElement
+						mode="Transparent"
+						x="25"
+						y="107"
+						width="563"
+						height="59"
+						backcolor="#FFFFFF"
+						key="rectangle-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="28"
+						y="122"
+						width="78"
+						height="12"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ APELLIDOS:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="415"
+						y="139"
+						width="54"
+						height="13"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ CIUDAD:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="415"
+						y="108"
+						width="53"
+						height="12"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ CODIGO:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="42"
+						y="445"
+						width="521"
+						height="1"
+						forecolor="#999999"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<image  scaleImage="RetainShape" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="21"
+						y="449"
+						width="102"
+						height="59"
+						key="image-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.File"><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCliente.jpg")]]></imageExpression>
+				</image>
+				<rectangle>
+					<reportElement
+						x="379"
+						y="712"
+						width="138"
+						height="12"
+						key="rectangle-129"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="517"
+						y="712"
+						width="71"
+						height="12"
+						key="rectangle-130"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="516"
+						y="677"
+						width="72"
+						height="13"
+						key="rectangle-131"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="517"
+						y="700"
+						width="71"
+						height="12"
+						key="rectangle-134"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="516"
+						y="689"
+						width="72"
+						height="11"
+						key="rectangle-135"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="379"
+						y="677"
+						width="45"
+						height="13"
+						key="rectangle-136"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="424"
+						y="677"
+						width="93"
+						height="13"
+						key="rectangle-137"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="379"
+						y="689"
+						width="45"
+						height="11"
+						key="rectangle-138"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="424"
+						y="689"
+						width="93"
+						height="11"
+						key="rectangle-139"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="379"
+						y="700"
+						width="45"
+						height="12"
+						key="rectangle-140"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="424"
+						y="700"
+						width="93"
+						height="12"
+						key="rectangle-141"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="381"
+						y="679"
+						width="38"
+						height="8"
+						key="staticText-106"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Codigo Banco]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="426"
+						y="679"
+						width="40"
+						height="8"
+						key="staticText-108"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[CHEQUE No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="518"
+						y="679"
+						width="68"
+						height="8"
+						key="staticText-109"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VALOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="391"
+						y="714"
+						width="98"
+						height="7"
+						key="staticText-110"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[EFECTIVO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="28"
+						y="107"
+						width="79"
+						height="12"
+						key="staticText-117"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[IDENTIFICACION:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="28"
+						y="137"
+						width="78"
+						height="12"
+						key="staticText-118"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ NOMBRES: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="28"
+						y="154"
+						width="78"
+						height="12"
+						key="staticText-120"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ PROGRAMA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="415"
+						y="123"
+						width="61"
+						height="13"
+						key="staticText-121"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ DIRECCIÓN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="415"
+						y="155"
+						width="61"
+						height="13"
+						key="staticText-122"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[ TELEFONO:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						mode="Transparent"
+						x="21"
+						y="394"
+						width="565"
+						height="43"
+						key="rectangle-158"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="21"
+						y="763"
+						width="567"
+						height="16"
+						key="staticText-135"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ - BANCO O CORPORACIÓN -]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="67"
+						width="172"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="47"
+						width="172"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="415"
+						y="71"
+						width="65"
+						height="13"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ FECHA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="415"
+						y="47"
+						width="60"
+						height="13"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ RECIBO No.]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="27"
+						width="172"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="415"
+						y="27"
+						width="30"
+						height="15"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ REF.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="399"
+						width="558"
+						height="38"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="SansSerif" size="5"/>
+					</textElement>
+				<text><![CDATA[1. Realice el pago de su matrícula teniendo en cuenta las siguientes características en Bancolmbia con cheque de gerencia, cheque de cesantías o efectivo por el valor total de la matrícula, en el banco Davivienda y banco del Occidente Cheque de gerencia, cheque de cesantías, efectivo o mixto.
+2. Una vez cancelados los derechos de matrícula, no se autorizará la devolución de dinero por ningún concepto (Articulo No. 27, parágrafo 2 reglamentó vigente).
+3. La corporación, en uso del derecho de autonomía que la constitución y las leyes confieren es libre de aceptar o no la matrícula a un aspirante o estudiante así como la apertura o cierre de grupos en función del número de estudiantes matriculados (Articulo No. 16, parágrafo 1 reglamento estudiantil). ]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="513"
+						y="48"
+						width="1"
+						height="19"
+						key="line"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="512"
+						y="46"
+						width="73"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ PERIODO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="673"
+						width="334"
+						height="7"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="5"/>
+					</textElement>
+				<text><![CDATA[NO SE ACEPTAN LOS PAGOS POR UN VALOR DIFERENTE AL FACTURADO PARA CADA FECHA DE VENCIMIENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="469"
+						y="679"
+						width="46"
+						height="8"
+						key="staticText-108"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[CUENTA No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="468"
+						y="677"
+						width="1"
+						height="34"
+						key="line"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="379"
+						y="723"
+						width="209"
+						height="45"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="21"
+						y="523"
+						width="1"
+						height="177"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="3"/>
+					</textElement>
+				<text><![CDATA[PRIMER PAGO SEGUNDO PAGO TERCER PAGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="62"
+						width="258"
+						height="14"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif"/>
+					</textElement>
+				<text><![CDATA[Teléfono: 7434343]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="79"
+						width="258"
+						height="13"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif"/>
+					</textElement>
+				<text><![CDATA[Fax:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="473"
+						width="258"
+						height="14"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif"/>
+					</textElement>
+				<text><![CDATA[Teléfono: 7434343]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="485"
+						width="257"
+						height="13"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif"/>
+					</textElement>
+				<text><![CDATA[Fax:]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="450"
+						width="173"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="470"
+						width="173"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="415"
+						y="489"
+						width="173"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="416"
+						y="449"
+						width="100"
+						height="13"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ REF.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="415"
+						y="490"
+						width="100"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ FECHA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="516"
+						y="470"
+						width="71"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ PERIODO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="417"
+						y="472"
+						width="73"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[ RECIBO No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="515"
+						y="471"
+						width="1"
+						height="19"
+						key="line"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="122"
+						y="107"
+						width="238"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{L_PERS_IDENTIFICACION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="121"
+						y="122"
+						width="237"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{APELLIDOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="121"
+						y="139"
+						width="237"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRES}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="121"
+						y="154"
+						width="237"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PROGRAMA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="476"
+						y="124"
+						width="112"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{L_CLIENTE_DIRECCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="477"
+						y="140"
+						width="112"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{L_POBL_NOMBRE_POBLACION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="477"
+						y="155"
+						width="107"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{L_CLIENTE_TELEFONO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="24"
+						y="372"
+						width="564"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="4"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TEXTO6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="24"
+						y="385"
+						width="564"
+						height="7"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TEXTO5}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="123"
+						y="26"
+						width="257"
+						height="20"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[RECIBO DE MATRÍCULA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="448"
+						width="261"
+						height="14"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[RECIBO DE MATRÍCULA]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="444"
+						y="35"
+						width="139"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{REFERENCIA1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="437"
+						y="57"
+						width="75"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ORDEN}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="512"
+						y="56"
+						width="76"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PERIODO1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="476"
+						y="109"
+						width="108"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CLIENTE1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="485"
+						y="74"
+						width="100"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{FECHA1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="487"
+						y="498"
+						width="96"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{FECHA1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="516"
+						y="480"
+						width="74"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PERIODO1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="446"
+						y="459"
+						width="137"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{REFERENCIA1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="455"
+						y="479"
+						width="57"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ORDEN}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="193"
+						y="746"
+						width="178"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="25"
+						y="717"
+						width="346"
+						height="29"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="25"
+						y="746"
+						width="168"
+						height="20"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="195"
+						y="747"
+						width="176"
+						height="11"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="7"/>
+					</textElement>
+				<text><![CDATA[PROGRAMA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="717"
+						width="346"
+						height="11"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="7"/>
+					</textElement>
+				<text><![CDATA[ESTUDIANTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="747"
+						width="168"
+						height="21"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="7"/>
+					</textElement>
+				<text><![CDATA[C.C. O NIT]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="203"
+						y="756"
+						width="168"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PROGRAMA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="728"
+						width="90"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRES}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="123"
+						y="728"
+						width="162"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{APELLIDOS}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="381"
+						y="723"
+						width="207"
+						height="63"
+						key="subreport"/>
+					<subreportParameter  name="CCP_REFERENCIA">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_LIQUIDACION">
+						<subreportParameterExpression><![CDATA[$F{LIQUIDACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_ORGANIZACION">
+						<subreportParameterExpression><![CDATA[$F{ORGANIZACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_CLIENTE">
+						<subreportParameterExpression><![CDATA[$F{L_CLIENTE_CLIENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_DOCUMENTO">
+						<subreportParameterExpression><![CDATA[$F{DOCUMENTO1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT5_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="25"
+						y="509"
+						width="346"
+						height="164"
+						key="subreport-9"/>
+					<subreportParameter  name="CCP_REFERENCIA">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_LIQUIDACION">
+						<subreportParameterExpression><![CDATA[$F{LIQUIDACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_ORGANIZACION">
+						<subreportParameterExpression><![CDATA[$F{ORGANIZACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_CLIENTE">
+						<subreportParameterExpression><![CDATA[$F{L_CLIENTE_CLIENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_DOCUMENTO">
+						<subreportParameterExpression><![CDATA[$F{DOCUMENTO1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_PERIODO">
+						<subreportParameterExpression><![CDATA[$F{PERIODO1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT3_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="755"
+						width="120"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{IDENTIFICACION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="123"
+						y="43"
+						width="258"
+						height="19"
+						key="textField-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{ger.rplantilla.nitCliente}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="123"
+						y="459"
+						width="261"
+						height="17"
+						key="textField-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{ger.rplantilla.nitCliente}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="24"
+						y="175"
+						width="561"
+						height="138"
+						key="rectangle-159"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="25"
+						y="176"
+						width="272"
+						height="137"
+						key="subreport-10"/>
+					<subreportParameter  name="CCP_REFERENCIA5">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT1_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<line direction="TopDown">
+					<reportElement
+						x="233"
+						y="175"
+						width="1"
+						height="137"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="297"
+						y="175"
+						width="1"
+						height="137"
+						key="line-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="297"
+						y="175"
+						width="0"
+						height="138"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="24"
+						y="187"
+						width="561"
+						height="3"
+						key="line-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="25"
+						y="681"
+						width="346"
+						height="34"
+						key="rectangle-160"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="25"
+						y="681"
+						width="346"
+						height="98"
+						key="subreport-11"/>
+					<subreportParameter  name="CCP_DOCUMENTO">
+						<subreportParameterExpression><![CDATA[$F{DOCUMENTO1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_LIQUIDACION">
+						<subreportParameterExpression><![CDATA[$F{LIQUIDACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_REFERENCIA">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT4_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<line direction="TopDown">
+					<reportElement
+						x="192"
+						y="681"
+						width="0"
+						height="34"
+						key="line-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="297"
+						y="175"
+						width="287"
+						height="137"
+						key="subreport-12"/>
+					<subreportParameter  name="CCP_REFERENCIA5">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT11_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						x="284"
+						y="436"
+						width="73"
+						height="8"
+						key="staticText-136"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Static Text]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="235"
+						y="437"
+						width="143"
+						height="9"
+						key="staticText-137"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+					</textElement>
+				<text><![CDATA[-ESTUDIANTE-]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="518"
+						y="175"
+						width="1"
+						height="137"
+						key="line-9"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="28"
+						y="314"
+						width="555"
+						height="49"
+						key="subreport-13"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="CCP_REFERENCIA5">
+						<subreportParameterExpression><![CDATA[$F{REFERENCIA5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_LIQUIDACION">
+						<subreportParameterExpression><![CDATA[$F{LIQUIDACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_ORGANIZACION">
+						<subreportParameterExpression><![CDATA[$F{ORGANIZACION1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CCP_DOCUMENTO">
+						<subreportParameterExpression><![CDATA[$F{DOCUMENTO1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.io.File"><![CDATA[new File($P{ICEBERGRS_REPORT_DIR}, "R_MATRICULA_SUBREPORT2_UNITEC.jasper")]]></subreportExpression>
+				</subreport>
+				<line direction="TopDown">
+					<reportElement
+						x="297"
+						y="314"
+						width="0"
+						height="55"
+						key="line-10"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

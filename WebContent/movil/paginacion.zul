@@ -1,0 +1,12 @@
+<?page title="pag" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="idWin" use="com.mochila.gen.action.PaginAction"
+		title="pag" border="normal">
+		<vbox>
+			<label id="idPagActual" />
+			<listbox id="idLbxLista" mold="select" width="40px"
+				onSelect="idWin.onSeleccionar(self.selectedItem.label)">
+			</listbox>
+		</vbox>
+	</window>
+</zk>

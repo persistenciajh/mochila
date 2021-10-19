@@ -1,0 +1,114 @@
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<borderlayout id="idWinMovil"
+		use="com.mochila.movil.action.IndexAction">
+		<north height="32px" border="0">
+			<borderlayout>
+				<east width="5px" border="0"></east>
+				<west width="5px" border="0"></west>
+				<center border="0">
+					<borderlayout>
+						<east width="64px" border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image
+											src="../imagen/xsearch.png" height="16px" visible="false" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</east>
+						<west width="64px" border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/menu.png" visible="false"
+											height="32px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</west>
+						<center border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/logo.png"
+											height="24px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+
+						</center>
+					</borderlayout>
+				</center>
+			</borderlayout>
+		</north>
+		<east width="5px" border="0"></east>
+		<west width="5px" border="0" ></west>
+		<center  border="0" style="background:#E5E5E5" autoscroll="true"
+			vflex="1">
+
+
+			<vbox id="idWinVboxProductos" align="center" pack="center"
+				height="90%" width="100%">
+
+			</vbox>
+
+		</center>
+
+
+		<south height="64px" border="0">
+			<borderlayout>
+				<north height="32px" border="0" >
+					<borderlayout>
+						<east width="64px" border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+
+									</vbox>
+								</panelchildren>
+							</panel>
+						</east>
+						<west width="64px" border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+
+									</vbox>
+								</panelchildren>
+							</panel>
+						</west>
+						<center border="0">
+							<panel height="32px" width="100%">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<hbox>
+											<h:h>Pag:</h:h>
+											<listbox id="idLbxLista"
+												mold="select" width="40px"
+												onSelect="idWinMovil.onSeleccionar(self.selectedItem.label)">
+											</listbox>
+										</hbox>
+									</vbox>
+								</panelchildren>
+							</panel>
+
+						</center>
+					</borderlayout>
+				</north>
+				<east width="5px" border="0"></east>
+				<west width="5px" border="0"></west>
+				<center border="0">
+
+				</center>
+			</borderlayout>
+		</south>
+	</borderlayout>
+</zk>

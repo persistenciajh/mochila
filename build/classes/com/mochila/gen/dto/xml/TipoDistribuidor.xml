@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TipoDistribuidorMapper">
+
+	<resultMap id="resMapTipoDistribuidor" type="aliasTipoDistribuidor">
+		<result property="secuencia" column="secuencia" />
+		<result property="nombre" column="nombre" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+	</resultMap>
+
+
+
+
+	<select id="getTipoDistribuidor" parameterType="aliasTipoDistribuidor" resultMap="resMapTipoDistribuidor">
+		SELECT * FROM gen_tipo_distribuidor
+		<where>
+			<if test="secuencia != null">
+				secuencia like #{secuencia,jdbcType=NUMERIC}
+			</if>
+			<if test="nombre != null">
+				OR nombre like #{nombre,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="estado != null">
+				OR estado = #{estado,jdbcType=VARCHAR}
+			</if>	
+			
+			<if test="descripcion != null">
+				OR descripcion = #{descripcion,jdbcType=VARCHAR}
+			</if>		
+		</where>
+
+	</select>
+
+	<select id="postTipoDistribuidor" parameterType="aliasTipoDistribuidor" resultMap="resMapTipoDistribuidor">
+		<![CDATA[
+			INSERT INTO gen_tipo_distribuidor(
+				 nombre, estado, descripcion
+				 )
+			VALUES
+			(
+			
+			#{nombre,jdbcType=VARCHAR},
+			#{estado,jdbcType=VARCHAR},
+			#{descripcion,jdbcType=VARCHAR}
+			
+			)
+		]]>
+	</select>   
+
+	<select id="putTipoDistribuidor" parameterType="aliasTipoDistribuidor" resultMap="resMapTipoDistribuidor">
+		<![CDATA[
+			UPDATE gen_tipo_distribuidor SET
+			nombre = #{nombre,jdbcType=VARCHAR},
+			estado = #{estado,jdbcType=VARCHAR},
+			descripcion = #{descripcion,jdbcType=VARCHAR}
+			
+			WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+			
+		]]>
+	</select>
+
+
+	<select id="deleteTipoDistribuidor" parameterType="aliasTipoDistribuidor"
+		resultMap="resMapTipoDistribuidor">
+		<![CDATA[
+			DELETE FROM gen_tipo_distribuidor
+			WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+		]]>
+	</select>
+
+</mapper>

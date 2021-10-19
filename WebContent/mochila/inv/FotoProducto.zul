@@ -1,0 +1,139 @@
+<?page title="Auto Generated index.zul"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:zk="http://www.zkoss.org/2005/zk">
+
+	<borderlayout id="idInvFotoProducto" use="com.mochila.inv.action.FotoProductoAction">
+		<west id="west" width="40%"   splittable="true"
+			border="none">
+			<box hflex="true"  height="100%">
+				<hbox hflex="true">
+					<image id="idInvFotoProductoBtnBuscar"
+						src="imagen/xsearch.png" />
+					<textbox id="idInvFotoProductoTbxBusqueda" placeholder="Busca por Nombre"
+						hflex="true" width="100%"
+						height="32px"
+						onChanging="idInvFotoProducto.onConsultar(event.value);"/>
+				</hbox>
+					<listbox id="idInvFotoProductoLbxFotoProducto" width="100%" vflex="true" mold="paging" pageSize="10">
+						<listhead visible="false">
+							<listheader label="estado" width="45px" align="center"
+								visible="true" />
+							<listheader label="item" sort="auto"
+								visible="true" />
+							<listheader label="img" width="45px" align="center" visible="true" />
+						</listhead>
+					</listbox>
+			</box>
+		</west>
+		<center>
+			<borderlayout>
+				<center>
+					<div>
+						<toolbar align="start">
+							<toolbarbutton id="idInvFotoProductoBtnNuevo"
+								label="Nuevo" tooltiptext=""
+								onClick="idInvFotoProducto.onNuevo();" />
+							<toolbarbutton id="idInvFotoProductoBtnEditar"
+								label="Editar" disabled="true" 
+							onClick="idInvFotoProductoBtnNuevo.setDisabled(true);idInvFotoProducto.onEditar()" />
+							<toolbarbutton id="idInvFotoProductoBtnGuardar"
+								label="Guardar" disabled="true" onClick="idInvFotoProducto.onGuardar()" />
+							<toolbarbutton id="idInvFotoProductoBtnBorrar"
+								label="Eliminar" disabled="true" onClick="idInvFotoProducto.onBorrar()" />
+							<toolbarbutton id="idInvFotoProductoBtnCancelar"
+								label="Cancelar" disabled="true" onClick="idInvFotoProducto.onCancelar()" />
+						</toolbar>
+						<groupbox>
+							<grid>
+								<rows id="idInvFotoProductoFormulario">
+									<row visible="false">
+										<hbox>
+											<textbox
+												id="idInvFotoProductoTbxOperacion" disabled="true" />
+										<textbox
+												id="idInvFotoProductoTbxSecuencia" disabled="true" />
+										</hbox>
+									</row>
+					
+					<row visible="false">
+					<textbox id="idInvFotoProductoTbxProducto" placeholder="Producto" tooltiptext="Producto" width="100%"
+						disabled="true" />
+				</row>
+				<row>
+									<vbox>
+										<label
+											value="Producto" style="color:gray;" />								
+									
+                            <bandbox width="320px" id="idInvFotoProductoBandboxProducto" disabled="true" tooltiptext="Producto" mold="rounded" autodrop="true" onChanging="idInvFotoProducto.llenarBandboxProducto(event.value)" >
+                                <bandpopup>
+                                    <vbox>
+                                        <listbox height="286px"
+                                        	width="320px" mold="paging"
+                                        	pageSize="5"
+                                        	id="idInvFotoProductolistboxBandboxProducto"
+                                        	onSelect="idInvFotoProductoBandboxProducto.value=self.selectedItem.label;idInvFotoProductoTbxProducto.value=self.selectedItem.value;idInvFotoProductoBandboxProducto.close();">
+                                        </listbox>
+                                     
+                                    </vbox>
+                                </bandpopup>
+                            </bandbox>
+                        
+									</vbox>
+									</row>
+							<row>
+							<panel border="normal" height="305px" width="256px" style="margin-top:3px;">
+							<panelchildren>
+							<vbox>
+							<image id="idInvFotoProductoImageImg" src="imagen/imageDefault.png" width="256px" height="256px"></image>
+							
+							<button id="idInvFotoProductoBtnImagen" label="Cargar imagen"  height="49px" width="253px" upload="true,maxsize=1789375" disabled="true" >
+							<attribute name="onUpload">
+				org.zkoss.util.media.Media media = event.getMedia();
+				if (media instanceof org.zkoss.image.Image) {
+					org.zkoss.image.Image img = (org.zkoss.image.Image) media;
+					idInvFotoProductoImageImg.setContent(img);
+					
+				} else {
+					Messagebox.show("Not an image: "+media, "Error", Messagebox.OK, Messagebox.ERROR);
+					break; //not to show too many errors
+				}
+			</attribute>
+			</button>
+							</vbox>
+							
+							</panelchildren>
+							</panel>
+							</row>
+									<row>
+										<radiogroup
+											id="idInvFotoProductoRgbEstado">
+											<grid style="border: 0">
+												<columns
+													columnshide="true" hflex="min" visible="false">
+													<column
+														width="60px" />
+													<column hflex="min" />
+												</columns>
+												<rows>
+													<row
+														style="border: 0">
+														<radio
+															disabled="true" value="A" label="Activo" checked="true"/> 
+														<radio disabled="true" value="I" label="Inactivo" />
+													</row>
+												</rows>
+											</grid>
+										</radiogroup>
+									</row>
+					<row>
+					<textbox id="idInvFotoProductoTbxDescripcion" placeholder="Descripcion" tooltiptext="Descripcion" width="100%"
+						disabled="true" rows="5" />
+				</row>
+</rows>
+							</grid>
+						</groupbox>
+					</div>
+				</center>
+			</borderlayout>
+		</center>
+	</borderlayout>
+</zk>

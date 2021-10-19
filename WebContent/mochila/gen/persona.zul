@@ -1,0 +1,270 @@
+<?page title="Auto Generated index.zul"?>
+<zk>
+	<borderlayout id="idGenPersona"
+		use="com.mochila.gen.action.PersonaAction">
+
+		<west id="west" width="40%" splittable="true" border="none">
+
+
+			<box hflex="true" height="100%">
+				<hbox hflex="true">
+					<image id="idGenPersonaBtnBuscar"
+						src="imagen/xsearch.png" />
+
+					<textbox id="idGenPersonaTbxBusqueda"
+						placeholder="Busca por Nombre" hflex="true" width="100%"
+						height="32px" onChanging="idGenPersona.onConsultar(event.value);" 
+						style="text-transform:uppercase"/>
+
+				</hbox>
+
+				<listbox id="idGenPersonaLbxPersonas" width="100%"
+					vflex="true">
+					<listhead visible="true">
+						<listheader label="estado" width="45px"
+							align="center" visible="true" />
+						<listheader label="item" sort="auto"
+							visible="true" />
+					</listhead>
+
+
+				</listbox>
+
+			</box>
+
+		</west>
+		<center>
+
+			<borderlayout>
+
+				<center>
+					<div>
+
+						<toolbar align="start">
+							<toolbarbutton id="idGenPersonaBtnNuevo"
+								label="Nuevo" tooltiptext="" onClick="idGenPersona.onNuevo();" />
+
+
+							<toolbarbutton id="idGenPersonaBtnEditar"
+								label="Editar" disabled="true"
+								onClick="idGenPersonaBtnNuevo.setDisabled(true);idGenPersona.onEditar()" />
+							<toolbarbutton id="idGenPersonaBtnGuardar"
+								label="Guardar" disabled="true"
+								onClick="idGenPersona.onGuardar()" />
+							<toolbarbutton id="idGenPersonaBtnBorrar"
+								label="Eliminar" disabled="true"
+								onClick="idGenPersona.onBorrar()" />
+							<toolbarbutton id="idGenPersonaBtnCancelar"
+								label="Cancelar" disabled="true"
+								onClick="idGenPersona.onCancelar()" />
+
+						</toolbar>
+						<groupbox>
+
+							<grid>
+								<rows id="idGenPersonaFormulario">
+									<row visible="false">
+
+										<hbox>
+											<textbox
+												id="idGenPersonaTbxOperacion" disabled="true" style="text-transform:uppercase"/>
+											<textbox
+												id="idGenPersonaTbxSecuencia" disabled="true" style="text-transform:uppercase"/>
+										</hbox>
+									</row>
+
+									<row>
+										<textbox
+											id="idGenPersonaTbxNombre" placeholder="*Nombre"
+											tooltiptext="Nombre" width="100%" disabled="true" style="text-transform:uppercase"/>
+									</row>
+
+									<row>
+										<textbox
+											id="idGenPersonaTbxApellido" placeholder="*Apellidos"
+											tooltiptext="Apellidos" width="100%" disabled="true" style="text-transform:uppercase"/>
+									</row>
+									<row>
+									<vbox>Tipo Documento:
+					    				<listbox  id="idGenPersonaLbxTipoDocumento"  mold="select" hflex="1" disabled="true">
+	                        				<listitem value="CC" label="Cédula de ciudadanía" selected="true" />
+	                        				<listitem value="CE" label="Cédula de extranjería" /> 
+	                        				<listitem value="PA" label="Pasaporte" />
+	                        				<listitem value="NI" label="NIT" />
+	                        				                           				
+	                    				</listbox>
+                    				</vbox>
+									</row>
+									<row>
+									
+
+										<textbox
+											id="idGenPersonaTbxIdentificacion"
+											placeholder="*Identificacion" tooltiptext="Identificacion"
+											width="100%" disabled="true" style="text-transform:uppercase"/>
+									</row>
+
+									<row>
+										<textbox
+											id="idGenPersonaTbxDireccion"
+											placeholder="Direccion de Correspondencia"
+											tooltiptext="Direccion de Correspondencia" width="100%"
+											disabled="true" 
+											style="text-transform:uppercase"
+										/>
+									</row>
+
+									<row>
+										<textbox
+											id="idGenPersonaTbxTelefono" placeholder="Telefono"
+											tooltiptext="Telefono" width="100%" disabled="true" 
+											style="text-transform:uppercase"
+										/>
+									</row>
+									
+									<row>
+										<textbox
+											id="idGenPersonaTbxWspTelefono" placeholder="Whatsapp"
+											tooltiptext="Whatsapp" width="100%" disabled="true" 
+											style="text-transform:uppercase"
+										/>
+									</row>
+
+									<row>
+										<textbox
+											id="idGenPersonaTbxCorreo" tooltiptext="Email"
+											placeholder="*Email" width="100%" disabled="true" 
+											style="text-transform:uppercase"
+										/>
+									</row>
+
+									<row>
+										<vbox>
+											<label
+												value="Fecha de Nacimiento" style="color:gray;" />
+											<datebox
+												id="idGenPersonaDtbFechaNacimiento" cols="12"
+												format="MM/dd/yyyy" onCreate="self.value = new Date()"
+												disabled="true" />
+										</vbox>
+									</row>
+									
+									<row> 
+										<hbox>
+											Clasificar como:
+											<checkbox id="idGenPersonaCbxCliente" label="Cliente" checked="false" />
+											<checkbox id="idGenPersonaCbxProveedor" label="Proveedor" checked="false" />
+											<checkbox 
+												id="idGenPersonaCbxDistribuidor" 
+												label="Distribuidor" 
+												checked="false"
+												onCheck="idGenPersonaBandboxTipoDistribuidor.setDisabled(false);"
+												onClick="idGenPersonaCbxDistribuidor.isChecked() ? idGenPersonaRowBandBoxTipoDistribuidor.setVisible(true) : idGenPersonaRowBandBoxTipoDistribuidor.setVisible(false);"
+
+											/>
+										</hbox>
+									</row>
+									
+									<!-- 	bandbox tipo de distribuidor -->				
+									<row visible="false">        
+										<textbox id="idGenPersonaTbxTipoDistribuidor" placeholder="Distribuidor" tooltiptext="Distribuidor" width="100%"
+											disabled="true" 
+											style="text-transform:uppercase"
+										/>
+											
+								    </row>
+				
+								    <row id="idGenPersonaRowBandBoxTipoDistribuidor" visible="false">
+										<vbox>
+											<label
+												value="*Distribuidor" style="color:gray;" />								
+										
+				                            <bandbox width="320px" id="idGenPersonaBandboxTipoDistribuidor" tooltiptext="Distribuidor" mold="rounded" autodrop="true" onChanging="idGenPersona.llenarBandboxTipoDistribuidor(event.value)" >
+				                                <bandpopup>
+				                                    <vbox>
+				                                        <listbox height="286px"
+				                                        	width="320px" mold="paging"
+				                                        	pageSize="5"
+				                                        	id="idGenPersonaListboxBandboxTipoDistribuidor"
+				                                        	onSelect="idGenPersonaBandboxTipoDistribuidor.value=self.selectedItem.label;idGenPersonaTbxTipoDistribuidor.value=self.selectedItem.value;idGenPersonaBandboxTipoDistribuidor.close();">
+				                                        </listbox>
+				                                     
+				                                    </vbox>
+	                                			</bandpopup>
+	                            			</bandbox>
+	                        
+										</vbox>
+									</row>
+													
+				<!-- 				fin bandbox tipo de distribuidor -->	
+
+									<row>
+
+										<radiogroup
+											id="idGenPersonaRgbGenero">
+											<grid style="border: 0">
+												<columns
+													columnshide="true" hflex="min" visible="false">
+													<column
+														width="90px" />
+													<column hflex="min" />
+												</columns>
+												<rows>
+													<row
+														style="border: 0">
+														<radio
+															disabled="true" value="M" label="Masculino"
+															tooltiptext=" " checked="true" />
+														<radio
+															disabled="true" value="F" label="Femenino"
+															tooltiptext=" " />
+													</row>
+												</rows>
+											</grid>
+										</radiogroup>
+									</row>
+									
+									
+
+
+									<row>
+
+										<radiogroup
+											id="idGenPersonaRgbEstado">
+											<grid style="border: 0">
+												<columns
+													columnshide="true" hflex="min" visible="false">
+													<column
+														width="90px" />
+													<column hflex="min" />
+												</columns>
+												<rows>
+													<row
+														style="border: 0">
+														<radio
+															disabled="true" value="A" label="Activo" tooltiptext=" "
+															checked="true" />
+														<radio
+															disabled="true" value="I" label="Inactivo"
+															tooltiptext=" " />
+													</row>													
+												</rows>
+												
+											</grid>
+										</radiogroup>
+									</row>
+
+								</rows>
+							</grid>
+
+						</groupbox>
+						
+					</div>
+					
+				</center>
+			</borderlayout>
+
+
+		</center>
+	</borderlayout>
+</zk>

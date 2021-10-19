@@ -1,0 +1,216 @@
+<?page title="TuMochila" contentType="text/html;charset=UTF-8"?>
+<?link rel="icon" type="image/x-icon" href="/imagen/favicon.ico"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<borderlayout id="idWinVer" use="com.mochila.movil.action.VerAction">
+		<north height="32px" border="0">
+			<borderlayout>
+				<east width="5px" border="0"></east>
+				<west width="5px" border="0"></west>
+				<center border="0">
+					<borderlayout>
+						<east width="64px" border="0">
+							<panel  height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image
+											src="../imagen/xsearch.png" height="16px" visible="false" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</east>
+						<west width="64px" border="0">
+							<panel height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/menu.png"
+											visible="false" height="32px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</west>
+						<center border="0">
+							<panel height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/logo.png"
+											height="24px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+
+						</center>
+					</borderlayout>
+				</center>
+			</borderlayout>
+		</north>
+		<east width="5px" border="0"></east>
+		<west width="5px" border="0"></west>
+		<center border="0">
+			<borderlayout>
+				<north height="15px" style="background:#E5E5E5" border="0"></north>
+				<east width="15px" style="background:#E5E5E5" border="0"></east>
+				<west width="15px" style="background:#E5E5E5" border="0"></west>
+				<south height="15px" style="background:#E5E5E5" border="0"></south>
+				<center border="0">
+					<borderlayout>
+						<north height="256px" border="0">
+							<panel height="100%" width="100%" border="0">
+								<panelchildren
+									style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer">
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image id="idWinVerImgGrande"
+											src="../imagen/imageDefault.png" width="256px"
+											height="256px">
+										</image>
+									</vbox>
+								</panelchildren>
+							</panel>
+						</north>
+						<center border="0">
+							<borderlayout>
+								<north height="48px" style="background:#E5E5E5" border="0" >
+								<panel height="100%" width="100%" border="0">
+								<panelchildren
+									style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer">
+									<hbox id="idWinVerHboxGaleria" align="center" pack="center"
+										height="95%" width="100%">
+
+										<panel  height="48px"
+											width="48px" style="margin-top:3px;">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer">
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<image
+														src="../imagen/imageDefault.png" width="48px"
+														height="48px">
+													</image>
+												</vbox>
+											</panelchildren>
+										</panel>
+										
+										<panel  height="48px"
+											width="48px" style="margin-top:3px;">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer">
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<image
+														src="../imagen/imageDefault.png" width="48px"
+														height="48px">
+													</image>
+												</vbox>
+											</panelchildren>
+										</panel>
+										
+										<panel  height="48px"
+											width="48px" style="margin-top:3px;">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer">
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<image
+														src="../imagen/imageDefault.png" width="48px"
+														height="48px">
+													</image>
+												</vbox>
+											</panelchildren>
+										</panel>
+										
+										<panel  height="48px"
+											width="48px" style="margin-top:3px;">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer">
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<image
+														src="../imagen/imageDefault.png" width="48px"
+														height="48px">
+													</image>
+												</vbox>
+											</panelchildren>
+										</panel>
+										
+										<panel  height="48px"
+											width="48px" style="margin-top:3px;">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer">
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<image
+														src="../imagen/imageDefault.png" width="48px"
+														height="48px">
+													</image>
+												</vbox>
+											</panelchildren>
+										</panel>
+
+									</hbox>
+								</panelchildren>
+							</panel>
+								</north>
+								<center style="background:#E5E5E5" border="0" >
+								<panel height="100%" width="100%" border="0">
+								<panelchildren
+									style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer">
+									<vbox id="idWinVerVboxDescripcion" align="center" pack="center" 
+										height="90%" width="100%">
+										<html>texto</html>
+									</vbox>
+								</panelchildren>
+							</panel>
+								
+								
+								</center>
+							</borderlayout>
+						</center>
+					</borderlayout>
+
+				</center>
+
+			</borderlayout>
+
+		</center>
+		<south height="64px" border="0">
+			<borderlayout>
+				<north height="32px" border="0">
+					<borderlayout>
+						<east width="5px" border="0"></east>
+						<west width="5px" border="0"></west>
+						<center border="0">
+<panel height="32px" width="100%" >
+		<panelchildren style="background:#E40152;color:white;font-size:15px;cursor:pointer"
+														onClick='Executions.sendRedirect("disponibilidad.zul")'> 
+		<vbox align="center" pack="center" height="90%" width="100%">
+		<html>														
+														<![CDATA[ <font
+														color="white"
+														size="3"
+														face="arial"><div>
+														<b>ver disponibilidad en tienda</b>
+														</div></font>
+														]]>
+														
+													</html>
+		</vbox>
+		</panelchildren>
+		</panel>
+						</center>
+					</borderlayout>
+				</north>
+				<east width="5px" border="0"></east>
+				<west width="5px" border="0"></west>
+				<center border="0">
+
+				</center>
+			</borderlayout>
+		</south>
+
+
+	</borderlayout>
+</zk>

@@ -1,0 +1,234 @@
+<?link rel="icon" type="image/x-icon" href="/imagenes/cliente/favicon.ico"?>
+<?page title="Portal Financiero"?>
+<?link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" ?>
+<?link rel="stylesheet" href="/css/iceberg.css" ?>
+
+<zk xmlns:w="client" xmlns:n="native" xmlns:zk="zk"
+	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+	<style>
+		body{ background-color: #fff!important; }
+
+	</style>
+	<div  zclass="none" style="background-color: #f8f9fa!important;"
+	    apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.mochila.viewModel.MenuViewModel')" >
+		<n:nav
+			class="navbar navbar-light bg-light sticky-top flex-sm-nowrap  flex-md-nowrap  bg-white border-bottom shadow-sm"
+			style="height: 70px;padding-top: 0;padding-bottom: 0;">
+			<n:div class="row"
+				style="display: flex;align-items:center;width: 100%;">
+				<n:div class="col-xs-2 col-sm-3 col-md-3 col-lg-2"
+					style="margin-right: 0;padding: 0;display: flex;justify-content: center;">
+
+					<image src="/imagen/logoProducto.png"
+						class="img-fluid" style="max-height: 50px; max-width: 150px;">
+					</image>
+				</n:div>
+				<n:div class="col-xs-8 col-sm-9 col-md-4 col-lg-6"
+					style="padding: 0;margin: 0;display: flex;justify-content: center;">
+					<n:span>
+						<n:label
+							style="color:gray;font-size:14px;font-weight: bold ; ">
+							DAFFA - Adminsitrativo
+						</n:label>
+						<n:label
+							style="color:red;font-size:10px;font-weight: bold ; ">
+							[Pruebas]
+						</n:label>
+					</n:span>
+
+				</n:div>
+				
+				<n:div class="d-none  d-sm-none d-md-block col-md-5  d-lg-block col-lg-4"
+					style="padding: 0;margin: 0;;text-align: right;">
+					<n:span>
+						<n:i data-feather="user" ></n:i>
+						<label
+									value="NOMBRE USUARIO"></label>
+					</n:span>
+				</n:div>
+				
+
+			</n:div>
+
+		<n:div class="display: flex;justify-content: center;">
+				<n:button id="button-menu"
+					class="navbar-toggler position-absolute d-md-none collapsed"
+					type="button" data-toggle="collapse" data-target="#sidebarMenu"
+					aria-controls="sidebarMenu" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<n:span class="navbar-toggler-icon"></n:span>
+				</n:button>
+			</n:div>
+		</n:nav>
+		
+		<n:div class="container-fluid m-0" >
+			<n:div class="row">
+			<n:nav id="sidebarMenu"
+					class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+					<n:div class="sidebar-sticky pt-3">
+						<n:h6
+							class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+							<n:span>Menú</n:span>
+						</n:h6>
+						<n:ul class="nav flex-column border-bottom shadow-xs">
+						
+						<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="dollar-sign"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/otros_pagos.zul' , nombre='Otros Pagos')"  w:onClick="collapseHideMenu()">
+										Otros Pagos
+									</a>
+								</n:span>
+							</n:li>
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="folder-minus"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/derechos_academicos.zul', nombre='Derechos Académicos')"  w:onClick="collapseHideMenu()">
+										Derechos Académicos
+									</a>
+								</n:span>
+							</n:li>
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="file-plus"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/abonos_ordenes.zul' , nombre='Generación / Pago de abonos')"  w:onClick="collapseHideMenu()">
+										Generación / Pago de abonos
+									</a>
+								</n:span>
+							</n:li>
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="copy"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/saldos.zul' , nombre='Recibos Generados por Saldos' )"  w:onClick="collapseHideMenu()">
+										Recibos Generados por Saldos
+									</a>
+								</n:span>
+							</n:li>
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="file"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/abonos.zul' , nombre='Abonos' )"  w:onClick="collapseHideMenu()">
+										Abonos
+									</a>
+								</n:span>
+							</n:li>
+							
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="book"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('onCargarFormulario' , ruta='/paginas/formulario/cartera.zul' , nombre='Cartera' )"  w:onClick="collapseHideMenu()">
+										Cartera
+									</a>
+								</n:span>
+							</n:li>
+							<n:li class="nav-item-menu-iceberg">
+								<n:span
+									class="nav-link nav-link-menu">
+									<n:span data-feather="log-out"
+										class="nav-icon-menu">
+									</n:span>
+									<a zclass="none"
+										onClick="@command('cerrarSesion')">
+										Salir
+									</a>
+								</n:span>
+							</n:li>
+
+
+						</n:ul>
+						
+						<div align="center">
+							<vbox pack="end">
+								<image
+									src="/imagen/logoCliente.png" width="170px"
+									height="90px" align="absmiddle">
+								</image>
+							</vbox>
+						</div>
+					</n:div>
+
+				</n:nav>
+				
+				<n:div id="main" role="main"
+					class="col-md-9 ml-sm-auto col-lg-10 px-md-4 mt-2 "
+					style="padding-left:0 !important;padding-right:0 !important;">
+					<n:div
+						class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+						<div sclass="col-12 p-0 mg-0"
+							style="margin:0;padding:0;">
+							<tabbox id="idMenTbxContenido"
+								style="width: inherit;margin:0;padding:0;border:none;">
+								<tabs onCreate="@command('cargarContenedorTabs',componente=self)">
+									
+
+								</tabs>
+								<tabpanels onCreate="@command('cargarContenedor',componente=self)">
+								
+								</tabpanels>
+							</tabbox>
+
+
+						</div>
+
+
+					</n:div>
+
+				</n:div>
+			
+			
+			</n:div>
+		</n:div>
+		
+		<n:footer class="footer mt-auto py-3  border-top shadow-xs">
+			<n:div class="container" style="text-align: center;">
+				<n:div class="col-xs-12 col-sm-12 d-md-none  d-lg-none "
+					style="padding: 0;margin-bottom: 10px;text-align: center;">
+					<n:span>
+					<n:i data-feather="user" ></n:i>
+						<label
+									value="NOMBRE PERSONA"></label>
+					</n:span>
+				</n:div>
+				<n:span class="text-muted">
+					Resolución mínima 1024X768
+				</n:span>
+			</n:div>
+		</n:footer>
+	</div>
+
+	<?script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js" ?>
+	<?script src="/js/jquery-3.5.1.slim.min.js" ?>
+	<?script src="/js/popper-1.16.1.min.js" ?>
+	<?script src="/bootstrap/js/bootstrap.min.js" ?>
+	<script src="/js/iceberg.js" type="text/javascript" defer="true" />
+
+</zk>

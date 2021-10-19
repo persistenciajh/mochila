@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UsuarioMapper">
+
+	<resultMap id="resMapUsuario" type="aliasUsuario">
+		<result property="secuencia" column="secuencia" />
+		<result property="persona.secuencia" column="secuencia_persona" />
+		<result property="persona.nombres" column="nombres" />
+		<result property="grupo" column="secuencia_grupo" />
+		<result property="nombreUsuario" column="nombre_usuario" />
+		<result property="correoElectronico" column="correo_electronico" />
+		<result property="clave" column="clave" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+		<result property="fechaActualizacion" column="fecha_actualizacion" />
+		
+	</resultMap>
+
+	<select id="getUsuario" parameterType="aliasUsuario" resultMap="resMapUsuario">
+
+		SELECT
+		usuario.secuencia,
+		usuario.secuencia_persona,
+		usuario.secuencia_grupo,
+		usuario.nombre_usuario,
+		usuario.correo_electronico,
+		usuario.clave,
+		usuario.estado,
+		usuario.descripcion,
+		usuario.fecha_creacion,
+		usuario.fecha_actualizacion,
+		
+		persona.nombres
+		FROM gen_usuario usuario, gen_persona persona
+          
+		where persona.secuencia=usuario.secuencia_persona	
+		
+		<if test="nombreUsuario != null">
+				AND  usuario.nombre_usuario like #{nombreUsuario,jdbcType=VARCHAR}
+			</if>	
+		<if test="secuencia != null">
+				AND usuario.secuencia = #{secuencia,jdbcType=NUMERIC}
+		</if>
+			
+		
+
+	</select>
+
+	<select id="postUsuario" parameterType="aliasUsuario" resultMap="resMapUsuario">
+<![CDATA[
+INSERT INTO gen_usuario( 
+
+secuencia_persona,
+secuencia_grupo,
+nombre_usuario,
+correo_electronico,
+clave,
+estado,
+descripcion,
+fecha_creacion,
+fecha_actualizacion)
+VALUES
+(
+
+#{persona.secuencia,jdbcType=NUMERIC},
+#{grupo,jdbcType=NUMERIC},
+#{nombreUsuario,jdbcType=VARCHAR},
+#{correoElectronico,jdbcType=VARCHAR},
+#{clave,jdbcType=VARCHAR},
+#{estado,jdbcType=VARCHAR},
+#{descripcion,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE}
+)
+]]>
+	</select>
+
+	<select id="putUsuario" parameterType="aliasUsuario" resultMap="resMapUsuario">
+<![CDATA[
+UPDATE gen_usuario SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+secuencia_persona= #{persona.secuencia,jdbcType=NUMERIC},
+secuencia_grupo= #{grupo,jdbcType=NUMERIC},
+nombre_usuario= #{nombreUsuario,jdbcType=VARCHAR},
+correo_electronico= #{correoElectronico,jdbcType=VARCHAR},
+clave= #{clave,jdbcType=VARCHAR},
+estado= #{estado,jdbcType=VARCHAR},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+	</select>
+
+	<select id="deleteUsuario" parameterType="aliasUsuario"
+		resultMap="resMapUsuario">
+<![CDATA[
+DELETE FROM gen_usuario
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+	<select id="validarAutenticacion" parameterType="aliasUsuario"
+		resultMap="resMapUsuario">
+		SELECT
+		usuario.secuencia,
+		usuario.secuencia_persona,
+		usuario.secuencia_grupo,
+		usuario.nombre_usuario,
+		usuario.correo_electronico,
+		usuario.clave,
+		usuario.estado,
+		usuario.descripcion,
+		usuario.fecha_creacion,
+		usuario.fecha_actualizacion
+
+		FROM gen_usuario usuario
+		WHERE  upper(usuario.correo_electronico)=  upper(#{correoElectronico,jdbcType=VARCHAR})
+		AND usuario.clave=#{clave,jdbcType=VARCHAR}
+		AND usuario.estado='A'
+
+	</select>
+	
+		<select id="validarAutenticacion2" parameterType="aliasUsuario"
+		resultMap="resMapUsuario">
+		SELECT
+		usuario.secuencia,
+		usuario.secuencia_persona,
+		usuario.secuencia_grupo,
+		usuario.nombre_usuario,
+		usuario.correo_electronico,
+		usuario.clave,
+		usuario.estado,
+		usuario.descripcion,
+		usuario.fecha_creacion,
+		usuario.fecha_actualizacion
+
+		FROM gen_usuario usuario
+		LEFT join gen_persona per on per.secuencia= usuario.secuencia_persona
+		WHERE  per.identificacion =  #{nombreUsuario,jdbcType=VARCHAR}
+		AND usuario.clave=#{clave,jdbcType=VARCHAR}
+		AND usuario.estado='A'
+
+	</select>
+	
+
+</mapper>
+ 

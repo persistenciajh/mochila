@@ -1,0 +1,7 @@
+<window width="80%" title="Session Timeout" border="normal">
+	<vbox>
+		La página o componente que solicita ya no está disponible. Esto
+		normalmente es causado por el tiempo de espera, la apertura de
+		demasiadas páginas web o el reinicio el servidor.
+	</vbox>
+</window>

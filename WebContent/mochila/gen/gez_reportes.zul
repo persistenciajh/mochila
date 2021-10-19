@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	*****************************
+	***    Zona de Títulos    ***
+	*****************************
+-->
+<window id="idNiifReportesNiif" border="none" height="100%" width="100%"
+	use="com.mochila.gen.action.GEZReportesNiif">
+
+	<borderlayout width="100%" height="100%">
+
+		<center autoscroll="true">
+			<vbox width="100%">
+				<groupbox>
+					<grid>
+						<columns>
+							<column width="75px" />
+							<column />
+						</columns>
+						<rows>
+							<row>
+								<hbox>
+									<div align="center">
+										<image
+											src="/imagen/logoCliente.png" width="45px" height="45px" />
+									</div>
+								</hbox>
+								<hbox>
+									<label value="Reportes"
+										style="font-size:18px; color:black" />
+								</hbox>
+							</row>
+						</rows>
+					</grid>
+				</groupbox>
+				<!-- ************************************* -->
+				<!-- ***  ZONA PARAMETRO DEL REPORTE  *** -->
+				<!-- ************************************* -->
+				<groupbox id="idEFIRGbxFormulario">
+					<caption label="Parametros del Reporte"
+						style="font-size:15px; color:blue" />
+					<grid>
+						<columns>
+							<column width="25%" />
+							<column width="75%" />
+						</columns>
+						<rows>
+							<row>
+								<hbox>
+									<label value=" * "
+										style="color: red" tooltiptext="Campo Obligatorio" />
+									<label value="Reportes: "
+										tooltiptext="Seleccione el Reporte" />
+								</hbox>
+								<hbox>
+									<combobox id="idCboxPlantillas"
+										onSelect="idNiifReportesNiif.onSelectReporte()"
+										onCreate="self.setSelectedIndex(0)" readonly="true"
+										width="300px">
+										<comboitem
+											label="Seleccione el Reporte" 
+											value="S" />										
+										<comboitem 
+											label="Listado detallado de Productos"
+											value="rinv_detallado_producto" />
+<!-- 										<comboitem -->
+<!-- 											label="Listados depreciación"  -->
+<!-- 											value="ppj_depreciacion.jrxml" /> -->
+										
+									</combobox>
+
+								</hbox>
+							</row>
+
+							<row id="idRowCamposRP" visible="false">
+								<hbox>
+									<label value=" * "
+										style="color: red" tooltiptext="Campo Obligatorio" />
+									<label
+										value="Columnas Reporte Plano: " />
+								</hbox>
+								<hbox>
+									<groupbox mold="3d" open="true"
+										closable="true">
+										<caption
+											style="cursor:pointer;font-weight: bold"
+											label="Seleccione las Columnas del Reporte">
+										</caption>
+										<listbox id="idLstBColumnas"
+											checkmark="true" multiple="true">
+											<listhead>
+												<listheader
+													label="Nombre Columna" />
+											</listhead>
+										</listbox>
+									</groupbox>
+								</hbox>
+							</row>
+
+							<row id="idRowParametrosRP"
+								visible="false">
+								<hbox>
+									<label value=" * "
+										style="color: red" tooltiptext="Campo Obligatorio" />
+									<label
+										value="Parametros Reporte Plano: "
+										tooltiptext="Seleccione el Reporte" />
+								</hbox>
+								<hbox>
+									<combobox id="idCboxParametros"
+										onSelect="" readonly="true" width="130%">
+
+									</combobox>
+									<button label="Agregar Parametro"
+										onClick="idNiifReportesNiif.onAddParametro()" />
+								</hbox>
+							</row>
+
+						</rows>
+					</grid>
+					<groupbox mold="3d" closable="true" open="true">
+						<caption label="Parametros Reporte"></caption>
+						<grid id="idGridParametros">
+							<columns>
+								<column width="10px" align="center" />
+								<column width="20%" />
+								<column width="40%" />
+								<column width="30%" />
+							</columns>
+							<rows id="idRwsParaReportes">
+								<row></row>
+							</rows>
+						</grid>
+					</groupbox>
+				</groupbox>
+				<div align="right">
+					<hbox>
+						<button label="Ejecutar..."
+							onClick="idNiifReportesNiif.onGenerarReporte(idCboxPlantillas.getSelectedItem().getValue().toString())" />
+					</hbox>
+				</div>
+			</vbox>
+		</center>
+
+		<custom-attributes
+			MSG_ESTADO_FINANCIERO_REQUERIDO="El parámetro &lt;b&gt;Estado Financiero&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_ANO_BASE_REQUERIDO="El parámetro &lt;b&gt;Año Base&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_MES_BASE_REQUERIDO="El parámetro &lt;b&gt;Mes Base&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_ANO_COMP_REQUERIDO="El parámetro &lt;b&gt;Año Comparación&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_MES_COMP_REQUERIDO="El parámetro &lt;b&gt;Mes Comparación&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_NOTA_CONTABLE_REQUERIDA="El parámetro &lt;b&gt;Nota Contable&lt;/b&gt; es requerido para la generación del reporte" />
+		<custom-attributes
+			MSG_PLANTILLA_NO_CARGADA="La plantilla correspondiente para este reporte, no ha sido cargada en el sistema.&lt;br&gt;Por favor carguela a través de la opción &lt;b&gt;Plantillas de Reportes.&lt;/b&gt;" />
+		<custom-attributes
+			MSG_PLANTILLA_NO_SELECCIONADA="No se ha seleccionado una plantilla de reporte.&lt;br&gt;Por favor seleccione una plantilla e intente nuevamente." />
+
+	</borderlayout>
+</window>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="R_MATRICULA_SUBREPORT3_UNITEC"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="395"
+		 pageHeight="141"
+		 columnWidth="395"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CCP_REFERENCIA" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_LIQUIDACION" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_DOCUMENTO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_ORGANIZACION" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_REF_DIG_VER" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_CLIENTE" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_PERIODO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_VENCIMIENTO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT
+        TO_CHAR(sd_vencimiento_periodo.vencimiento
+	(
+		orden.grupo,
+		orden.periodo,
+		vencimiento.fila,
+		orden.condicion_comercial,
+		orden.fecha_vencimiento
+        )    ,'DD/MM/YYYY')                                                   VENCIMIENTO1,
+sd_vencimiento_periodo.vencimiento
+	(
+		orden.grupo,
+		orden.periodo,
+		vencimiento.fila,
+		orden.condicion_comercial,
+		orden.fecha_vencimiento
+        ) FECHA,
+	ROUND(SD_MAXIMO(DECODE (
+		SIGN (
+			RECIBO.valor
+		), 1,
+		RECIBO.valor
+		* ( 1 +
+			sd_vencimiento_periodo.porcentaje (
+				orden.grupo,
+				sd_vencimiento_periodo.vencimiento (
+					orden.grupo,
+					orden.periodo,
+					vencimiento.fila,
+					orden.condicion_comercial,
+					orden.fecha_vencimiento
+				),
+				orden.periodo,
+				orden.condicion_comercial,
+				fila
+			) /100
+		) ,
+		RECIBO.valor
+	) + NVL(RECIBO_SIN.valor, 0),0))		SUMA1,
+ '77099980053418020'|| DECODE(
+		orden.documento,
+                                'OEAU', '1',
+		'OENU', '2',
+		'RPEE', '3',
+		'RPEZ', '4',
+		'RPR', '5',
+		'RPCV', '6',
+		'0'
+	) || SUBSTR (
+		LPAD (
+			LTRIM (
+				recibo.recibo
+			), 7, '0'
+		), 1, 7 -- orden.orden,
+	)
+	|| LPAD(
+		LTRIM (
+			$P{CCP_CLIENTE}
+		), 10, '0'
+	) || LPAD(replace(replace(replace(replace($P{CCP_PERIODO},'D','3'),'J','4'),'L','5'),'E','6'), 6, '0')
+--	|| '@86'
+                   || CHR(202)||'3900'
+		|| LTRIM (
+		TO_CHAR(
+   ROUND(SD_MAXIMO(0,DECODE (
+		SIGN (
+			RECIBO.valor
+		), 1,
+		RECIBO.valor
+		* ( 1 +
+			sd_vencimiento_periodo.porcentaje (
+				orden.grupo,
+				sd_vencimiento_periodo.vencimiento (
+					orden.grupo,
+					orden.periodo,
+					vencimiento.fila,
+					orden.condicion_comercial,
+					orden.fecha_vencimiento
+				),
+				orden.periodo,
+				orden.condicion_comercial,
+				vencimiento.fila
+			) /100
+		) + NVL(RECIBO_SIN.valor, 0) ,
+		sd_maximo(0,RECIBO.valor)
+	))),
+			'0000000000'
+		)
+	)
+--	|| '@86'
+  ||CHR(202)||'96' --Este es el codigo de prueba IAC
+		|| TO_CHAR(
+			sd_vencimiento_periodo.vencimiento
+			(
+			orden.grupo,
+			orden.periodo,
+			vencimiento.fila,
+			orden.condicion_comercial,
+			SYSDATE   --orden.fecha_vencimiento
+			),
+			'YYYYMMDD'
+		)
+	 CODIGO_BARRA,
+    RECIBO.recibo,
+	'(415)'||'7709998005341'||'(8020)'	|| DECODE(
+		orden.documento,
+                                'OEAU', '1',
+		'OENU', '2',
+		'RPEE', '3',
+		'RPEZ', '4',
+		'RPR', '5',
+		'RPCV', '6',
+		'0'
+	) || SUBSTR (
+		LPAD (
+			LTRIM (
+				recibo.recibo
+			), 7, '0'
+		), 1, 7 -- orden.orden,
+	)
+	|| LPAD(
+		LTRIM (
+			$P{CCP_CLIENTE}
+		), 10, '0'
+	) ||LPAD(replace(replace(replace(replace($P{CCP_PERIODO},'D','3'),'J','4'),'L','5'),'E','6'), 6, '0')
+                     ||'(3900)'
+	|| LTRIM (
+		TO_CHAR(
+	ROUND(SD_MAXIMO(0,DECODE (
+		SIGN (
+			RECIBO.valor
+		), 1,
+		RECIBO.valor
+		* ( 1 +
+			sd_vencimiento_periodo.porcentaje (
+				orden.grupo,
+				sd_vencimiento_periodo.vencimiento (
+					orden.grupo,
+					orden.periodo,
+					vencimiento.fila,
+					orden.condicion_comercial,
+					orden.fecha_vencimiento
+				),
+				orden.periodo,
+				orden.condicion_comercial,
+				vencimiento.fila
+			) /100
+		) + NVL(RECIBO_SIN.valor, 0) ,
+		sd_maximo(0,RECIBO.valor)
+	))),
+			'0000000000'
+		)
+	)
+	|| '(96)' --Este es el codigo de prueba IAC
+	|| TO_CHAR(
+		sd_vencimiento_periodo.vencimiento
+		(
+			orden.grupo,
+			orden.periodo,
+			vencimiento.fila,
+			orden.condicion_comercial,
+			orden.fecha_vencimiento
+		),
+		'YYYYMMDD'
+	)
+    COD_BARRA
+FROM
+        orden        ORDEN,
+	(
+		select
+			   TO_NUMBER(rownum) fila
+		from   orden
+			   , vencimiento_periodo vencimiento
+		WHERE
+			ORDEN.documento = $P{CCP_DOCUMENTO}
+		AND	ORDEN.orden = $P{CCP_LIQUIDACION}
+		and 	vencimiento.periodo = orden.periodo
+		and 	vencimiento.grupo = orden.grupo
+		ORDER BY 1
+	) VENCIMIENTO,
+	(
+		-- Solo suma los detalles que se incluyen en el calculo de la extraordinaria como base de calculo
+		SELECT
+		   SUM     ( DRC.valor )   valor,
+			   RC.recibo_consignacion recibo
+		   FROM
+			   detalle_recibo_consignacion DRC,
+			   recibo_consignacion RC
+			   , tipo_solicitud_nota ts
+			   , (select distinct concepto_nota, causa_nota, concepto from concepto_ingreso_credito
+            ) cic
+		   WHERE   DRC.recibo_consignacion = $P{CCP_REFERENCIA}
+		   AND     RC.estado = 'I'
+		   AND     RC.recibo_consignacion = DRC.recibo_consignacion
+		   AND	   ts.concepto_nota (+) = drc.concepto_nota
+		   AND	   ts.causa_nota (+) = drc.causa_nota
+		   AND	   cic.concepto_nota (+)= drc.concepto_nota
+           	   AND     cic.causa_nota (+)= drc.causa_nota
+           	   AND     (cic.concepto NOT IN ('CX','EX') OR cic.concepto IS NULL)
+		   AND	   (
+		   		NVL(ts.incluye_liquidacion_extra, 'S') = 'S'
+				OR drc.orden > 0
+			   )
+		   GROUP BY
+			   RC.recibo_consignacion
+	)  recibo
+	, (
+		-- Muestra los valores que NO se incluyen en la extraordinaria
+		SELECT
+		   SUM     ( DRC.valor )   valor,
+			   RC.recibo_consignacion recibo
+		   FROM
+			   detalle_recibo_consignacion DRC,
+			   recibo_consignacion RC
+			   , tipo_solicitud_nota ts
+			   , (select distinct concepto_nota, causa_nota, concepto from concepto_ingreso_credito
+					) cic
+		   WHERE   DRC.recibo_consignacion = $P{CCP_REFERENCIA}
+		   AND     RC.estado = 'I'
+		   AND     RC.recibo_consignacion = DRC.recibo_consignacion
+		   AND	   ts.concepto_nota (+) = drc.concepto_nota
+		   AND	   ts.causa_nota (+) = drc.causa_nota
+		   AND     cic.causa_nota (+)= drc.causa_nota
+           AND     (cic.concepto NOT IN ('CX','EX') OR cic.concepto IS NULL)
+		   AND	   NVL(ts.incluye_liquidacion_extra, 'S') = 'N'
+	           AND	   drc.orden IS NULL
+		   GROUP BY
+			   RC.recibo_consignacion
+	)  recibo_sin
+WHERE
+	ORDEN.documento = $P{CCP_DOCUMENTO}
+AND	ORDEN.orden = $P{CCP_LIQUIDACION}
+AND	$P{CCP_VENCIMIENTO} IS NULL
+AND	VENCIMIENTO.fila BETWEEN 2 and 4  /* Solo TRES fechas */
+AND     sd_vencimiento_periodo.vencimiento
+	(
+		orden.grupo,
+		orden.periodo,
+		vencimiento.fila,
+		orden.condicion_comercial,
+		orden.fecha_vencimiento
+	) IS NOT NULL
+AND	ORDEN.grupo IS NOT NULL
+AND	recibo_sin.recibo (+) = recibo.recibo
+ORDER BY 2]]></queryString>
+
+	<field name="VENCIMIENTO1" class="java.lang.String"/>
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="SUMA1" class="java.math.BigDecimal"/>
+	<field name="CODIGO_BARRA" class="java.lang.String"/>
+	<field name="RECIBO" class="java.math.BigDecimal"/>
+	<field name="COD_BARRA" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="53"  isSplitAllowed="true" >
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="2"
+						width="393"
+						height="39"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="barcode-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(21,$F{CODIGO_BARRA},false,false,"415",0,3)]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2"
+						y="42"
+						width="393"
+						height="9"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{COD_BARRA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

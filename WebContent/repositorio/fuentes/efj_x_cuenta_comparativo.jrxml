@@ -1,0 +1,1435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="efj_x_cuenta_comparativo" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="736" leftMargin="42" rightMargin="14" topMargin="14" bottomMargin="14" isTitleNewPage="true" isSummaryWithPageHeaderAndFooter="true" resourceBundle="Aplicacion" uuid="05c9dc57-7c8f-4de8-a726-6d75eccee428">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="315"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Text" hAlign="Left" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="6">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Bold */]]></conditionExpression>
+			<style hAlign="Left" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Italic */]]></conditionExpression>
+			<style hAlign="Left" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="6" isItalic="true" pdfFontName="Helvetica-Oblique"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Underline */]]></conditionExpression>
+			<style hAlign="Left" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="6" isUnderline="true"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* StrikeThrough */]]></conditionExpression>
+			<style hAlign="Left" vAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="6" isStrikeThrough="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="Date" style="Text" pattern="dd/MM/yyyy"/>
+	<style name="Number" style="Text" pattern="#,##0.00;(#,##0.00)"/>
+	<subDataset name="Firmas" uuid="231dd7c7-4539-4af3-a719-bd4985fc3d8e">
+		<parameter name="GEP_COMPONENTE" class="java.lang.String">
+			<defaultValueExpression><![CDATA[new String("EF")]]></defaultValueExpression>
+		</parameter>
+		<parameter name="EFP_ESTADO_FINANCIERO" class="java.lang.String">
+			<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select frd.orden,
+  TO_CHAR(frd.firma) as empleado
+from get_firma_reporte fre
+  inner join get_firma_reporte_detalle frd
+    on frd.sec_firma_reporte = fre.sec_firma_reporte
+  inner join get_componente gc
+    on fre.sec_componente = gc.sec_componente
+  inner join eft_estado_financiero efi
+    on efi.sec_firma_reporte = fre.sec_firma_reporte
+where gc.componente = $P{GEP_COMPONENTE}
+  and efi.sec_estado_financiero = $P{EFP_ESTADO_FINANCIERO}
+order by frd.orden]]>
+		</queryString>
+		<field name="ORDEN" class="java.math.BigDecimal"/>
+		<field name="EMPLEADO" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="GEP_IMPRIME_FIRMAS" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("N")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GEP_PRESENTACION_CIFRAS" class="java.lang.String">
+		<parameterDescription><![CDATA[Forma como se presentarán las cifras numéricas del reporte.
+N = Normal [Default]
+K = Miles de Pesos
+M = Millones de Pesos]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("N")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GEP_CANTIDAD_DECIMALES" class="java.lang.Integer" isForPrompting="false">
+		<parameterDescription><![CDATA[Cantidad de cifras decimales aplicada a las cantidades numéricas. [DEFAULT: 2]]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new Integer(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TITULO_REPORTE" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Titulo del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Titulo del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBTITULO_REPORTE" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Subtitulo del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Subtitulo del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MODULO_ICEBERG" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[M�dulo de ICEBERG]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Estados Financieros")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CONVENCIONES_REPORTE" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Convenciones del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("<b>Notas: </b><br>")
++ new String(!$P{GEP_PRESENTACION_CIFRAS}.equals("N")?("  - Cifras Representadas en <b>" + ($P{GEP_PRESENTACION_CIFRAS}.equals("K")?"Miles":"Millones") + "</b> de Pesos<br>"):"")
++ new String("  - <b>%VAR VER: (Variación Vertical) </b>Porcentaje de variación entre cada renglón y su predecesor en la jerarquía.<br>")
++ new String("  - <b>%VAR HOR: (Variación Horizontal) </b>Porcentaje de variación entre los datos de los periodos comparados.")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_USER_ID" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Usuario del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Usuario del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_USER_NAME" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Nombre del Usuario]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Nombre del Usuario")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_IMAGE_DIR" class="java.io.File" isForPrompting="false">
+		<parameterDescription><![CDATA[Directorio de Imágenes]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new File("C:\\java\\workspace\\iceberg\\WebContent\\imagenes")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_REPORT_DIR" class="java.io.File" isForPrompting="false">
+		<parameterDescription><![CDATA[Directorio de Reportes]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new File("I:\\workspace\\Patchs\\ireport_workspace\\jasper")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_ESTADO_FINANCIERO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_ANO_BASE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_MES_BASE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_ANO_COMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_MES_COMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EFP_ENCABEZADO" class="java.lang.String"/>
+	<parameter name="EFP_PIE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[WITH TOTAL_GRUPO_CONTABLE AS (
+        SELECT
+            SDG.SEC_Grupo_Contable,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} - 1 || $P{EFP_MES_COMP}), SDG.Saldo_Inicial, 0)) as Saldo_Inicial_Comp_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} - 1 || $P{EFP_MES_COMP}), SDG.Debito, 0)) as Debito_Comp_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} - 1 || $P{EFP_MES_COMP}), SDG.Credito, 0)) as Credito_Comp_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} - 1 || $P{EFP_MES_COMP}), SDG.Saldo_Inicial + SDG.Debito - SDG.Credito, 0)) as Saldo_Final_Comp_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} || $P{EFP_MES_COMP}), SDG.Saldo_Inicial, 0)) as Saldo_Inicial_Comp,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} || $P{EFP_MES_COMP}), SDG.Debito, 0)) as Debito_Comp,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} || $P{EFP_MES_COMP}), SDG.Credito, 0)) as Credito_Comp,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_COMP} || $P{EFP_MES_COMP}), SDG.Saldo_Inicial + SDG.Debito - SDG.Credito, 0)) as Saldo_Final_Comp,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} - 1 || $P{EFP_MES_BASE}), SDG.Saldo_Inicial, 0)) as Saldo_Inicial_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} - 1 || $P{EFP_MES_BASE}), SDG.Debito, 0)) as Debito_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} - 1 || $P{EFP_MES_BASE}), SDG.Credito, 0)) as Credito_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} - 1 || $P{EFP_MES_BASE}), SDG.Saldo_Inicial + SDG.Debito - SDG.Credito, 0)) as Saldo_Final_Ant,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} || $P{EFP_MES_BASE}), SDG.Saldo_Inicial, 0)) as Saldo_Inicial_Act,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} || $P{EFP_MES_BASE}), SDG.Debito, 0)) as Debito_Act,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} || $P{EFP_MES_BASE}), SDG.Credito, 0)) as Credito_Act,
+            SUM(DECODE(TO_CHAR(SDG.Ano || lpad(SDG.MES, 2, '0')), TO_CHAR($P{EFP_ANO_BASE} || $P{EFP_MES_BASE}), SDG.Saldo_Inicial + SDG.Debito - SDG.Credito, 0)) as Saldo_Final_Act
+        FROM COV_SALDO_DETALLADO_GRUPO SDG
+        WHERE ((SDG.ANO = $P{EFP_ANO_BASE} AND lpad(SDG.MES, 2, '0') = $P{EFP_MES_BASE}) OR
+               (SDG.ANO = $P{EFP_ANO_BASE} - 1 AND lpad(SDG.MES, 2, '0') = $P{EFP_MES_BASE}) OR
+               (SDG.ANO = $P{EFP_ANO_COMP}  and lpad(SDG.MES, 2, '0') = $P{EFP_MES_COMP}) OR
+               (SDG.ANO = $P{EFP_ANO_COMP} -1  and lpad(SDG.MES, 2, '0') = $P{EFP_MES_COMP})
+              )
+        GROUP BY
+            SDG.SEC_Grupo_Contable
+    ),
+    DETALLE_CUENTA AS (
+        select
+            ren.orden_estructura,
+            ren.nivel,
+            ren.sec_renglon,
+            ren.mostrar_detalle,
+            sdr.codigo_contable,
+            sum(decode(to_char(sdr.ano||lpad(SDR.MES, 2, '0')), to_char($P{EFP_ANO_BASE}||$P{EFP_MES_BASE}), (sdr.saldo_inicial + sdr.debito - sdr.credito), 0)) as valor_base,
+            sum(decode(to_char(sdr.ano||lpad(SDR.MES, 2, '0')), to_char($P{EFP_ANO_COMP}||$P{EFP_MES_COMP}), (sdr.saldo_inicial + sdr.debito - sdr.credito), 0)) as valor_comp
+        from efv_renglon ren
+            inner join efv_saldo_detallado_renglon sdr
+                on sdr.sec_renglon = ren.sec_renglon
+                    and (sdr.ano = $P{EFP_ANO_BASE} or sdr.ano = $P{EFP_ANO_COMP})
+                        and (lpad(SDR.MES, 2, '0') = $P{EFP_MES_BASE} or lpad(SDR.MES, 2, '0') = $P{EFP_MES_COMP})
+        where ren.sec_estado_financiero = $P{EFP_ESTADO_FINANCIERO}
+        group by ren.orden_estructura, ren.nivel, ren.sec_renglon, ren.mostrar_detalle, sdr.codigo_contable
+    )
+SELECT
+    1 AS GRUPO,
+    REN.ORDEN_ESTRUCTURA,
+    REN.NIVEL,
+    REN.SEC_ESTADO_FINANCIERO,
+    EFI.NOMBRE,
+    DECODE(REN.SEPARADOR, 'N', NPR.NOTA_PERIODO, null) as NOTA_PERIODO,
+    REN.SEC_RENGLON,
+    REN.RENGLON,
+    NULL AS CUENTA_CONTABLE,
+    REN.SEPARADOR,
+    REN.ORIGEN_VALOR,
+    REN.MOSTRAR_SALDO,
+    REN.MOSTRAR_DETALLE,
+    DECODE($P{GEP_PRESENTACION_CIFRAS}, 'K', NVL(TRA.TOTAL_RENGLON_COMP, 0)/1000, 'M', NVL(TRA.TOTAL_RENGLON_COMP, 0)/1000000, NVL(TRA.TOTAL_RENGLON_COMP, 0)) AS VALOR_COMP,
+    DECODE($P{GEP_PRESENTACION_CIFRAS}, 'K', NVL(TRA.TOTAL_RENGLON_BASE, 0)/1000, 'M', NVL(TRA.TOTAL_RENGLON_BASE, 0)/1000000, NVL(TRA.TOTAL_RENGLON_BASE, 0)) AS VALOR_BASE,
+    ABS(NVL(TRA.TOTAL_RENGLON_BASE, 0) - NVL(TRA.TOTAL_RENGLON_COMP, 0)) AS VARIACION,
+    NVL(CASE
+            WHEN TRA.TOTAL_RENGLON_BASE = 0 AND TRA.TOTAL_RENGLON_COMP = 0 THEN 0
+            WHEN TRA.TOTAL_RENGLON_BASE != 0 AND TRA.TOTAL_RENGLON_COMP = 0 THEN 100
+            WHEN TRA.TOTAL_RENGLON_BASE = 0 AND TRA.TOTAL_RENGLON_COMP != 0 THEN -100
+            ELSE (ABS(NVL(TRA.TOTAL_RENGLON_BASE, 0) - NVL(TRA.TOTAL_RENGLON_COMP, 0)) * 100) / TRA.TOTAL_RENGLON_COMP
+        END, 0) AS PORCENTAJE_VARIACION,
+    REN.SEC_EFECTO_IMPRESION,
+    EIM.NEGRILLA AS AUX_NEGRILLA,
+    EIM.ITALICA AS AUX_ITALICA,
+    EIM.SUBRAYADO AS AUX_SUBRAYADO,
+    EIM.TAMANO_CARACTER AS AUX_TAMANO
+FROM EFV_RENGLON REN
+    LEFT OUTER JOIN (
+        SELECT
+            REN.SEC_RENGLON,
+            SUM(TRE.TOTAL_RENGLON_COMP) AS TOTAL_RENGLON_COMP,
+            SUM(TRE.TOTAL_RENGLON_BASE) AS TOTAL_RENGLON_BASE
+        FROM EFV_RENGLON REN
+            INNER JOIN EFT_RENGLON_J JER
+                ON JER.SEC_RENGLON = REN.SEC_RENGLON
+            LEFT OUTER JOIN (
+                SELECT
+                    RGV.SEC_RENGLON,
+                    SUM(DECODE(RGV.CAMBIO_SIGNO, 'S', RGV.TOTAL_GRUPO_COMP * -1, RGV.TOTAL_GRUPO_COMP)) AS TOTAL_RENGLON_COMP,
+                    SUM(DECODE(RGV.CAMBIO_SIGNO, 'S', RGV.TOTAL_GRUPO_BASE * -1, RGV.TOTAL_GRUPO_BASE)) AS TOTAL_RENGLON_BASE
+                FROM (
+                    SELECT
+                        GCR.SEC_RENGLON,
+                        TGC.SEC_GRUPO_CONTABLE,
+                        GCO.CAMBIO_SIGNO,
+                        SUM(DECODE(GCR.TIPO_VALOR,
+                                    'SC', TGC.SALDO_FINAL_COMP,
+                                    'VR', TGC.SALDO_FINAL_COMP - TGC.SALDO_FINAL_COMP_ANT,
+                                    'MD', TGC.DEBITO_COMP,
+                                    'MC', TGC.CREDITO_COMP,
+                                    'VA', TGC.DEBITO_COMP - TGC.CREDITO_COMP,
+                                    'VP', TGC.CREDITO_COMP - TGC.DEBITO_COMP,
+                                    'SA', TGC.SALDO_FINAL_COMP_ANT
+                                   )
+                           ) AS TOTAL_GRUPO_COMP,
+                        SUM(DECODE(GCR.TIPO_VALOR,
+                                    'SC', TGC.SALDO_FINAL_ACT,
+                                    'VR', TGC.SALDO_FINAL_ACT - TGC.SALDO_FINAL_ANT,
+                                    'MD', TGC.DEBITO_ACT,
+                                    'MC', TGC.CREDITO_ACT,
+                                    'VA', TGC.DEBITO_ACT - TGC.CREDITO_ACT,
+                                    'VP', TGC.CREDITO_ACT - TGC.DEBITO_ACT,
+                                    'SA', TGC.SALDO_FINAL_ANT
+                                   )
+                           ) AS TOTAL_GRUPO_BASE
+                    FROM TOTAL_GRUPO_CONTABLE TGC
+                        INNER JOIN EFT_GRUPO_CONTABLE_RENGLON GCR
+                            ON GCR.SEC_GRUPO_CONTABLE = TGC.SEC_GRUPO_CONTABLE
+                        INNER JOIN COT_GRUPO_CONTABLE GCO
+                            ON GCO.SEC_GRUPO_CONTABLE = GCR.SEC_GRUPO_CONTABLE
+                    GROUP BY
+                        GCR.SEC_RENGLON,
+                        TGC.SEC_GRUPO_CONTABLE,
+                        GCO.CAMBIO_SIGNO
+                    ) RGV
+                GROUP BY RGV.SEC_RENGLON
+            ) TRE
+                ON TRE.SEC_RENGLON = JER.SEC_RENGLON
+        GROUP BY REN.SEC_RENGLON
+    ) TRA
+        ON TRA.SEC_RENGLON = REN.SEC_RENGLON
+    INNER JOIN EFT_ESTADO_FINANCIERO EFI
+        ON EFI.SEC_ESTADO_FINANCIERO = REN.SEC_ESTADO_FINANCIERO
+    LEFT OUTER JOIN EFT_NOTA_PERIODO_RENGLON NPR
+        ON NPR.SEC_RENGLON = REN.SEC_RENGLON
+            AND NPR.ANO = $P{EFP_ANO_BASE}
+                AND lpad(NPR.MES, 2, '0') = $P{EFP_MES_BASE}
+    LEFT OUTER JOIN EFT_EFECTO_IMPRESION EIM
+        ON EIM.SEC_EFECTO_IMPRESION = REN.SEC_EFECTO_IMPRESION
+WHERE EFI.SEC_ESTADO_FINANCIERO = $P{EFP_ESTADO_FINANCIERO}
+
+UNION ALL
+
+SELECT
+    2 AS GRUPO,
+    DCU.ORDEN_ESTRUCTURA,
+    DCU.NIVEL + 1 AS NIVEL,
+    NULL AS SEC_ESTADO_FINANCIERO,
+    NULL AS NOMBRE,
+    NULL AS NOTA_PERIODO,
+    NULL AS SEC_RENGLON,
+    NULL AS RENGLON,
+    '[' || DCU.CODIGO_CONTABLE || '] ' || PCO.NOMBRE_CUENTA AS CUENTA_CONTABLE,
+    NULL AS SEPARADOR,
+    NULL AS ORIGEN_VALOR,
+    NULL AS MOSTRAR_SALDO,
+    DCU.MOSTRAR_DETALLE AS MOSTRAR_DETALLE,
+    DECODE($P{GEP_PRESENTACION_CIFRAS}, 'K', NVL(DCU.VALOR_COMP, 0)/1000, 'M', NVL(DCU.VALOR_COMP, 0)/1000000, NVL(DCU.VALOR_COMP, 0)) AS VALOR_COMP,
+    DECODE($P{GEP_PRESENTACION_CIFRAS}, 'K', NVL(DCU.VALOR_BASE, 0)/1000, 'M', NVL(DCU.VALOR_BASE, 0)/1000000, NVL(DCU.VALOR_BASE, 0)) AS VALOR_BASE,
+    ABS(NVL(DCU.VALOR_BASE, 0) - NVL(DCU.VALOR_COMP, 0)) AS VARIACION,
+    NVL(CASE
+            WHEN DCU.VALOR_BASE = 0 AND DCU.VALOR_COMP = 0 THEN 0
+            WHEN DCU.VALOR_BASE != 0 AND DCU.VALOR_COMP = 0 THEN 100
+            WHEN DCU.VALOR_BASE = 0 AND DCU.VALOR_COMP != 0 THEN -100
+            ELSE (ABS(NVL(DCU.VALOR_BASE, 0) - NVL(DCU.VALOR_COMP, 0)) * 100) / DCU.VALOR_COMP
+        END, 0) AS PORCENTAJE_VARIACION,
+    NULL AS SEC_EFECTO_IMPRESION,
+    NULL AS AUX_NEGRILLA,
+    NULL AS AUX_ITALICA,
+    NULL AS AUX_SUBRAYADO,
+    NULL AS AUX_TAMANO
+FROM DETALLE_CUENTA DCU
+    INNER JOIN PLAN_CONTABLE PCO
+        ON PCO.CODIGO_CONTABLE = DCU.CODIGO_CONTABLE
+WHERE (DCU.VALOR_BASE <> 0 OR DCU.VALOR_COMP <> 0)
+    AND DCU.MOSTRAR_DETALLE = 'S'
+ORDER BY 2, 1, 9]]>
+	</queryString>
+	<field name="GRUPO" class="java.math.BigDecimal"/>
+	<field name="ORDEN_ESTRUCTURA" class="java.math.BigDecimal"/>
+	<field name="NIVEL" class="java.math.BigDecimal"/>
+	<field name="SEC_ESTADO_FINANCIERO" class="java.math.BigDecimal"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="NOTA_PERIODO" class="java.lang.String"/>
+	<field name="SEC_RENGLON" class="java.math.BigDecimal"/>
+	<field name="RENGLON" class="java.lang.String"/>
+	<field name="CUENTA_CONTABLE" class="java.lang.String"/>
+	<field name="SEPARADOR" class="java.lang.String"/>
+	<field name="ORIGEN_VALOR" class="java.lang.String"/>
+	<field name="MOSTRAR_SALDO" class="java.lang.String"/>
+	<field name="MOSTRAR_DETALLE" class="java.lang.String"/>
+	<field name="VALOR_COMP" class="java.math.BigDecimal"/>
+	<field name="VALOR_BASE" class="java.math.BigDecimal"/>
+	<field name="VARIACION" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE_VARIACION" class="java.math.BigDecimal"/>
+	<field name="SEC_EFECTO_IMPRESION" class="java.math.BigDecimal"/>
+	<field name="AUX_NEGRILLA" class="java.lang.String"/>
+	<field name="AUX_ITALICA" class="java.lang.String"/>
+	<field name="AUX_SUBRAYADO" class="java.lang.String"/>
+	<field name="AUX_TAMANO" class="java.math.BigDecimal"/>
+	<variable name="V_Tabulador1" class="java.lang.String">
+		<variableExpression><![CDATA[$F{NIVEL}.intValue()==1?
+        "&nbsp; &nbsp; &nbsp;"
+        :$F{NIVEL}.intValue()==2?
+            "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+            :$F{NIVEL}.intValue()==3?
+                "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                :$F{NIVEL}.intValue()==4?
+                    "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                    :$F{NIVEL}.intValue()==5?
+                        "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                        :$F{NIVEL}.intValue()==6?
+                            "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                            :$F{NIVEL}.intValue()==7?
+                                "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                :$F{NIVEL}.intValue()==8?
+                                    "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                    :$F{NIVEL}.intValue()==9?
+                                        "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                        :$F{NIVEL}.intValue()==10?
+                                            "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                            :null]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="V_Tabulador2" class="java.lang.String">
+		<variableExpression><![CDATA[$F{NIVEL}.intValue()==1?
+        "&nbsp; &nbsp;"
+        :$F{NIVEL}.intValue()==2?
+            "&nbsp; &nbsp; &nbsp; &nbsp;"
+            :$F{NIVEL}.intValue()==3?
+                "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                :$F{NIVEL}.intValue()==4?
+                    "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                    :$F{NIVEL}.intValue()==5?
+                        "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                        :$F{NIVEL}.intValue()==6?
+                            "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                            :$F{NIVEL}.intValue()==7?
+                                "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                :$F{NIVEL}.intValue()==8?
+                                    "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                    :$F{NIVEL}.intValue()==9?
+                                        "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                        :$F{NIVEL}.intValue()==10?
+                                            "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"
+                                            :null]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="V_NegrillaRen" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+    $F{AUX_NEGRILLA}.equals("S")?
+        "<b>"+$F{RENGLON}+"</b>"
+        :$F{RENGLON}
+    :$F{RENGLON}]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaRen" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaRen}+"</i>"
+        :$V{V_NegrillaRen}
+    :$V{V_NegrillaRen}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoRen" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaRen}+"</u>"
+        :$V{V_ItalicaRen}
+    :$V{V_ItalicaRen}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoRen" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoRen}+"</span>"
+    :$V{V_SubrayadoRen}]]></variableExpression>
+	</variable>
+	<variable name="V_Renglon" class="java.lang.String">
+		<variableExpression><![CDATA[$F{SEPARADOR}.equals("N")?
+    $V{V_Tabulador1}+$V{V_TamanoRen}
+    :null]]></variableExpression>
+	</variable>
+	<variable name="V_CuentaContable" class="java.lang.String">
+		<variableExpression><![CDATA[$V{V_Tabulador1} + $F{CUENTA_CONTABLE}]]></variableExpression>
+	</variable>
+	<variable name="V_NegrillaNota" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+$F{AUX_NEGRILLA}.equals("S")?"<b>"+$F{NOTA_PERIODO}+"</b>":$F{NOTA_PERIODO}:$F{NOTA_PERIODO}]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaNota" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaNota}+"</i>"
+        :$V{V_NegrillaNota}
+    :$V{V_NegrillaNota}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoNota" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaNota}+"</u>"
+        :$V{V_ItalicaNota}
+    :$V{V_ItalicaNota}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoNota" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoNota}+"</span>"
+    :$V{V_SubrayadoNota}]]></variableExpression>
+	</variable>
+	<variable name="V_NegrillaSFB" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+    $F{AUX_NEGRILLA}.equals("S")?
+        "<b>"+new DecimalFormat("###,###,##0.00").format($F{VALOR_BASE}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))+"</b>"
+        :new DecimalFormat("###,###,##0.00").format($F{VALOR_BASE}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))
+    :new DecimalFormat("###,###,##0.00").format($F{VALOR_BASE}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaSFB" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaSFB}+"</i>"
+        :$V{V_NegrillaSFB}
+    :$V{V_NegrillaSFB}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoSFB" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaSFB}+"</u>"
+        :$V{V_ItalicaSFB}
+    :$V{V_ItalicaSFB}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoSFB" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoSFB}+"</span>"
+    :$V{V_SubrayadoSFB}]]></variableExpression>
+	</variable>
+	<variable name="V_NegrillaSFC" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+    $F{AUX_NEGRILLA}.equals("S")?
+        "<b>"+new DecimalFormat("###,###,##0.00").format($F{VALOR_COMP}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))+"</b>"
+        :new DecimalFormat("###,###,##0.00").format($F{VALOR_COMP}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))
+    :new DecimalFormat("###,###,##0.00").format($F{VALOR_COMP}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaSFC" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaSFC}+"</i>"
+        :$V{V_NegrillaSFC}
+    :$V{V_NegrillaSFC}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoSFC" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaSFC}+"</u>"
+        :$V{V_ItalicaSFC}
+    :$V{V_ItalicaSFC}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoSFC" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoSFC}+"</span>"
+    :$V{V_SubrayadoSFC}]]></variableExpression>
+	</variable>
+	<variable name="V_NegrillaVariacion" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+    $F{AUX_NEGRILLA}.equals("S")?
+        "<b>"+new DecimalFormat("###,###,##0.00").format($F{VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))+"</b>"
+        :new DecimalFormat("###,###,##0.00").format($F{VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))
+    :new DecimalFormat("###,###,##0.00").format($F{VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaVariacion" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaVariacion}+"</i>"
+        :$V{V_NegrillaVariacion}
+    :$V{V_NegrillaVariacion}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoVariacion" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaVariacion}+"</u>"
+        :$V{V_ItalicaVariacion}
+    :$V{V_ItalicaVariacion}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoVariacion" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoVariacion}+"</span>"
+    :$V{V_SubrayadoVariacion}]]></variableExpression>
+	</variable>
+	<variable name="V_NegrillaAH" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_NEGRILLA}!=null?
+    $F{AUX_NEGRILLA}.equals("S")?
+        "<b>"+new DecimalFormat("###,###,##0.00").format($F{PORCENTAJE_VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))+"</b>"
+        :new DecimalFormat("###,###,##0.00").format($F{PORCENTAJE_VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))
+    :new DecimalFormat("###,###,##0.00").format($F{PORCENTAJE_VARIACION}.setScale($P{GEP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_ItalicaAH" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_ITALICA}!=null?
+    $F{AUX_ITALICA}.equals("S")?
+        "<i>"+$V{V_NegrillaAH}+"</i>"
+        :$V{V_NegrillaAH}
+    :$V{V_NegrillaAH}]]></variableExpression>
+	</variable>
+	<variable name="V_SubrayadoAH" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_SUBRAYADO}!=null?
+    $F{AUX_SUBRAYADO}.equals("S")?
+        "<u>"+$V{V_ItalicaAH}+"</u>"
+        :$V{V_ItalicaAH}
+    :$V{V_ItalicaAH}]]></variableExpression>
+	</variable>
+	<variable name="V_TamanoAH" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[$F{AUX_TAMANO}!=null?
+    "<span style=\"font-size:"+$F{AUX_TAMANO}+"px; \">"+$V{V_SubrayadoAH}+"</span>"
+    :$V{V_SubrayadoAH}]]></variableExpression>
+	</variable>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="584">
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement uuid="2cd5bdca-b4f6-4e38-8cbc-06e84db5da6b" key="image-1" mode="Transparent" x="0" y="33" width="60" height="60" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid"/>
+				<imageExpression><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCliente.png")]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement uuid="ba443135-ed85-40df-98c0-48702c1c480d" key="image-2" mode="Transparent" x="687" y="537" width="49" height="47" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid"/>
+				<imageExpression><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCW.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="eaed8963-ce6b-4c1c-8cbb-4dc8149f458c" key="staticText-2" mode="Transparent" x="0" y="564" width="150" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CaseWare Ingeniería S.A.S.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fa64732d-9349-45ea-8907-1479094a2120" key="staticText-3" mode="Transparent" x="573" y="564" width="110" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[www.casewaresa.com]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement uuid="534f7a27-124b-475c-affa-b9e970bc2399" key="line-2" mode="Transparent" x="0" y="563" width="684" height="1" forecolor="#FF0000" backcolor="#FF0000"/>
+				<graphicElement fill="Solid"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="05ec05f3-7c25-44e3-8063-5414e6058335" key="textField-2" mode="Transparent" x="63" y="63" width="673" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="16" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.seccionalCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="bd19bbf8-dc7d-4a3d-b6fc-076baa8c3296" key="textField-6" x="1" y="544" width="683" height="14"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new String("ICEBERG - "+$P{MODULO_ICEBERG}+" "+$R{ger.rplantilla.version})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b17d6d03-dcea-4033-b9b3-690c1a181377" key="textField-1" mode="Transparent" x="63" y="33" width="673" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="16" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.nombreCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="90b40a4e-26b1-40e2-babd-63a6272c315e" key="textField-2" x="0" y="330" width="179" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.fechaimpresion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="bd6a35b1-fa03-40c5-b347-0b278250a2c9" key="textField-3" mode="Transparent" x="179" y="330" width="557" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + (new java.text.SimpleDateFormat("EEEEE, dd 'de' MMMMM 'de' yyyy - hh:mm:ss a")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="57addc6b-0213-4257-942e-fd66e49ebecf" key="textField-4" x="0" y="368" width="179" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.parametros}+":"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ee44308b-2ed3-486d-b712-60b48bd37e0d" key="line-1" mode="Transparent" x="0" y="388" width="179" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0ee13c7e-5bfd-48e3-b88a-ff2e46b2de40" key="textField-11" x="1" y="285" width="736" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{EFP_MES_BASE}.equals("01")?new String("Enero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("02")?new String("Febrero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("03")?new String("Marzo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("04")?new String("Abril de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("05")?new String("Mayo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("06")?new String("Junio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("07")?new String("Julio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("08")?new String("Agosto de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("10")?new String("Octubre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_BASE}):null)+
+" y "+
+($P{EFP_MES_COMP}.equals("01")?new String("Enero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("02")?new String("Febrero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("03")?new String("Marzo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("04")?new String("Abril de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("05")?new String("Mayo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("06")?new String("Junio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("07")?new String("Julio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("08")?new String("Agosto de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("10")?new String("Octubre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_COMP}):null)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="89806cfa-3daa-4fb8-bd83-157b82e2cf6a" key="textField-17" x="179" y="412" width="377" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + $F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="746bb5b2-1c03-4e3e-baba-9625db7abd21" key="staticText-7" x="0" y="412" width="179" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ESTADO FINANCIERO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="619ff50c-59a9-4823-ae63-149ab0433735" key="textField-18" x="179" y="431" width="377" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{EFP_MES_BASE}.equals("01")?new String(": Enero"):
+$P{EFP_MES_BASE}.equals("02")?new String(": Febrero"):
+$P{EFP_MES_BASE}.equals("03")?new String(": Marzo"):
+$P{EFP_MES_BASE}.equals("04")?new String(": Abril"):
+$P{EFP_MES_BASE}.equals("05")?new String(": Mayo"):
+$P{EFP_MES_BASE}.equals("06")?new String(": Junio"):
+$P{EFP_MES_BASE}.equals("07")?new String(": Julio"):
+$P{EFP_MES_BASE}.equals("08")?new String(": Agosto"):
+$P{EFP_MES_BASE}.equals("09")?new String(": Septiembre"):
+$P{EFP_MES_BASE}.equals("10")?new String(": Octubre"):
+$P{EFP_MES_BASE}.equals("11")?new String(": Noviembre"):
+$P{EFP_MES_BASE}.equals("12")?new String(": Diciembre"):
+$P{EFP_MES_BASE}.equals("13")?new String(": Mes Cierre"):null)
++ " de " + $P{EFP_ANO_BASE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a4c4ca37-588b-49dd-a766-2796e1db05cd" key="staticText-8" x="0" y="431" width="179" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[PERIODO BASE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="470c1a48-b672-48e5-9b9b-61dfb661009e" key="staticText-9" x="0" y="450" width="179" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[PERIODO COMPARATIVO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="cd61d386-fed2-4b72-adf6-0866396d7de8" key="textField" x="0" y="220" width="736" height="25"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="24f77fd0-ae27-4ca5-9879-06778050dc84" key="textField-11" x="0" y="265" width="736" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[COMPARATIVO DETALLADO POR CUENTA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e7922145-2d96-473c-b68d-9197ca9026f1" key="textField-18" x="179" y="450" width="377" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{EFP_MES_COMP}.equals("01")?new String(": Enero"):
+$P{EFP_MES_COMP}.equals("02")?new String(": Febrero"):
+$P{EFP_MES_COMP}.equals("03")?new String(": Marzo"):
+$P{EFP_MES_COMP}.equals("04")?new String(": Abril"):
+$P{EFP_MES_COMP}.equals("05")?new String(": Mayo"):
+$P{EFP_MES_COMP}.equals("06")?new String(": Junio"):
+$P{EFP_MES_COMP}.equals("07")?new String(": Julio"):
+$P{EFP_MES_COMP}.equals("08")?new String(": Agosto"):
+$P{EFP_MES_COMP}.equals("09")?new String(": Septiembre"):
+$P{EFP_MES_COMP}.equals("10")?new String(": Octubre"):
+$P{EFP_MES_COMP}.equals("11")?new String(": Noviembre"):
+$P{EFP_MES_COMP}.equals("12")?new String(": Diciembre"):
+$P{EFP_MES_COMP}.equals("13")?new String(": Mes Cierre"):null)
++ " de " + $P{EFP_ANO_COMP}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="c7add297-266b-430e-9dc7-1e2df50e2d19" key="textField-9" mode="Transparent" x="0" y="245" width="736" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="html">
+					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_ENCABEZADO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="1abe80fc-6ba7-4b2c-8059-4452f412effd" mode="Transparent" x="125" y="564" width="448" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="html">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_PIE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="91">
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement uuid="c0d07f53-ba9d-475e-9328-33831cd77f6a" key="image-3" mode="Transparent" x="0" y="0" width="40" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid"/>
+				<imageExpression><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCliente.png")]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="03c7ab52-b7f4-4591-8c26-2cb95b45a77e" key="textField-7" x="43" y="1" width="693" height="13"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.nombreCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b5671295-93e3-4d1a-b8e2-76cd18da3549" key="textField-8" x="43" y="14" width="693" height="13"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.seccionalCliente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="557e09e0-3481-4460-a15b-eaebb2f2d90a" key="textField-9" x="0" y="26" width="736" height="13"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cef72ce6-b8a4-410a-bcfd-81264cf091bb" x="0" y="53" width="736" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPARATIVO DETALLADO POR CUENTA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a4cd2f6b-d1df-45fa-831a-caf3c36b438d" key="textField-10" x="0" y="66" width="736" height="13"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{EFP_MES_BASE}.equals("01")?new String("Enero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("02")?new String("Febrero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("03")?new String("Marzo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("04")?new String("Abril de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("05")?new String("Mayo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("06")?new String("Junio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("07")?new String("Julio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("08")?new String("Agosto de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("10")?new String("Octubre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_BASE}):null)+
+" y "+
+($P{EFP_MES_COMP}.equals("01")?new String("Enero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("02")?new String("Febrero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("03")?new String("Marzo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("04")?new String("Abril de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("05")?new String("Mayo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("06")?new String("Junio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("07")?new String("Julio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("08")?new String("Agosto de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("10")?new String("Octubre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_COMP}):null)]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c7add297-266b-430e-9dc7-1e2df50e2d19" key="textField-9" x="1" y="40" width="735" height="13"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_ENCABEZADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28">
+			<staticText>
+				<reportElement uuid="92b7ffdb-123c-4b3e-b636-bd04d1d258ee" mode="Opaque" x="0" y="0" width="366" height="14" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9e6e8098-229a-47fa-a7a2-7b1254246da4" mode="Opaque" x="366" y="0" width="110" height="14" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_MES_BASE}.equals("01")?new String("Enero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("02")?new String("Febrero de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("03")?new String("Marzo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("04")?new String("Abril de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("05")?new String("Mayo de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("06")?new String("Junio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("07")?new String("Julio de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("08")?new String("Agosto de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("10")?new String("Octubre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_BASE}):
+$P{EFP_MES_BASE}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_BASE}):null]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b24e1f3-cd67-43de-ab8b-219b0d1b13a3" mode="Opaque" x="476" y="0" width="110" height="14" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_MES_COMP}.equals("01")?new String("Enero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("02")?new String("Febrero de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("03")?new String("Marzo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("04")?new String("Abril de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("05")?new String("Mayo de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("06")?new String("Junio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("07")?new String("Julio de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("08")?new String("Agosto de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("09")?new String("Septiembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("10")?new String("Octubre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("11")?new String("Noviembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("12")?new String("Diciembre de "+$P{EFP_ANO_COMP}):
+$P{EFP_MES_COMP}.equals("13")?new String("Mes Cierre de "+$P{EFP_ANO_COMP}):null]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11ab3c97-7b0c-4aeb-b376-91ebbbcc03be" mode="Opaque" x="0" y="14" width="296" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RENGLON - DETALLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b8a703c4-c3bc-4ee9-b6ab-bba6e88bde38" mode="Opaque" x="296" y="14" width="70" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53c50f51-4db7-431a-83bb-614a9ef98987" key="staticText" mode="Opaque" x="366" y="14" width="110" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a12531ea-b628-449e-a943-8944889e34a3" key="staticText" mode="Opaque" x="476" y="14" width="110" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="311e8057-7e66-4046-ac96-06e8bdb2a067" mode="Opaque" x="586" y="0" width="150" height="14" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MEDIDAS DE CRECIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97cba408-9a75-45ea-bfbc-c68ebccc2f4b" key="staticText" mode="Opaque" x="676" y="14" width="60" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[%VAR HOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43091e6f-93d7-43a8-9700-ec7a93650a96" key="staticText" mode="Opaque" x="586" y="14" width="90" height="14" backcolor="#F2EDED"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VARIACION]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3825c2e5-58ec-444f-b3af-dacb772da8b4" key="textField" style="Text" x="0" y="0" width="296" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement markup="html">
+					<font fontName="SansSerif" size="6" isBold="false" pdfEncoding="Cp1250" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue()==1?
+    $V{V_Renglon}
+    :$F{GRUPO}.intValue()==2?
+        $F{MOSTRAR_DETALLE}.equals( "S" )?
+            $V{V_CuentaContable}
+            :null
+        :null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c862e4aa-0c06-4520-85aa-4849ed54be03" key="textField" style="Text" x="296" y="0" width="70" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="SansSerif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue() == 1?
+    $F{NOTA_PERIODO}!=null?
+        $V{V_TamanoNota}
+        :null
+    :null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b2cb2e9b-f2d7-4c55-9a67-4e8b82caadfa" key="textField" style="Number" x="366" y="0" width="110" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font fontName="SansSerif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue()==1?
+    $F{SEPARADOR}.equals("N")?
+	    $F{MOSTRAR_SALDO}.equals("S")?
+            $V{V_TamanoSFB}
+			:null
+        :null
+    :$F{MOSTRAR_DETALLE}.equals( "S" )?
+        $F{VALOR_BASE}
+        :null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cc1b6a8c-2b35-4b4a-9ca2-c7a39962aa1e" key="textField" style="Number" x="476" y="0" width="110" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font fontName="SansSerif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue()==1?
+    $F{SEPARADOR}.equals("N")?
+	    $F{MOSTRAR_SALDO}.equals("S")?
+            $V{V_TamanoSFC}
+			:null
+        :null
+    :$F{MOSTRAR_DETALLE}.equals( "S" )?
+        $F{VALOR_COMP}
+        :null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="92abed3e-6f2c-4cc8-ad55-c1345d411eec" key="textField" style="Number" x="586" y="0" width="90" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font fontName="SansSerif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue()==1?
+    $F{SEPARADOR}.equals("N")?
+        $F{MOSTRAR_SALDO}.equals("S")?
+            $V{V_TamanoVariacion}
+            :null
+        :null
+    :$F{MOSTRAR_DETALLE}.equals( "S" )?
+        $F{VARIACION}
+        :null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="aaff9427-9020-4830-aec3-557f44d12e38" key="textField" style="Number" x="676" y="0" width="60" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font fontName="SansSerif" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GRUPO}.intValue()==1?
+    $F{SEPARADOR}.equals("N")?
+        $F{MOSTRAR_SALDO}.equals("S")?
+            $F{PORCENTAJE_VARIACION}!=null?
+                $V{V_TamanoAH}+"%"
+                :null
+            :null
+        :null
+    :$F{MOSTRAR_DETALLE}.equals( "S" )?
+        $V{V_TamanoAH}+"%"
+        :null]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<line>
+				<reportElement uuid="158de450-47b7-424b-a1f9-d00a1a1228ce" key="line-3" mode="Transparent" x="0" y="1" width="736" height="3" forecolor="#FF0000" backcolor="#FF0000"/>
+				<graphicElement fill="Solid"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ea499ca5-5fe6-42cd-b4d3-3c973739a834" key="textField-15" mode="Transparent" x="0" y="4" width="150" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.SimpleDateFormat("yyyy/MM/dd hh:mm a")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="29c9ec3e-849c-42eb-ab7a-5941618fe013" key="textField-21" mode="Transparent" x="614" y="4" width="100" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.pagina}+" "+new Integer($V{PAGE_NUMBER}.intValue()-1)+" "+$R{ger.rplantilla.paginasde}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ccc413ff-5c09-42ec-bb8a-57c1e73b8768" key="textField-22" mode="Transparent" x="714" y="2" width="22" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+new Integer($V{PAGE_NUMBER}.intValue()-1)]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="1abe80fc-6ba7-4b2c-8059-4452f412effd" mode="Transparent" x="150" y="4" width="464" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="html">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EFP_PIE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="120">
+			<printWhenExpression><![CDATA[$P{GEP_IMPRIME_FIRMAS}.equals( "S" )]]></printWhenExpression>
+			<frame>
+				<reportElement uuid="49089126-d3de-4869-b7ac-bf0c05794c0e" x="0" y="0" width="736" height="120" isPrintWhenDetailOverflows="true"/>
+				<crosstab isRepeatColumnHeaders="false">
+					<reportElement uuid="5fbe3255-d722-4c1d-a25e-1a06544b740c" stretchType="RelativeToBandHeight" x="14" y="60" width="700" height="60" isPrintWhenDetailOverflows="true"/>
+					<crosstabDataset>
+						<dataset>
+							<datasetRun subDataset="Firmas" uuid="35fce900-f868-4885-b973-2b47916340d8">
+								<datasetParameter name="EFP_ESTADO_FINANCIERO">
+									<datasetParameterExpression><![CDATA[$P{EFP_ESTADO_FINANCIERO}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents/>
+					</crosstabHeaderCell>
+					<rowGroup name="EMPLEADO" width="7">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{EMPLEADO}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+								</box>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="ORDEN" height="0">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{ORDEN}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents/>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<columnGroup name="EMPLEADO1" height="72">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{EMPLEADO}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Transparent">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+								</box>
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="3b2b9b44-646b-407e-a963-f766fedf1136" x="7" y="0" width="205" height="61"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Double"/>
+									</box>
+									<textElement textAlignment="Center" markup="html"/>
+									<textFieldExpression><![CDATA[$V{EMPLEADO1}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="EMPLEADOMeasure" class="java.lang.String">
+						<measureExpression><![CDATA[$F{EMPLEADO}]]></measureExpression>
+					</measure>
+					<crosstabCell width="222" height="0">
+						<cellContents>
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell height="25" rowTotalGroup="EMPLEADO">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="50" columnTotalGroup="EMPLEADO1">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell rowTotalGroup="EMPLEADO" columnTotalGroup="EMPLEADO1">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#FFFFFF"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell columnTotalGroup="ORDEN">
+						<cellContents/>
+					</crosstabCell>
+					<crosstabCell rowTotalGroup="EMPLEADO" columnTotalGroup="ORDEN">
+						<cellContents/>
+					</crosstabCell>
+				</crosstab>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

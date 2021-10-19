@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cgj_libro_diario" pageWidth="612" pageHeight="792" columnWidth="556" leftMargin="42" rightMargin="14" topMargin="14" bottomMargin="14" resourceBundle="Aplicacion" uuid="4d0a05f5-0cd1-4edd-a1df-48f03a9771c9">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Text" isBlankWhenNull="true" fontName="Arial" fontSize="6">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Bold */]]></conditionExpression>
+			<style isBlankWhenNull="true" fontName="Arial" fontSize="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Italic */]]></conditionExpression>
+			<style isBlankWhenNull="true" fontName="Arial" fontSize="6" isItalic="true" pdfFontName="Helvetica-Oblique"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* Underline */]]></conditionExpression>
+			<style isBlankWhenNull="true" fontName="Arial" fontSize="6" isUnderline="true"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(false) /* StrikeThrough */]]></conditionExpression>
+			<style isBlankWhenNull="true" fontName="Arial" fontSize="6" isStrikeThrough="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="Date" style="Text" pattern="dd/MM/yyyy"/>
+	<style name="Number" style="Text" pattern="#,##0.00;(#,##0.00)"/>
+	<style name="Crosstab Data Text"/>
+	<parameter name="TITULO_REPORTE" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Titulo del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Titulo del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBTITULO_REPORTE" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Subtitulo del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Subtitulo del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MODULO_ICEBERG" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Componente de Iceberg]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Contabilidad")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_USER_ID" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Usuario del Reporte]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Usuario del Reporte")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_USER_NAME" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[Nombre del Usuario]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new String("Nombre del Usuario")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_IMAGE_DIR" class="java.io.File" isForPrompting="false">
+		<parameterDescription><![CDATA[Directorio de Imágenes]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new File("/home/caseware/java/workspace/iceberg/WebContent/imagenes")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICEBERGRS_REPORT_DIR" class="java.io.File" isForPrompting="false">
+		<parameterDescription><![CDATA[Directorio de Reportes]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new File("I:\\workspace\\Patchs\\ireport_workspace\\jasper")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_LEASING" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SECUENCIA_ACTIVO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT PAL.SECUENCIA_ACTIVO            AS SECUENCIA_LOCAL,
+  TO_CHAR(PAL.FECHA_LEASING, 'DDMMYY') AS FECHA_LEASING,
+  PAL.VALOR_ACTIVO                     AS VALOR_ACTIVO,
+  PAL.VIDA_UTIL                        AS VIDA_UTIL,
+  PAL.AMORTIZACION_ACUMULADA         AS AMORTIZACION_ACUMULADA,
+  PAL.ESTADO_ACTIVO                    AS ESTADO,
+ PAL.DESCRIPCION_ESTADO		AS  DESCRIPCION_ESTADO,
+  PAL.VALOR_ACTIVO_NIIF                AS VALOR_ACTIVO_NIIF,
+  PAL.VIDA_UTIL_NIIF                   AS VIDA_UTIL_NIIF,
+  PAL.DEPRECIACION_ACUMULADA_NIIF      AS DEPRECIACION_ACUMULADA_NIIF,
+  PAL.ESTADO_NIIF                      AS ESTADO_NIIF
+ FROM PPR_ACTIVOS_LEASING PAL
+WHERE PAL.SECUENCIA_ACTIVO               = NVL($P{SECUENCIA_ACTIVO} ,PAL.SECUENCIA_ACTIVO)
+AND TO_CHAR(PAL.FECHA_LEASING, 'DD/MM/RR') = NVL($P{FECHA_LEASING} ,PAL.FECHA_LEASING)]]>
+	</queryString>
+	<field name="SECUENCIA_LOCAL" class="java.lang.Long"/>
+	<field name="FECHA_LEASING" class="java.lang.String"/>
+	<field name="VALOR_ACTIVO" class="java.math.BigDecimal"/>
+	<field name="VIDA_UTIL" class="java.math.BigDecimal"/>
+	<field name="AMORTIZACION_ACUMULADA" class="java.math.BigDecimal"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
+	<field name="VALOR_ACTIVO_NIIF" class="java.math.BigDecimal"/>
+	<field name="VIDA_UTIL_NIIF" class="java.math.BigDecimal"/>
+	<field name="DEPRECIACION_ACUMULADA_NIIF" class="java.math.BigDecimal"/>
+	<field name="ESTADO_NIIF" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="54" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement key="image-3" mode="Transparent" x="0" y="0" width="40" height="40" forecolor="#000000" backcolor="#FFFFFF" uuid="2e34471f-8b1c-4885-a07b-fb1156da7065"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<graphicElement fill="Solid"/>
+				<imageExpression><![CDATA[new File($P{ICEBERGRS_IMAGE_DIR}, "logoCliente.png")]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-8" x="43" y="14" width="513" height="13" uuid="2315de68-6c1e-482c-a0f7-7b77224c00f8"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.nitCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-7" x="43" y="1" width="513" height="13" uuid="8e8b2e0d-8df5-4fce-aca9-cc82ad1ff533"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.nombreCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-9" x="0" y="27" width="556" height="13" uuid="3c0de059-1d00-4565-9e24-15d5aa93f777"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ACTIVOS EN LEASING"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-4" mode="Opaque" x="0" y="0" width="556" height="19" forecolor="#000000" backcolor="#F2EDED" uuid="d55379cb-8367-4222-8e51-a8a87f4be55f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="6" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="9" width="55" height="10" uuid="c4dc4e16-dd89-479a-8adb-42082eb5d5b0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SECUENCIA LOCAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="147" y="9" width="30" height="10" uuid="b2cfaa6a-a359-42db-9548-98e525e73b39"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VIDA UTIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="344" y="9" width="60" height="10" uuid="8c40eed9-9834-4ae0-9497-c8edadd2e522"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR ACTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="9" width="40" height="10" uuid="1f1a25a3-40d7-4ce2-88a3-9b49753b8f38"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR ACTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="177" y="9" width="73" height="10" uuid="29901f43-26d5-49f1-82bd-b13dbf9aa737"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AMORTIZACION ACUMULADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="9" width="94" height="10" uuid="18687168-98a3-4741-a3dc-0b9ad2d5d1df"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="434" y="9" width="80" height="10" uuid="8385b443-e412-4040-aa17-739ad7063197"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPRECIACION ACUMULADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="9" width="30" height="10" uuid="79717852-8e78-4d49-9927-a4494cbc5620"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VIDA UTIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="514" y="9" width="42" height="10" uuid="e12f0dba-f14a-4b99-a400-c05c34542933"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="9" width="52" height="10" uuid="61390921-2d2d-48b9-b76f-4eaa7f09e483"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA LEASING]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="344" height="9" uuid="1e22b92d-72f5-4cb3-9172-a1e87db8d850"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVO EN lOCAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="0" width="212" height="9" uuid="e47ba9e8-ce8a-43fd-936d-9f50db1a12d8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVO EN NIIF]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="54" height="13" uuid="ab4a21ed-e6e3-4752-8acf-8bc583e54f63"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SECUENCIA_LOCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="0" width="52" height="13" uuid="bc69a7c4-9f51-47d8-b336-fb5f6b31e417"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_LEASING}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="107" y="0" width="40" height="13" uuid="7e905777-90ae-465a-8cef-d47f674c7fec"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_ACTIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="147" y="0" width="30" height="13" uuid="4e52fc57-30db-41df-b87f-34183c9deb47"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VIDA_UTIL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="177" y="0" width="73" height="13" uuid="b8a6b890-0be9-4335-96d4-c891d1e6e1ed"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMORTIZACION_ACUMULADA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="344" y="0" width="60" height="13" uuid="bed26f41-78a3-4d93-b29d-33e82f5aa710"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_ACTIVO_NIIF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="404" y="0" width="30" height="13" uuid="30c3d565-6b31-48d1-8667-37803cf25426"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VIDA_UTIL_NIIF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="0" width="80" height="13" uuid="8d1c9dd2-b74f-42f7-a02f-8bfb7e751208"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPRECIACION_ACUMULADA_NIIF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="514" y="0" width="42" height="13" uuid="e675d3c0-ffb9-4967-b600-b509722add71"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ESTADO_NIIF}.equals("A")?
+    "En uso":
+$F{ESTADO_NIIF}.equals("B")?
+    "Dado de Baja":
+$F{ESTADO_NIIF}.equals("I")?
+    "Inactivo":
+$F{ESTADO_NIIF}.equals("M")?
+    "Migracion":
+$F{ESTADO_NIIF}.equals("N")?
+    "Anulado":
+$F{ESTADO_NIIF}.equals("P")?
+    "Pendiente de Uso":
+$F{ESTADO_NIIF}.equals("T")?
+    "Trasferido":
+$F{ESTADO_NIIF}.equals("V")?
+    "En Venta":
+$F{ESTADO_NIIF}.equals("L")?
+    "Leasing":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="95" height="13" uuid="62d41cd1-397d-4e92-9a6d-288990f7bccd"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPCION_ESTADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<line>
+				<reportElement key="line-3" mode="Transparent" x="0" y="0" width="556" height="1" forecolor="#FF0000" backcolor="#FF0000" uuid="696134eb-6cb8-4bad-a4ab-22e78c7f0022"/>
+				<graphicElement fill="Solid"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement key="textField-15" mode="Transparent" x="1" y="1" width="330" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="26b98dbf-7bb4-49d0-b92a-c092d4b986ad"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.SimpleDateFormat("yyyy/MM/dd hh:mm a")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement key="textField-21" mode="Transparent" x="398" y="1" width="109" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="48f1f932-98a7-4045-8d99-675ca5f96979"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ger.rplantilla.pagina}+" "+new Integer($V{PAGE_NUMBER}.intValue())+" "+$R{ger.rplantilla.paginasde}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="true">
+				<reportElement key="textField-22" mode="Transparent" x="507" y="1" width="49" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="fb06880a-fbaf-4ef6-a7e2-d8449bcd78ea"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+new Integer($V{PAGE_NUMBER}.intValue())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

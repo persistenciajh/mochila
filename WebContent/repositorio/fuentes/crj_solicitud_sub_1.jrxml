@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="crj_solicitud_sub_1" language="groovy" pageWidth="612" pageHeight="792" columnWidth="599" leftMargin="0" rightMargin="13" topMargin="5" bottomMargin="5" whenResourceMissingType="Empty">
+	<property name="ireport.zoom" value="1.771561000000006"/>
+	<property name="ireport.x" value="121"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SEC_SOLICITUD" class="java.math.BigDecimal" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+      v.documento||' - '||v.numero_credito||' '||V.descripcion VALOR,
+      v.saldo ETIQUETA
+FROM  v_est_cuenta_total_cliente v
+    INNER JOIN documento_cartera dc ON dc.documento = v.documento
+    INNER JOIN crt_saldo_solicitud ssol on ssol.documento_cartera = v.documento
+        and ssol.organizacion_cartera = v.organizacion and ssol.numero_credito = v.numero_cRedito
+WHERE
+      ssol.sec_solicitud = $P{SEC_SOLICITUD}
+      AND dc.tipo_documento IN ('F','D')
+      AND V.saldo > 0
+  UNION
+SELECT
+  o.documento||' - '||o.orden||' '|| o.descripcion VALOR,
+ssol.valor ETIQUETA
+FROM crt_saldo_solicitud ssol
+INNER JOIN crt_solicitud sol on sol.sec_solicitud = ssol.sec_solicitud
+INNER JOIN orden o on o.documento = ssol.documento_orden
+  AND o.organizacion = ssol.organizacion_orden
+  AND o.orden = ssol.orden
+WHERE ssol.sec_solicitud = $P{SEC_SOLICITUD}
+  UNION
+SELECT
+(pl.referencia||' ' ||pl.nombre_referencia) VALOR,
+ssol.valor ETIQUETA
+FROM crt_saldo_solicitud ssol
+  INNER JOIN crt_solicitud sol on sol.sec_solicitud = ssol.sec_solicitud
+  INNER JOIN linea_credito lc on sol.linea_credito = lc.linea_credito
+  INNER JOIN crd_producto_linea pl on ssol.cantidad_inicial = pl.cantidad_inicial
+      AND ssol.referencia = pl.referencia
+      AND ssol.lista_precio = pl.lista_precio
+      AND ssol.periodo = pl.periodo
+WHERE ssol.sec_solicitud = $P{SEC_SOLICITUD}]]>
+	</queryString>
+	<field name="VALOR" class="java.lang.String"/>
+	<field name="ETIQUETA" class="java.math.BigDecimal"/>
+	<background>
+		<band/>
+	</background>
+	<columnHeader>
+		<band height="28">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="16" width="474" height="11" backcolor="#F2EDED"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="478" y="15" width="80" height="11" backcolor="#F2EDED"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="14" width="558" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="27" width="558" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="558" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10">
+			<textField>
+				<reportElement x="0" y="0" width="474" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VALOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="478" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ETIQUETA}!=null?(new DecimalFormat("###,###,###,###,###")).format(new Double($F{ETIQUETA})):""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

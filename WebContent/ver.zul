@@ -1,0 +1,243 @@
+<?page title="TuMochila" contentType="text/html;charset=UTF-8"?>
+<?link rel="icon" type="image/x-icon" href="/imagen/favicon.ico"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<borderlayout id="idWinVer" use="com.mochila.gen.action.VerAction">
+		<north height="38px" style="" border="0">
+			<borderlayout>
+				<north height="8px" style="background:#E5E5E5"
+					border="0">
+				</north>
+				<west width="40%" style="background:#E5E5E5"
+					border="0">
+
+
+
+					<panel height="32px" width="100%">
+						<panelchildren style="background:#E5E5E5">
+							<vbox align="start" pack="center"
+								height="90%" width="100%">
+								<hbox>
+									<image src="/imagen/logo.png"
+										height="24px">
+									</image>
+
+									<bandbox id="idWinTbxBusqueda"
+										visible="true" placeholder="Que estas buscando?" width="320px"
+										height="20px" tooltiptext="Que estas buscando?" mold="rounded"
+										autodrop="true"
+										onChanging="idWinVer.llenarBandboxBusqueda(self.value);">
+										<bandpopup>
+											<vbox>
+												<listbox height="86px"
+													width="320px" mold="paging" pageSize="5"
+													id="idWinlistboxBandboxProducto"
+													onSelect="idWinTbxBusqueda.value=self.selectedItem.label;idWinTbxBusqueda.close();">
+												</listbox>
+
+											</vbox>
+										</bandpopup>
+
+									</bandbox>
+
+
+
+								</hbox>
+							</vbox>
+						</panelchildren>
+					</panel>
+				</west>
+				<east width="40%" border="0" visible="false"
+					style="background:#E5E5E5">
+					<div align="right" >
+						
+						<panel border="0" height="30px"
+											width="190px">
+											<panelchildren
+												style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer"
+												onClick='idWin.winUsuario()'>
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<hbox>
+													<image width="10px" height="10px" src="imagen/connection.png" />	
+													<html>														
+														<![CDATA[ <font
+														color="gray"
+														size="3"
+														face="arial"><div>
+														<u><b>Iniciar sesión</b></u>
+														</div></font>
+														]]>
+														
+													</html>
+													</hbox>
+												</vbox>
+											</panelchildren>
+										</panel>
+					</div>
+
+				</east>
+				<center style="background:#E5E5E5" border="0">
+
+				</center>
+
+			</borderlayout>
+
+		</north>
+		<center border="0">
+			<borderlayout>
+				<north height="3%" border="0"></north>
+				<west width="5%" border="0"></west>
+				<east width="5%" border="0"></east>
+				<center style="background:#E5E5E5" border="0">
+					<borderlayout>
+						<north height="20px" style="background:#E5E5E5"
+							border="0">
+						</north>
+						<west width="30px" style="background:#E5E5E5"
+							border="0">
+						</west>
+
+						<center border="0">
+							<borderlayout>
+								<center style="background:#E5E5E5">
+									<image id="idWinVerImgGrande"
+										src="imagen/imageDefaultGrande.png" />
+								</center>
+								<east width="10px"
+									style="background:#E5E5E5" border="0">
+								</east>
+							</borderlayout>
+
+						</center>
+						<east width="55%" style="background:#E5E5E5"
+							border="0">
+							<borderlayout>
+								<west width="80px"
+									style="background:#E5E5E5" border="0">
+									<!-- 		galeria de imagen 64x64  en vbox -->
+									<borderlayout>
+										<north height="50px"
+											style="background:#E5E5E5" border="0">
+										</north>
+										<center
+											style="background:#E5E5E5" border="0">
+											<vbox id="idWinVerVboxGaleria">
+												<panel border="0"
+													height="64px" width="64px" style="margin-top:3px;">
+													<panelchildren
+														style="color:black;font-size:15px;cursor:pointer">
+														<vbox
+															align="center" pack="center" height="90%" width="100%">
+															<image
+																src="imagen/imageDefault.png" width="64px"
+																height="64px">
+															</image>
+														</vbox>
+													</panelchildren>
+												</panel>
+
+												<panel border="0"
+													height="64px" width="64px" style="margin-top:3px;">
+													<panelchildren
+														style="color:black;font-size:15px;cursor:pointer">
+														<vbox
+															align="center" pack="center" height="90%" width="100%">
+															<image
+																src="imagen/imageDefault.png" width="64px"
+																height="64px">
+															</image>
+														</vbox>
+													</panelchildren>
+												</panel>
+												<panel border="0"
+													height="64px" width="64px" style="margin-top:3px;">
+													<panelchildren
+														style="color:black;font-size:15px;cursor:pointer">
+														<vbox
+															align="center" pack="center" height="90%" width="100%">
+															<image
+																src="imagen/imageDefault.png" width="64px"
+																height="64px">
+															</image>
+														</vbox>
+													</panelchildren>
+												</panel>
+												<panel border="0"
+													height="64px" width="64px" style="margin-top:3px;">
+													<panelchildren
+														style="color:black;font-size:15px;cursor:pointer">
+														<vbox
+															align="center" pack="center" height="90%" width="100%">
+															<image
+																src="imagen/imageDefault.png" width="64px"
+																height="64px">
+															</image>
+														</vbox>
+													</panelchildren>
+												</panel>
+												<panel border="0"
+													height="64px" width="64px" style="margin-top:3px;">
+													<panelchildren
+														style="color:black;font-size:15px;cursor:pointer">
+														<vbox
+															align="center" pack="center" height="90%" width="100%">
+															<image
+																src="imagen/imageDefault.png" width="64px"
+																height="64px">
+															</image>
+														</vbox>
+													</panelchildren>
+												</panel>
+											</vbox>
+
+
+										</center>
+									</borderlayout>
+
+								</west>
+								<center border="0">
+									<!-- 		descripcion del producto -->
+									<borderlayout>
+										
+										<west width="10px"
+											style="background:#E5E5E5" border="0">
+										</west>
+										<east width="30px"
+											style="background:#E5E5E5" border="0">
+										</east>
+										<center
+											style="background:#E5E5E5" border="0">
+											<vbox>
+												<panel border="0"
+													height="20%" width="100%" style="margin-top:3px;">
+													<panelchildren
+														style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer">
+														<vbox id="idWinVerVboxDescripcion"
+															align="start" pack="center" height="90%" width="100%">
+															
+														</vbox>
+													</panelchildren>
+												</panel>									
+												
+											
+											</vbox>
+										</center>
+
+									</borderlayout>
+								</center>
+							</borderlayout>
+
+						</east>
+						<south height="10px" style="background:#E5E5E5"
+							border="0">
+						</south>
+					</borderlayout>
+				</center>
+						<south height="3%" border="0" ></south>
+			</borderlayout>
+
+		</center>
+
+	</borderlayout>
+</zk>

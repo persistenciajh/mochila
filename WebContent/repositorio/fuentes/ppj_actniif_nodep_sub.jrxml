@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ppj_actniif_nodep_sub" pageWidth="750" pageHeight="800" orientation="Landscape" columnWidth="750" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1232b4bf-2601-4b9c-a1e9-62efefb9695b">
+	<property name="ireport.zoom" value="1.3995221406291998"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="AFP_ANO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AFP_MES" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[WITH concat_fecha as ( SELECT (nvl($P{AFP_ANO},to_char(sysdate,'yyyy'))
+			      || lpad(
+				      nvl($P{AFP_MES},to_char(sysdate,'mm'))
+				      ,2
+				      ,'0'
+				 )
+			      ) as fecha
+			FROM 	dual
+),
+--tabla dummy con los meses
+meses 		as 	(SELECT nvl($P{AFP_ANO},to_char(sysdate,'yyyy')) as periodo, rownum AS mes
+			FROM mst_menu
+			where rownum<13
+)
+SELECT 		 meses.mes as mes,
+	 	 pac.sec_activo as activo,
+		 act.placa_inventario as placa,
+		 act.referencia as referencia,
+		 ref.nombre_referencia as nombre_referencia,
+		 pac.vida_util as vida_util,
+		 pac.estado as estado,
+  		 pac.fecha_grabacion as fecha_grabacion,
+  		 pac.secuencia_activo as secuencia_activo,
+  		 nvl((	SELECT	SUM(valor)
+			FROM 	ppt_depreciacion dep
+			WHERE 	dep.sec_activo = pac.sec_activo
+			  AND 	(dep.periodo     <meses.periodo
+				OR (dep.periodo      =meses.periodo
+				  	AND dep.mes         <=meses.mes)
+				)
+  		 	),0
+  		 )as depreciacion_acumulada,
+  		 nvl((	SELECT	SUM(periodos_depreciados)
+			FROM 	ppt_depreciacion dep
+			WHERE 	dep.sec_activo = pac.sec_activo
+			  AND 	(dep.periodo     <meses.periodo
+				OR (dep.periodo      =meses.periodo
+					AND dep.mes         <=meses.mes)
+				)
+  		 	),0
+  		 )as periodos_depreciados,
+  		(
+  			--fecha de venta menor al periodo revisado
+			SELECT to_char(max(fecha_en_venta),'yyyymm')
+			FROM 	ppt_mantenido_venta
+			WHERE	sec_activo = pac.sec_activo
+			  AND	to_char(fecha_en_venta,'yyyymm')<(meses.periodo|| lpad(meses.mes,2,'0'))
+			  -- y que no exista fecha de devolucion entre dicha fecha y el periodo revisado
+			  AND   NOT EXISTS (
+			  			SELECT  max(FECHA_DEVOLUCION)
+						FROM 	ppt_mantenido_venta
+						WHERE 	sec_activo = pac.sec_activo
+						AND 	to_char(fecha_devolucion,'yyyymm')<(meses.periodo|| lpad(meses.mes,2,'0'))
+						AND 	to_char(fecha_devolucion,'yyyymm')>(
+												SELECT to_char(max(fecha_en_venta),'yyyymm')
+												FROM 	ppt_mantenido_venta
+												WHERE	sec_activo = pac.sec_activo
+												  AND	to_char(fecha_en_venta,'yyyymm')<(meses.periodo|| lpad(meses.mes,2,'0'))
+			  								)
+				)
+			  -- y que no exista fecha de transferencia entre dicha fecha y el periodo revisado
+			  AND   NOT EXISTS (
+			  			SELECT  max(fecha_transferencia)
+						FROM 	ppt_mantenido_venta
+						WHERE 	sec_activo = pac.sec_activo
+						AND 	to_char(fecha_transferencia,'yyyymm')<(meses.periodo|| lpad(meses.mes,2,'0'))
+						AND 	to_char(fecha_transferencia,'yyyymm')>(
+												SELECT to_char(max(fecha_en_venta),'yyyymm')
+												FROM 	ppt_mantenido_venta
+												WHERE	sec_activo = pac.sec_activo
+												  AND	to_char(fecha_en_venta,'yyyymm')<(meses.periodo|| lpad(meses.mes,2,'0'))
+			  								)
+				)
+		) as fecha_en_venta
+FROM  		ppt_activo pac
+INNER JOIN 	activo act ON
+		pac.secuencia_activo = act.secuencia_activo
+INNER JOIN	referencia ref ON
+		act.referencia = ref.referencia
+LEFT OUTER JOIN meses ON
+		meses.mes < nvl($P{AFP_MES},to_char(sysdate,'mm'))
+WHERE 		--Activos que no tienen depreciacion para el periodo revisado
+		NOT EXISTS (SELECT 	d.sec_activo
+					FROM 		ppt_depreciacion d
+					WHERE		pac.sec_activo = d.sec_activo
+					 	AND	d.PERIODO = meses.periodo
+						AND 	d.mes = meses.mes)
+		--Activos que no esten dados de baja o que estan en baja pero la fecha de retiro es mayor a la
+		--fecha de corte EJEMPLO: (Ago NO - SEP SI - OCT SI y se BAJA)  al sacar a agosto sale en
+		--el reporte, de otro modo no
+  	AND 	(
+  			--Se muestran todos los activos en uso o pendientes
+  			(pac.estado in ('A','P','S','V'))
+  		OR 	(pac.estado='B' AND to_char(pac.FECHA_RETIRO,'yyyymm') > (SELECT fecha FROM concat_fecha))
+
+  		)
+  		--Necesario para no traer los activos que se crearon despues de la fecha de corte
+	AND 	(to_char(pac.FECHA_GRABACION,'yyyymm')< (SELECT fecha FROM concat_fecha)	)
+--Se escoge el ultimo de los activos niif que esta relacionado con un mismo activo en local
+-- y cuya fecha de creacion sea inferior a la fecha de la consulta
+AND pac.SEC_ACTIVO in (SELECT  MAX(pac.sec_activo) OVER (PARTITION BY act.secuencia_activo)
+			FROM ppt_activo pac
+			INNER JOIN activo act
+				ON act.secuencia_activo = pac.secuencia_activo
+			WHERE 	to_char(pac.FECHA_GRABACION,'yyyymm')<= (meses.periodo|| lpad(meses.mes,2,'0')))
+AND (
+	select 	tip.depreciable
+	from 	tipo_activo tip
+	where 	tip.tipo_activo = ref.tipo_activo
+	) = 'S'
+--order by 1,2]]>
+	</queryString>
+	<field name="MES" class="java.lang.Integer"/>
+	<field name="ACTIVO" class="java.math.BigDecimal"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="REFERENCIA" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_REFERENCIA" class="java.lang.String"/>
+	<field name="VIDA_UTIL" class="java.math.BigDecimal"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="FECHA_GRABACION" class="java.sql.Timestamp"/>
+	<field name="SECUENCIA_ACTIVO" class="java.math.BigDecimal"/>
+	<field name="DEPRECIACION_ACUMULADA" class="java.math.BigDecimal"/>
+	<field name="PERIODOS_DEPRECIADOS" class="java.math.BigDecimal"/>
+	<field name="FECHA_EN_VENTA" class="java.lang.String"/>
+	<variable name="NUM_ACTIVOS" class="java.math.BigDecimal" resetType="Group" resetGroup="MES" calculation="Count">
+		<variableExpression><![CDATA[$F{ACTIVO}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_ACTIVOS" class="java.math.BigDecimal" calculation="Count">
+		<variableExpression><![CDATA[$F{ACTIVO}]]></variableExpression>
+	</variable>
+	<group name="MES">
+		<groupExpression><![CDATA[$F{MES}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<textField>
+					<reportElement mode="Opaque" x="2" y="0" width="164" height="10" forecolor="#000000" backcolor="#FFFFFF" uuid="325d470b-d86d-4d66-adb2-0daf4f7ac657"/>
+					<box>
+						<pen lineColor="#F0F0F0"/>
+						<topPen lineWidth="0.25" lineColor="#F0F0F0"/>
+						<leftPen lineWidth="0.25" lineColor="#F0F0F0"/>
+						<bottomPen lineWidth="0.25" lineColor="#F0F0F0"/>
+						<rightPen lineWidth="0.25" lineColor="#F0F0F0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+						<font fontName="DejaVu Sans" size="7" isBold="true"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MES}.equals( 1 )?"ENERO":
+$F{MES}.equals( 2 )?"FEBRERO":
+$F{MES}.equals( 3 )?"MARZO":
+$F{MES}.equals( 4 )?"ABRIL":
+$F{MES}.equals( 5 )?"MAYO":
+$F{MES}.equals( 6 )?"JUNIO":
+$F{MES}.equals( 7 )?"JULIO":
+$F{MES}.equals( 8 )?"AGOSTO":
+$F{MES}.equals( 9 )?"SEPTIEMBRE":
+$F{MES}.equals( 10 )?"OCTUBRE":
+$F{MES}.equals( 11 )?"NOVIEMBRE":
+"DICIEMBRE"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<staticText>
+					<reportElement mode="Transparent" x="541" y="9" width="105" height="12" forecolor="#006699" backcolor="#E6E6E6" uuid="f146be28-1a15-42a4-9467-da054cdb88bb"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NÚMERO ACTIVOS:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement x="651" y="9" width="99" height="12" uuid="ee7a1e69-210d-4327-8e86-8fcc42d3a53a"/>
+					<box>
+						<pen lineColor="#F0F0F0"/>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#F0F0F0"/>
+						<leftPen lineColor="#F0F0F0"/>
+						<bottomPen lineColor="#F0F0F0"/>
+						<rightPen lineColor="#F0F0F0"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+						<paragraph rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{NUM_ACTIVOS}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<pageHeader>
+		<band height="12">
+			<staticText>
+				<reportElement key="DESCRIPCION" mode="Opaque" x="0" y="0" width="750" height="12" forecolor="#000000" backcolor="#F2EDED" uuid="6f0ed430-a106-4c0a-bfc4-43d83455678d"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="DejaVu Sans" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="Cp1252" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVOS NIIF]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="12">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="62" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="55129147-afcd-4af4-a82e-90256d34f047"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SECUENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="388" y="0" width="53" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="24f80094-03e8-47bc-9375-0a52fe0302ba"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VIDA ÚTIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="205" y="0" width="78" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="12c7e855-c199-4125-8656-51f48a7d914c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="441" y="0" width="111" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="de38b95c-a571-4840-8d9f-775a07e609ad"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODOS DEPRECIADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="130" y="0" width="75" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="7a6c5b1d-f11a-49d0-826c-ab8735b9dc2b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLACA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="552" y="0" width="99" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="ece08bd3-59d0-434f-9d7d-237a12427cc3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPRECIACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="651" y="0" width="99" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="284e1f60-5d25-47a6-b01a-972187d876f0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="62" y="0" width="68" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="48b2210e-521e-4ed5-9f8b-216d96249400"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVO LOCAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="283" y="0" width="105" height="10" forecolor="#000000" backcolor="#F2EDED" uuid="4e0a97e9-0473-4768-a66b-fb6a7cc82608"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE REFERENCIA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="0" width="60" height="11" uuid="b7e57083-c749-448c-b783-f8518e33f76e"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ACTIVO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="388" y="0" width="53" height="11" uuid="d9da72d5-1a68-44d4-ad23-c2fe9d31e395"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VIDA_UTIL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="205" y="0" width="78" height="11" uuid="001582ae-4c35-4dc0-b6b4-983daef21a42"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REFERENCIA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="441" y="0" width="111" height="11" uuid="f747c2ec-e1cd-4076-9dca-60a4bd1f008a"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIODOS_DEPRECIADOS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="0" width="68" height="11" uuid="84cf1058-ddc7-4693-a282-abfeee0691b7"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SECUENCIA_ACTIVO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="552" y="0" width="99" height="11" uuid="869de9ab-5c9b-4b40-b170-a02aa347fb40"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPRECIACION_ACUMULADA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="651" y="0" width="99" height="11" uuid="df1b7267-319c-4c57-8eec-4b8b6ed79472"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ESTADO}.equals( "A" )?"LISTO PARA USO":
+$F{ESTADO}.equals( "V" )?"MANTENIDO EN VENTA":
+$F{ESTADO}.equals( "B" )?"DADO DE BAJA":
+$F{ESTADO}.equals( "T" )?"TRANSFERIDO":
+$F{ESTADO}.equals( "M" )?"MIGRADO":
+$F{ESTADO}.equals( "S" )?"EN TRANSITO":"PENDIENTE"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="130" y="0" width="75" height="11" uuid="166f4b17-2cc4-4f74-ae82-00898a086077"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="283" y="0" width="105" height="11" uuid="312b01ca-d200-4592-a142-1e4d915ad6bd"/>
+				<textElement>
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_REFERENCIA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<summary>
+		<band height="12">
+			<textField isStretchWithOverflow="true" evaluationTime="Page" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="651" y="0" width="99" height="12" uuid="919f320d-1d4c-46d6-8d47-ccb96e92fb45"/>
+				<box>
+					<pen lineColor="#F0F0F0"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#F0F0F0"/>
+					<leftPen lineColor="#F0F0F0"/>
+					<bottomPen lineColor="#F0F0F0"/>
+					<rightPen lineColor="#F0F0F0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_ACTIVOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="541" y="0" width="105" height="12" forecolor="#006699" backcolor="#E6E6E6" uuid="b8f1f13b-c0d3-4a92-85c2-1f93c38f7385"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL NIIF:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+
+<configuration>
+
+	<typeAliases>
+		<!-- FRAMEWORK -->
+		<typeAlias alias="aliasPersona" type="com.mochila.gen.dto.Persona" />
+		<typeAlias alias="aliasUsuario" type="com.mochila.gen.dto.Usuario" />
+		<typeAlias alias="aliasInteraccion" type="com.mochila.gen.dto.Interaccion" />
+		<typeAlias alias="aliasCargue" type="com.mochila.gen.dto.Cargue" />
+		<typeAlias alias="aliasTablaDinamica"  type="com.mochila.gen.dto.TablaDinamica"/>
+		<typeAlias alias="aliasTipoDistribuidor"  type="com.mochila.gen.dto.TipoDistribuidor"/>
+		
+		<typeAlias alias="aliasTipoProducto" type="com.mochila.inv.dto.TipoProducto" />
+		<typeAlias alias="aliasProducto" type="com.mochila.inv.dto.Producto" />
+		<typeAlias alias="aliasFotoProducto" type="com.mochila.inv.dto.FotoProducto" />
+		<typeAlias alias="aliasBodega" type="com.mochila.inv.dto.Bodega" />
+		<typeAlias alias="aliasInvIngreso" type="com.mochila.inv.dto.InvIngreso" />
+		<typeAlias alias="aliasInvDetalleIngreso" type="com.mochila.inv.dto.InvDetalleIngreso" />
+		<typeAlias alias="aliasInvSalida" type="com.mochila.inv.dto.InvSalida" />
+		<typeAlias alias="aliasInvDetalleSalida" type="com.mochila.inv.dto.InvDetalleSalida" />
+		<typeAlias alias="aliasVInvProductoExistencia" type="com.mochila.inv.dto.VInvProductoExistencia" />
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="org.postgresql.Driver" />
+				<property name="url" value="jdbc:postgresql://localhost:5432/mochila"/>
+				
+				<property name="username" value="postgres" />
+				<property name="password" value="postgres" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="com/mochila/gen/dto/xml/Persona.xml" />
+		<mapper resource="com/mochila/gen/dto/xml/Usuario.xml" />
+		<mapper resource="com/mochila/gen/dto/xml/Interaccion.xml" />
+		<mapper resource="com/mochila/gen/dto/xml/Cargue.xml" />
+		<mapper resource="com/mochila/gen/dto/xml/TipoDistribuidor.xml" />
+		
+		<mapper resource="com/mochila/inv/dto/xml/TipoProducto.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/Producto.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/FotoProducto.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/Bodega.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/InvIngreso.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/InvDetalleIngreso.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/InvSalida.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/InvDetalleSalida.xml" />
+		<mapper resource="com/mochila/inv/dto/xml/VInvProductoExistencia.xml" />
+	</mappers>
+</configuration>

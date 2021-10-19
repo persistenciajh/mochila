@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvDetalleSalidaMapper">
+
+<resultMap id="resMapInvDetalleSalida" 				type="aliasInvDetalleSalida">
+<result property="secuencia" 							column="secuencia" />
+<result property="secuenciaIngreso.secuencia" 			column="secuencia_ingreso" />
+<result property="secuenciaProducto.secuencia" 			column="secuencia_producto" />
+<result property="cantidad" 							column="cantidad" />
+<result property="precio" 								column="precio" />
+<result property="secuenciaProducto.nombre" 			column="nombre" />
+<result property="secuenciaProducto.codigo" 			column="codigo" />
+</resultMap>
+
+<select id="postInvDetalleSalida" parameterType="aliasInvDetalleSalida" resultMap="resMapInvDetalleSalida">
+<![CDATA[
+INSERT INTO inv_detalle_salida(            
+             secuencia_ingreso,
+              secuencia_producto,
+               cantidad,
+                precio)
+    VALUES (   
+    #{secuenciaIngreso.secuencia,jdbcType=NUMERIC},
+    #{secuenciaProducto.secuencia,jdbcType=NUMERIC},
+    #{cantidad,jdbcType=NUMERIC},
+    #{precio,jdbcType=NUMERIC}
+    )
+    
+    ]]>
+    
+	</select>
+	
+	<select id="getDetalleInvSalida" parameterType="aliasInvDetalleSalida" resultMap="resMapInvDetalleSalida">
+	SELECT 
+idi.secuencia,
+idi.secuencia_ingreso,
+idi.secuencia_producto,
+idi.cantidad,
+idi.precio,
+ip.codigo,
+ip.nombre
+FROM inv_detalle_salida idi, inv_producto ip
+where ip.secuencia=idi.secuencia_producto
+			
+			<if test="secuenciaIngreso.secuencia != null ">
+	    		AND idi.secuencia_ingreso = #{secuenciaIngreso.secuencia,jdbcType=NUMERIC}
+		  	</if>
+		  	
+	</select>
+	
+		<select id="deleteDetalleInvSalida" parameterType="aliasInvDetalleSalida" resultMap="resMapInvDetalleSalida">
+   	
+   	DELETE FROM inv_detalle_salida
+    WHERE secuencia_ingreso = #{secuenciaIngreso.secuencia,jdbcType=NUMERIC}
+   	
+   	</select>
+
+</mapper>

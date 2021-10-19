@@ -1,0 +1,68 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:zk="http://www.zkoss.org/2005/zk">
+	<window  border="normal" width="860px"
+		height="600px" position="center,center"
+		id="idWindowContenedoFotoProducto" closable="true"
+		action="show: slideDown;hide: slideUp">
+		<zscript>
+		public void salir() {
+		Executions.getCurrent().getSession().setAttribute("PRODUCTO_SESSION", null);
+		idWindowContenedoFotoProducto.detach() ;
+		}
+		</zscript>
+		<borderlayout>
+		<north height="5%" border="0" >
+		<borderlayout>
+		<west width="20%" border="0" style="background:#E5E5E5;">
+		<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;">
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<hbox>
+																
+																<h:h>
+																	[Galeria]
+																</h:h>
+																</hbox>
+																
+															</vbox>
+														</panelchildren>
+													</panel>
+		</west>
+		<center border="0" style="background:#E5E5E5;" >
+		<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren>
+															<vbox
+																align="end" pack="center" height="90%" width="100%">
+																<hbox style="cursor:pointer" onClick='salir()'>
+																<image
+																	height="20px" width="20px" src="imagen/salir.png"/>
+																	
+																	
+																<h:h>
+																	Salir
+																</h:h>
+																</hbox>
+																
+															</vbox>
+														</panelchildren>
+													</panel>
+		</center>
+		<south style="background:#E5E5E5;">
+		</south>
+		</borderlayout>
+		
+		</north>
+		<center>
+		
+		<include src="mochila/inv/FotoProducto.zul" />
+		</center>
+		
+		</borderlayout>
+		
+
+	</window>
+</zk>

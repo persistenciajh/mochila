@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InteraccionMapper">
+
+	<resultMap id="resMapInteraccion" type="aliasInteraccion">
+		<result property="secuencia" column="secuencia" />
+		<result property="producto.secuencia" column="secuencia_producto" />
+		<result property="usuarioCreacion.secuencia" column="secuencia_usuario_creacion" />
+		<result property="descripcion" column="descripcion" />
+		<result property="referencia" column="referencia" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+	</resultMap>
+
+	<select id="getCountInteraccionProducto" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+<![CDATA[
+SELECT
+		count(interaccion.secuencia) as descripcion
+		FROM gen_interaccion interaccion
+		WHERE
+		interaccion.secuencia_producto= #{producto.secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+	<select id="getCounInteraccionProductoUsuario" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+
+		SELECT
+		count(interaccion.secuencia) as descripcion
+		FROM gen_interaccion interaccion, inv_producto producto
+		WHERE
+		interaccion.secuencia_producto=producto.secuencia
+		AND interaccion.descripcion='CVM'
+		AND interaccion.fecha_creacion >= (current_date - interval '28 days')
+		AND current_date >= interaccion.fecha_creacion
+		<if test="usuarioCreacion!=null">
+			AND
+			producto.secuencia_usuario_creacion=#{usuarioCreacion.secuencia,jdbcType=NUMERIC}
+		</if>
+	</select>
+	
+	<select id="getCounInteraccionVRP" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+
+		SELECT
+		count(interaccion.secuencia) as descripcion , to_char((current_date - interval '28 days'),'DD/MM/YYYY')||' - '||to_char(current_date,'DD/MM/YYYY') as referencia
+		FROM gen_interaccion interaccion
+		WHERE		
+		interaccion.descripcion='VRP'
+		AND interaccion.fecha_creacion >= (current_date - interval '28 days')
+		AND current_date >= interaccion.fecha_creacion
+ 
+	</select>
+
+	<select id="postInteraccion" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+<![CDATA[
+INSERT INTO gen_interaccion( 
+
+secuencia_producto,
+secuencia_usuario_creacion,
+descripcion,
+referencia,
+fecha_creacion)
+VALUES
+(
+
+#{producto.secuencia,jdbcType=NUMERIC},
+#{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+#{descripcion,jdbcType=VARCHAR},
+#{referencia,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE}
+)
+]]>
+	</select>
+
+	<select id="putInteraccion" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+<![CDATA[
+UPDATE gen_interaccion SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+secuencia_producto= #{producto.secuencia,jdbcType=NUMERIC},
+secuencia_usuario_creacion= #{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+referencia= #{referencia,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+	</select>
+
+	<select id="deleteInteraccion" parameterType="aliasInteraccion"
+		resultMap="resMapInteraccion">
+<![CDATA[
+DELETE FROM gen_interaccion
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+</mapper>
+ 

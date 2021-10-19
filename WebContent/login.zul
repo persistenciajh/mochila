@@ -1,0 +1,97 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+
+		<borderlayout  use="com.mochila.gen.action.LoginAction" id="idWindowLogin" >
+			<north height="10%" border="0"></north>
+			<west width="2%" border="0"></west>
+			<east width="2%" border="0"></east>
+			<center border="0">
+
+				<borderlayout>
+					<north height="60px" border="0">
+						<div>
+							<vbox width="100%">
+								<textbox id="idUsuario" value=""
+									placeholder="Nombre de Usuario o E-mail "
+									tooltiptext="Nombre de Usuario o E-mail" width="100%" />
+								<separator height="1px" />
+
+								<textbox id="idClave" value="" type="password"
+									placeholder="Clave" tooltiptext="Clave" width="100%" />
+							</vbox>
+						</div>
+
+					</north>
+
+					<center border="0">
+						<borderlayout>
+							<west width="45%" border="0">
+								<checkbox label="Mantenme conectado" />
+							</west>
+							<east width="45%" border="0">
+								<label value="¿Perdiste tu contraseña?"
+									style="cursor:pointer" />
+							</east>
+							<center border="0">
+
+							</center>
+						</borderlayout>
+					</center>
+					<south height="60px" border="0">
+						<borderlayout>
+							<west width="50%" border="0">
+								<div align="left">
+									<hbox>
+										<div style="background:#179FF3"
+											align="center">
+											<label value="Regístrate"
+												onClick='Executions.sendRedirect("inicio.zul")'
+												style="color:white;font-size:18px;cursor:pointer" />
+										</div>
+
+									</hbox>
+								</div>
+							</west>
+							<east border="0">
+								<div align="left">
+									<hbox>
+										<div style="" align="center">
+											<label value="Cancelar"
+												onClick='idWindowLogin.detach();'
+												style="color:black;font-size:18px;cursor:pointer" />
+										</div>
+
+									</hbox>
+								</div>
+
+							</east>
+							<center border="0">
+								<div align="left">
+									<hbox>
+										<div style="background:#f28517"
+											align="center">
+											<label value="Continuar"
+												onClick='idWindowLogin.iniciarSesion();idWindowLogin.detach();'
+												style="color:white;font-size:18px;cursor:pointer" />
+										</div>
+
+									</hbox>
+								</div>
+							</center>
+						</borderlayout>
+
+
+					</south>
+				</borderlayout>
+
+			</center>
+
+			<south height="10%" border="0"></south>
+		</borderlayout>
+
+
+
+
+
+</zk>

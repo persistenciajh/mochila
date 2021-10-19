@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BodegaMapper">
+
+<resultMap id="resMapBodega" type="aliasBodega">
+<result property="secuencia"  column="secuencia" /> 
+<result property="persona.secuencia"  column="secuencia_persona" /> 
+<result property="persona.nombres" column="persona_nombre" />
+<result property="codigo"  column="codigo" /> 
+<result property="nombre"  column="nombre" /> 
+<result property="direccion"  column="direccion" /> 
+<result property="telefono"  column="telefono" /> 
+<result property="estado"  column="estado" /> 
+<result property="descripcion"  column="descripcion" /> 
+<result property="fechaCreacion"  column="fecha_creacion" /> 
+<result property="fechaActualizacion"  column="fecha_actualizacion" /> 
+<result property="usuarioCreacion.secuencia"  column="secuencia_usuario_creacion" /> 
+<result property="usuarioActualizacion.secuencia"  column="secuencia_usuario_actualizacion" /> 
+</resultMap>
+
+<select id="getBodega" parameterType="aliasBodega" resultMap="resMapBodega">
+
+SELECT
+bodega.secuencia,
+bodega.secuencia_persona,
+bodega.codigo,
+bodega.nombre,
+bodega.direccion,
+bodega.telefono,
+bodega.estado,
+bodega.descripcion,
+bodega.fecha_creacion,
+bodega.fecha_actualizacion,
+bodega.secuencia_usuario_creacion,
+bodega.secuencia_usuario_actualizacion,
+persona.nombres persona_nombre
+FROM inv_bodega bodega, gen_persona persona
+where   persona.secuencia = bodega.secuencia_persona
+
+<if test="nombre != null">
+			AND	 nombre like #{nombre,jdbcType=VARCHAR}
+</if>
+
+</select>
+
+<select id="postBodega" parameterType="aliasBodega" resultMap="resMapBodega">
+<![CDATA[
+INSERT INTO inv_bodega( 
+
+secuencia_persona,
+codigo,
+nombre,
+direccion,
+telefono,
+estado,
+descripcion,
+fecha_creacion,
+fecha_actualizacion,
+secuencia_usuario_creacion,
+secuencia_usuario_actualizacion)
+VALUES
+(
+
+#{persona.secuencia,jdbcType=NUMERIC},
+#{codigo,jdbcType=VARCHAR},
+#{nombre,jdbcType=VARCHAR},
+#{direccion,jdbcType=VARCHAR},
+#{telefono,jdbcType=VARCHAR},
+#{estado,jdbcType=VARCHAR},
+#{descripcion,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE},
+#{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+#{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+)
+]]>
+</select>
+
+<select id="putBodega" parameterType="aliasBodega" resultMap="resMapBodega">
+<![CDATA[
+UPDATE inv_bodega SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+secuencia_persona= #{persona.secuencia,jdbcType=NUMERIC},
+codigo= #{codigo,jdbcType=VARCHAR},
+nombre= #{nombre,jdbcType=VARCHAR},
+direccion= #{direccion,jdbcType=VARCHAR},
+telefono= #{telefono,jdbcType=VARCHAR},
+estado= #{estado,jdbcType=VARCHAR},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE},
+secuencia_usuario_creacion= #{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+secuencia_usuario_actualizacion= #{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+</select>
+
+<select id="deleteBodega" parameterType="aliasBodega" resultMap="resMapBodega">
+<![CDATA[
+DELETE FROM inv_bodega
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+</select>
+
+</mapper>
+ 

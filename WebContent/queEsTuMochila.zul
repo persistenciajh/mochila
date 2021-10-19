@@ -1,0 +1,70 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<window border="normal" width="820px" height="500px"
+		position="center,center" id="idWindowQueEsMochila" closable="true"
+		action="show: slideDown;hide: slideUp">
+		<zscript>
+	public void salir() {
+		Executions.getCurrent().getSession().setAttribute("PRODUCTO_SESSION", null);
+		idWindowQueEsMochila.detach();
+	}
+</zscript>
+
+		<borderlayout>
+			<north height="60px" border="0">
+				<borderlayout>
+					<west width="20px" border="0"></west>
+					<east width="20px" border="normal">
+						<panel height="32px" width="100%">
+							<panelchildren style="cursor:pointer"
+								onClick='salir()'>
+								<vbox align="center" pack="center"
+									height="90%" width="100%">
+									<image src="imagen/close.png"
+										height="16px" />
+								</vbox>
+							</panelchildren>
+						</panel>
+
+					</east>
+					<center border="0">
+						<panel height="40px" width="100%">
+							<panelchildren
+								style="background:#ff7700;color:white;font-size:25px;">
+								<vbox align="center" pack="center"
+									height="90%" width="100%">
+									<h:h>¿Qué es Tu Mochila?</h:h>
+								</vbox>
+							</panelchildren>
+						</panel>
+					</center>
+					<south height="20px" border="0"></south>
+				</borderlayout>
+
+			</north>
+			<west width="20px" border="0"></west>
+			<east width="20px" border="0"></east>
+			<center style="background:#E5E5E5" border="0">
+				<vbox align="start" pack="center">
+					<separator height="5px" />
+					<iframe width="770px" height="290px"
+						src="https://www.youtube.com/embed/CA4cl5XQbh8">
+					</iframe>
+					<html width="100%">
+						<![CDATA[ <font color="gray" size="2"
+						face="arial"> <div> <h4>Tu Mochila</h4> <p>Es un canal
+						de distribución donde encontraras objetos
+						inusuales, sorprendentes, ideas locas y
+						creaciones singulares con¡despachos por todo el
+						país! </div></font> ]]>
+						
+							</html>
+				</vbox>
+			</center>
+			<south height="20px" border="0"></south>
+		</borderlayout>
+
+
+	</window>
+</zk>

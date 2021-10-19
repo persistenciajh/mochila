@@ -1,0 +1,51 @@
+<?page title="Otros Pagos" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns:n="native">
+
+	<div apply=" org.zkoss.bind.BindComposer ">
+		<window use="com.mochila.viewModel.VMOtrosPagos">
+
+
+
+			<groupbox>
+<caption>
+<label value="Mis codigos adquiridos" />			
+</caption>
+
+			<listbox id="OPLbxRecibos" 
+				
+				emptyMessage="No se han encontrado Registros">
+				<listhead>
+					<listheader label="Fecha"  sort="auto" visible="true" />
+					<listheader label="Codigo" sort="auto" visible="true" />
+					<listheader label="Valor" sort="auto" visible="true" />
+				</listhead>
+			</listbox>
+			
+	</groupbox>		
+			
+			<groupbox>
+<caption>
+<label value="Detalle" />			
+</caption>
+
+			
+			<grid>
+			<columns>
+			<column label="Codigo" width="45px" />
+			<column  label="Nombre" />
+			<column label="Tipo" />
+			<column label="Cantidad"  width="60px" />
+			</columns>
+			<rows id="idMibodegaMovilRws">
+			
+			</rows>
+			
+			</grid>
+			
+</groupbox>			
+
+		</window>
+	</div>
+</zk>

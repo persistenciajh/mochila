@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+   <mapper  namespace="sqlCargue">
+
+
+
+   		<resultMap type="aliasCargue" id="entryMapListCargue">
+   			<result property="ID_COLUMNA" 			column="id_columna"/>
+   			<result property="COLUMNA"		column="columna"/>
+   			<result property="TIPO_DATO"	column="Tipo_dato"/>
+   			<result property="IS_NULL"	column="IS_NULL"/>
+   		</resultMap>
+
+
+   		<select id="getListDatosTabla" resultMap="entryMapListCargue" parameterType="java.lang.String">
+   			SELECT 
+   			ordinal_position  id_columna,
+			upper(column_name) columna,
+			data_type Tipo_dato,
+			is_nullable IS_NULL
+			from information_schema.columns 
+			where 
+			table_schema = 'public' 
+			AND  table_name = #{TABLA_NAME}
+			ORDER BY 1
+   		</select>
+
+   		<select id="obtenerColumnasView" resultMap="entryMapListCargue" parameterType="java.lang.String">
+   			select
+   			upper(column_name) columna
+   			from information_schema.columns 
+			where 
+			table_schema = 'public' 
+			AND  table_name = #{TABLA_NAME}
+   			ORDER BY ordinal_position
+   		</select>
+   		
+   		<select id="obtenerTipoDatoColumna" resultType="java.lang.String" parameterType="java.lang.String">
+   		   select DISTINCT data_type Tipo_dato
+	   		from information_schema.columns 
+	   		where 
+	   		table_schema = 'public' 
+	   		and table_name = #{EFP_FUENTE_REPORTE, jdbcType=VARCHAR}
+	        and upper(column_name) = #{EFP_COLUMNA, jdbcType=VARCHAR}
+   		</select>
+
+   	<resultMap type="aliasTablaDinamica" id="entryMapTablaDinamica">
+   			<result property="columna1" 	column="columna1"/>
+   			<result property="columna2" 	column="columna2"/>
+   			<result property="columna3" 	column="columna3"/>
+   			<result property="columna4" 	column="columna4"/>
+   			<result property="columna5" 	column="columna5"/>
+   			<result property="columna6" 	column="columna6"/>
+   			<result property="columna7" 	column="columna7"/>
+   			<result property="columna8" 	column="columna8"/>
+   			<result property="columna9" 	column="columna9"/>
+   			<result property="columna10" 	column="columna10"/>
+   			<result property="columna11" 	column="columna11"/>
+   			<result property="columna12" 	column="columna12"/>
+   			<result property="columna13" 	column="columna13"/>
+   			<result property="columna14" 	column="columna14"/>
+   			<result property="columna15" 	column="columna15"/>
+   			<result property="columna16" 	column="columna16"/>
+   			<result property="columna17" 	column="columna17"/>
+   			<result property="columna18" 	column="columna18"/>
+   			<result property="columna19" 	column="columna19"/>
+   			<result property="columna20" 	column="columna20"/>
+   			<result property="columna21" 	column="columna21"/>
+   			<result property="columna22" 	column="columna22"/>
+   			<result property="columna23" 	column="columna23"/>
+   			<result property="columna24" 	column="columna24"/>
+   			<result property="columna25" 	column="columna25"/>
+   			<result property="columna26" 	column="columna26"/>
+   			<result property="columna27" 	column="columna27"/>
+   			<result property="columna28" 	column="columna28"/>
+   			<result property="columna29" 	column="columna29"/>
+   			<result property="columna30" 	column="columna30"/>
+   			<result property="columna31" 	column="columna31"/>
+   			<result property="columna32" 	column="columna32"/>
+   		</resultMap>
+
+   	<select id="getReportePlano" parameterType="Map" resultMap="entryMapTablaDinamica">
+   			SELECT ${CONSULTA}
+			FROM ${TABLA_NAME}
+			WHERE 1=1
+			<if test="FILTROS !=null ">
+			${FILTROS}
+			</if>
+			ORDER BY 1
+   		</select>
+	
+   </mapper>

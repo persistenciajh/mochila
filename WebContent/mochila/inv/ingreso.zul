@@ -1,0 +1,193 @@
+<?page title="Auto Generated index.zul"?>
+<zk>
+	<borderlayout id="idInvIngreso" use="com.mochila.inv.action.InvIngresoAction">
+		<west title="Área de búsqueda" width="35%" splittable="true"
+			collapsible="true" open="true">
+			<box hflex="true"  height="100%">
+				<hbox hflex="true">
+					<image id="idInvIngresoBtnBuscar"
+						src="imagen/xsearch.png" />
+					<textbox id="idInvIngresoTbxBusqueda" placeholder="Busca Ingresopor codigo"
+						hflex="true" width="100%"
+						height="32px"
+						onChanging="idInvIngreso.onConsultar(event.value);"/>
+				</hbox>
+					<listbox id="idInvIngresoLbxInvIngreso" width="100%" vflex="true">
+						<listhead visible="true">
+							<listheader label="estado" width="45px" align="center"
+								visible="true" />
+							<listheader label="item" sort="auto"
+								visible="true" />
+						</listhead>
+					</listbox>
+			</box>
+		</west>
+		<center>
+			<borderlayout>
+				<center>
+					<div>
+						<toolbar align="start">
+							<toolbarbutton id="idInvIngresoBtnNuevo"
+								label="Nuevo" tooltiptext=""
+								onClick="idInvIngreso.onNuevo();" />
+							<toolbarbutton id="idInvIngresoBtnEditar"
+								label="Editar" disabled="true" 
+							onClick="idInvIngresoBtnNuevo.setDisabled(true);idInvIngreso.onEditar()" />
+							<toolbarbutton id="idInvIngresoBtnGuardar"
+								label="Guardar" disabled="true" onClick="idInvIngreso.onGuardar()" />
+							<toolbarbutton id="idInvIngresoBtnBorrar"
+								label="Eliminar" disabled="true" onClick="idInvIngreso.onBorrar()" />
+							<toolbarbutton id="idInvIngresoBtnCancelar"
+								label="Cancelar" disabled="true" onClick="idInvIngreso.onCancelar()" />
+						</toolbar>
+						<hbox>
+						<groupbox>
+						<caption>Data general</caption>
+							<grid>
+								<rows id="idInvIngresoFormulario">
+									<row visible="false">
+										<hbox>
+											<textbox
+												id="idInvIngresoTbxOperacion" disabled="true" />
+										<textbox
+												id="idInvIngresoTbxSecuencia" disabled="true" />
+										</hbox>
+									</row>					
+					                <row>
+					                    <textbox id="idInvIngresoTbxCodigo" placeholder="Codigo" tooltiptext="Codigo" width="100%"
+										disabled="true" readonly="true" />
+				    				</row>
+				    				 <row>
+					                    <textbox id="idInvIngresoTbxNumero" placeholder="Numero" tooltiptext="Numero" width="100%"
+										disabled="true" />
+				    				</row>	
+				    				
+				    				<row>
+				    				<hbox>
+				    				<hbox>Tipo:
+				    				<listbox  id="idInvIngresoLbxTipo"  mold="select" hflex="1" disabled="true">
+                        				<listitem value="CP" label="Compra a proveedor" selected="true" />
+                        				<listitem value="OT" label="Otro tipo de ingreso de mercancía" />                        				
+                    				</listbox>
+                    				</hbox>
+				    				
+				    				<space width="5px"/>
+				    				<hbox>Fecha:
+				    				
+				    				<datebox id="idInvIngresoDbxFecha"
+										disabled="true"  hflex="true" format="dd/MM/yyyy" />
+				    				</hbox>
+				    				</hbox>
+				    				</row>
+				    			</rows>
+							</grid>
+						</groupbox>
+						<groupbox>
+						<caption>Proveedor</caption>
+							<grid>
+								<rows id="idInvIngresoFormulario2">
+									
+									
+<!-- 				    bandbox persona -->				
+					<row visible="false">        
+					<textbox id="idInvIngresoTbxPersona" placeholder="Proveedor" tooltiptext="Proveedor" width="100%"
+						disabled="true" />
+				    </row>
+
+				    <row>
+									<vbox>
+																	
+									
+                            <bandbox width="320px" id="idInvIngresoBandboxPersona" disabled="true" tooltiptext="Persona" mold="rounded" autodrop="true" onChanging="idInvIngreso.llenarBandboxPersona(event.value)" >
+                                <bandpopup>
+                                    <vbox>
+                                        <listbox height="286px"
+                                        	width="320px" mold="paging"
+                                        	pageSize="5"
+                                        	id="idInvIngresolistboxBandboxPersona"
+                                        	onSelect="idInvIngresoBandboxPersona.value=self.selectedItem.label;idInvIngresoTbxPersona.value=self.selectedItem.value;idInvIngresoBandboxPersona.close();">
+                                        </listbox>
+                                     
+                                    </vbox>
+                                </bandpopup>
+                            </bandbox>
+                        
+									</vbox>
+									</row>
+									
+<!-- 				fin bandbox persona -->				    
+				    
+									
+													
+					                <row>
+					                    <textbox id="idInvIngresoTbxNombrePersona" placeholder="Nombre Contacto" tooltiptext="Nombre Contacto" width="100%"
+										disabled="true" readonly="true" />
+				    				</row>	
+				    				
+				    				<row>
+				    			
+					                    <textbox id="idInvIngresoTbxCelPersona" placeholder="Celular de Contacto" tooltiptext="Cel Contacto" width="100%"
+										disabled="true" readonly="true" />
+										
+				    				</row>
+				    				
+				    			</rows>
+							</grid>
+						</groupbox>
+						</hbox>
+						
+						<groupbox>
+						<caption>Detalle</caption>
+							<grid>
+							
+								<rows id="idInvIngresoFormulario3">
+								<row>
+								<hbox>
+									<textbox id="idInvIngresoTbxCodigoProd" placeholder="Codigo"
+					 								tooltiptext="Codigo"  disabled="true" />
+					 				<button label="buscar" onClick="idInvIngreso.onConsultarProducto(idInvIngresoTbxCodigoProd.value);"/>
+					 				<space width="15px" />
+					 				<intbox id="idInvIngresoTbxCantidadProd" placeholder="Cantidad"  width="100px"
+					 								tooltiptext="Cantidad"  disabled="true" />
+					 				<space width="15px" />
+					 				<button id="idInvIngresoBtnAgregarItem" disabled="true" label="Agregar Item" onClick="idInvIngreso.onAgregarProducto()"  />
+					 												
+					 			</hbox>
+								</row>
+								<row>
+								<hbox>
+								Tipo:
+								<textbox id="idInvIngresoTbxTipoProd" placeholder="Tipo"
+					 								tooltiptext="Tipo"  disabled="true" />
+					 			<space width="5px" />								
+								P/ Venta:
+								<textbox id="idInvIngresoTbxPrecioProd" placeholder="Precio"
+					 								tooltiptext="Precio"  disabled="true" />
+					 								<space width="5px" />
+					 		    
+					 			Descripcion:
+								<textbox id="idInvIngresoTbxDescripcion" placeholder="Descripcion"
+					 								tooltiptext="Descripcion"  disabled="true" />	
+					 								<space width="15px" />
+					 			
+								</hbox>									
+								</row>
+								</rows>
+								</grid>
+						</groupbox>
+						<listbox id="idInvIngresoLbxDetalle">
+						<listhead visible="true">
+							<listheader label="Codigo" />
+							<listheader label="Descripcion" />
+							<listheader label="Cantidad" />
+							<listheader label="Precio" />
+							<listheader label="accion" />
+						</listhead>
+						
+						</listbox>
+					</div>
+				</center>
+			</borderlayout>
+		</center>
+	</borderlayout>
+</zk>

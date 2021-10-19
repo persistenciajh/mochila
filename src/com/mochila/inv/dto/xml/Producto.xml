@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProductoMapper">
+
+	<resultMap id="resMapProducto" type="aliasProducto">
+		<result property="secuencia" column="secuencia" />
+		<result property="tipoProducto.secuencia" column="secuencia_tipo_producto" />
+		<result property="tipoProducto.nombre" column="tipo_nombre" />
+		<result property="codigo" column="codigo" />
+		<result property="nombre" column="nombre" />
+		<result property="precioVenta" column="precio_venta" />
+		<result property="ultPrecioCompra" column="ult_precio_compra" />
+		<result property="cantidadMin" column="cantidad_min" />
+		<result property="descuentoMax" column="descuento_max" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+		<result property="fechaActualizacion" column="fecha_actualizacion" />
+		<result property="usuarioCreacion.secuencia" column="secuencia_usuario_creacion" />
+		<result property="usuarioActualizacion.secuencia" column="secuencia_usuario_actualizacion" />
+	</resultMap>
+
+	<select id="getProducto" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+
+		SELECT
+		producto.secuencia,
+		producto.secuencia_tipo_producto,
+		producto.codigo,
+		producto.nombre,
+		producto.precio_venta,
+		producto.ult_precio_compra,
+		producto.cantidad_min,
+		producto.descuento_max,
+		producto.estado,
+		producto.descripcion,
+		producto.fecha_creacion,
+		producto.fecha_actualizacion,
+		producto.secuencia_usuario_creacion,
+		producto.secuencia_usuario_actualizacion,
+		tipo_producto.nombre tipo_nombre
+		FROM inv_producto producto, inv_tipo_producto
+		tipo_producto
+		where tipo_producto.secuencia = producto.secuencia_tipo_producto
+
+		<if test="nombre != null">
+			AND (producto.nombre like upper( #{nombre,jdbcType=VARCHAR}) 
+			OR  producto.codigo like upper( #{nombre,jdbcType=VARCHAR}))
+		</if>
+		
+		<if test="codigo != null">
+			AND producto.codigo = upper(#{codigo,jdbcType=VARCHAR})
+		</if>
+		
+		<if test="tipoProducto != null">
+			AND producto.secuencia_tipo_producto =
+			#{tipoProducto.secuencia,jdbcType=NUMERIC}
+		</if>
+		<if test="precioVenta!=null">
+			AND producto.precio_venta BETWEEN #{ultPrecioCompra,jdbcType=NUMERIC}
+			AND #{precioVenta,jdbcType=NUMERIC}
+		</if>
+		<if test="usuarioCreacion!=null">
+			AND producto.secuencia_usuario_creacion =
+			#{usuarioCreacion.secuencia,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<select id="getProductoMovil" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+
+		SELECT
+		producto.secuencia,
+		producto.secuencia_tipo_producto,
+		producto.codigo,
+		producto.nombre,
+		producto.precio_venta,
+		producto.ult_precio_compra,
+		producto.cantidad_min,
+		producto.descuento_max,
+		producto.estado,
+		producto.descripcion,
+		producto.fecha_creacion,
+		producto.fecha_actualizacion,
+		producto.secuencia_usuario_creacion,
+		producto.secuencia_usuario_actualizacion,
+		tipo_producto.nombre tipo_nombre
+		FROM inv_producto producto, inv_tipo_producto
+		tipo_producto
+		where tipo_producto.secuencia = producto.secuencia_tipo_producto
+
+
+		<if test="nombre != null">
+			AND producto.nombre like #{nombre,jdbcType=VARCHAR}
+		</if>
+		<if test="tipoProducto != null">
+			AND producto.secuencia_tipo_producto =
+			#{tipoProducto.secuencia,jdbcType=NUMERIC}
+		</if>
+		<if test="precioVenta!=null">
+			AND producto.precio_venta BETWEEN #{ultPrecioCompra,jdbcType=NUMERIC}
+			AND #{precioVenta,jdbcType=NUMERIC}
+		</if>
+		<if test="usuarioCreacion!=null">
+			AND producto.secuencia_usuario_creacion =
+			#{usuarioCreacion.secuencia,jdbcType=NUMERIC}
+		</if>
+
+		order by producto.secuencia
+		limit #{descuentoMax,jdbcType=NUMERIC} offset
+		#{cantidadMin,jdbcType=NUMERIC}
+
+	</select>
+
+	<select id="getPreciosTopes" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+<![CDATA[
+select max(precio_venta) precio_venta,min(precio_venta) ult_precio_compra from inv_producto
+]]>
+	</select>
+
+	<select id="getNumeroRegistros" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+
+		SELECT count(producto.*) as descuento_max FROM inv_producto producto
+		<where>
+			<if test="usuarioCreacion!=null">
+				AND producto.secuencia_usuario_creacion =
+				#{usuarioCreacion.secuencia,jdbcType=NUMERIC}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="postProducto" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+<![CDATA[
+INSERT INTO inv_producto( 
+
+secuencia_tipo_producto,
+codigo,
+nombre,
+precio_venta,
+ult_precio_compra,
+cantidad_min,
+descuento_max,
+estado,
+descripcion,
+fecha_creacion,
+fecha_actualizacion,
+secuencia_usuario_creacion,
+secuencia_usuario_actualizacion)
+VALUES
+(
+
+#{tipoProducto.secuencia,jdbcType=NUMERIC},
+upper(#{codigo,jdbcType=VARCHAR}),
+upper(#{nombre,jdbcType=VARCHAR}),
+#{precioVenta,jdbcType=NUMERIC},
+#{ultPrecioCompra,jdbcType=NUMERIC},
+#{cantidadMin,jdbcType=NUMERIC},
+#{descuentoMax,jdbcType=NUMERIC},
+upper(#{estado,jdbcType=VARCHAR}),
+upper(#{descripcion,jdbcType=VARCHAR}),
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE},
+#{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+#{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+)
+]]>
+	</select>
+
+	<select id="putProducto" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+<![CDATA[
+UPDATE inv_producto SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+secuencia_tipo_producto= #{tipoProducto.secuencia,jdbcType=NUMERIC},
+upper(codigo= #{codigo,jdbcType=VARCHAR}),
+upper(nombre= #{nombre,jdbcType=VARCHAR}),
+precio_venta= #{precioVenta,jdbcType=NUMERIC},
+ult_precio_compra= #{ultPrecioCompra,jdbcType=NUMERIC},
+cantidad_min= #{cantidadMin,jdbcType=NUMERIC},
+descuento_max= #{descuentoMax,jdbcType=NUMERIC},
+upper(estado= #{estado,jdbcType=VARCHAR}),
+upper(descripcion= #{descripcion,jdbcType=VARCHAR}),
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE},
+secuencia_usuario_creacion= #{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+secuencia_usuario_actualizacion= #{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+	</select>
+
+	<select id="deleteProducto" parameterType="aliasProducto"
+		resultMap="resMapProducto">
+<![CDATA[
+DELETE FROM inv_producto
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+	
+	
+     <select id="invExistenciaProducto" statementType="CALLABLE" resultType="java.lang.Long"  parameterType="aliasProducto" >
+	  	
+select
+vpe.existencia
+from vinv_producto_existencia vpe
+where vpe.secuencia_producto= #{secuencia,jdbcType=NUMERIC}
+		
+   	</select>
+
+</mapper>
+ 

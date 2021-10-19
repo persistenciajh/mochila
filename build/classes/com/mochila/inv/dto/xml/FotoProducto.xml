@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FotoProductoMapper">
+
+	<resultMap id="resMapFotoProducto" type="aliasFotoProducto">
+		<result property="secuencia" column="secuencia" />
+
+		<result property="producto.secuencia" column="producto_secuencia" />
+		<result property="producto.nombre" column="producto_nombre" />
+		<result property="producto.codigo" column="producto_codigo" />
+		<result property="producto.precioVenta" column="producto_precio_venta" />
+		<result property="producto.ultPrecioCompra" column="producto_ult_precio_compra" />
+		<result property="producto.cantidadMin" column="producto_cantidad_min" />
+		<result property="producto.descuentoMax" column="producto_descuento_max" />
+		<result property="producto.estado" column="producto_estado" />
+		<result property="producto.descripcion" column="producto_descripcion" />
+		<result property="producto.usuarioCreacion.secuencia" column="producto_secuencia_usuario_creacion" />
+		<result property="producto.usuarioActualizacion.secuencia"
+			column="producto_secuencia_usuario_actualizacion" />
+
+		<result property="img" column="img" />
+		<result property="estado" column="estado" />
+		<result property="descripcion" column="descripcion" />
+		<result property="fechaCreacion" column="fecha_creacion" />
+		<result property="fechaActualizacion" column="fecha_actualizacion" />
+		<result property="usuarioCreacion.secuencia" column="secuencia_usuario_creacion" />
+		<result property="usuarioActualizacion.secuencia" column="secuencia_usuario_actualizacion" />
+	</resultMap>
+
+	<select id="getFotoProducto" parameterType="aliasFotoProducto"
+		resultMap="resMapFotoProducto">
+
+		SELECT
+		fotoProducto.secuencia,
+		fotoProducto.secuencia_producto,
+		fotoProducto.img,
+		fotoProducto.estado,
+		fotoProducto.descripcion,
+		fotoProducto.fecha_creacion,
+		fotoProducto.fecha_actualizacion,
+		fotoProducto.secuencia_usuario_creacion,
+		fotoProducto.secuencia_usuario_actualizacion,
+		producto.secuencia as producto_secuencia,
+		producto.codigo as producto_codigo,
+		producto.nombre as producto_nombre,
+		producto.precio_venta as producto_precio_venta,
+		producto.ult_precio_compra as producto_ult_precio_compra,
+		producto.cantidad_min as producto_cantidad_min,
+		producto.descuento_max as producto_descuento_max,
+		producto.estado as producto_estado,
+		producto.descripcion as producto_descripcion,
+		producto.secuencia_usuario_creacion as producto_secuencia_usuario_creacion,
+		producto.secuencia_usuario_actualizacion as
+		producto_secuencia_usuario_actualizacion
+
+		FROM inv_foto_producto fotoProducto
+		,inv_producto producto
+		where producto.nombre like
+		#{descripcion,jdbcType=VARCHAR}
+		AND
+		producto.secuencia=fotoProducto.secuencia_producto
+
+		<if test="producto != null">
+			and
+			fotoProducto.secuencia_producto=#{producto.secuencia,jdbcType=NUMERIC}
+		</if>
+	</select>
+
+	<select id="getFotoProductoPrincipal" parameterType="aliasFotoProducto"
+		resultMap="resMapFotoProducto">
+<![CDATA[
+SELECT
+fotoProducto.secuencia,
+fotoProducto.secuencia_producto,
+fotoProducto.img,
+
+producto.secuencia as producto_secuencia,
+producto.codigo as producto_codigo,
+producto.nombre as producto_nombre,
+producto.precio_venta as producto_precio_venta,
+producto.ult_precio_compra as producto_ult_precio_compra,
+producto.cantidad_min as producto_cantidad_min,
+producto.descuento_max as producto_descuento_max,
+producto.estado as producto_estado,
+producto.descripcion as producto_descripcion,
+producto.secuencia_usuario_creacion as producto_secuencia_usuario_creacion,
+producto.secuencia_usuario_actualizacion as producto_secuencia_usuario_actualizacion
+
+FROM inv_foto_producto fotoProducto , inv_producto producto 
+where  producto.secuencia=#{producto.secuencia,jdbcType=NUMERIC}
+AND fotoProducto.secuencia= (SELECT min(fotoProducto.secuencia) FROM inv_foto_producto fotoProducto
+                               where fotoProducto.secuencia_producto=#{producto.secuencia,jdbcType=NUMERIC})
+       
+]]>
+	</select>
+
+	<select id="postFotoProducto" parameterType="aliasFotoProducto"
+		resultMap="resMapFotoProducto">
+<![CDATA[
+INSERT INTO inv_foto_producto( 
+
+secuencia_producto,
+img,
+estado,
+descripcion,
+fecha_creacion,
+fecha_actualizacion,
+secuencia_usuario_creacion,
+secuencia_usuario_actualizacion)
+VALUES
+(
+
+1,
+#{img,jdbcType=BINARY},
+#{estado,jdbcType=VARCHAR},
+#{descripcion,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE},
+0,
+0
+)
+]]>
+	</select>
+
+	<select id="putFotoProducto" parameterType="aliasFotoProducto"
+		resultMap="resMapFotoProducto">
+<![CDATA[
+UPDATE inv_foto_producto SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+secuencia_producto= #{producto.secuencia,jdbcType=NUMERIC},
+img= #{img,jdbcType=BINARY},
+estado= #{estado,jdbcType=VARCHAR},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE},
+secuencia_usuario_creacion= #{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+secuencia_usuario_actualizacion= #{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+	</select>
+
+	<select id="deleteFotoProducto" parameterType="aliasFotoProducto"
+		resultMap="resMapFotoProducto">
+<![CDATA[
+DELETE FROM inv_foto_producto
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+	</select>
+
+</mapper>
+ 

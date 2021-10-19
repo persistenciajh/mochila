@@ -1,0 +1,149 @@
+<?page title="TuMochila" contentType="text/html;charset=UTF-8"?>
+<?link rel="icon" type="image/x-icon" href="/imagen/favicon.ico"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<borderlayout use="com.mochila.gen.action.EstadisticaAction" >
+
+		<east width="30px" border="0"></east>
+		<west width="30px" border="0"></west>
+		<center border="0">
+			<div>
+				<panel height="230px" width="100%" border="normal">
+					<panelchildren
+						style="background:#E5E5E5;color:black;">
+						<vbox align="center" pack="start">
+							<space />
+							<html>
+
+
+
+
+								
+								<![CDATA[ <font color="black" size="3"
+								face="arial"><div> <b>Últimos 28
+								días</b> </div></font> ]]>
+								
+								
+								
+							
+							
+														
+													</html>
+							<html id="idEstadisticaRangoFechasCounHtml">
+
+
+
+
+								
+								<![CDATA[ <font color="gray" size="2"
+								face="arial"><div>01/03/2018 -
+								29/03/2018</div></font> ]]>
+								
+								
+								
+							
+							
+														
+													</html>
+							<hbox align="center" pack="center">
+								<panel height="150px" width="250px">
+									<panelchildren
+										style="background:#006EB3;color:white;font-size:15px;cursor:pointer"
+										onClick='Executions.sendRedirect("index.zul")'>
+										<vbox align="center"
+											pack="center" height="90%" width="100%">
+											<html id="idEstadisticaCounInteraccionProductoUsuarioHtml">
+
+
+
+												
+												<![CDATA[ <font
+												color="white" size="3"
+												face="arial"><div>
+												<b>Interacción con las
+												publicaciones
+												</br></br>0</b>
+												</div></font> ]]>
+												
+												
+												
+											
+							</html>
+										</vbox>
+									</panelchildren>
+								</panel>
+								<panel height="150px" width="250px">
+									<panelchildren
+										style="background:#ff7700;color:white;font-size:15px;cursor:pointer"
+										onClick='Executions.sendRedirect("index.zul")'>
+										<vbox align="center"
+											pack="center" height="90%" width="100%">
+											<html id="idEstadisticaCounVRPHtml">
+
+
+												
+												<![CDATA[ <font
+												color="white" size="3"
+												face="arial"><div>
+												<b>Visitas registradas
+												en el
+												sitio</br></br>0</b>
+												</div></font> ]]>
+												
+												
+												
+											
+							</html>
+										</vbox>
+									</panelchildren>
+								</panel>
+							</hbox>
+							<space />
+						</vbox>
+					</panelchildren>
+				</panel>
+				<space />
+				<panel height="280px" width="100%" border="normal">
+					<panelchildren
+						style="background:#E5E5E5;color:black;">
+						<vbox align="center" pack="start">
+						<space />
+							<html><![CDATA[ <font color="black" size="3"
+								face="arial"><div> <b>Publicaciones</b></div></font> ]]></html>
+								
+								
+								
+								<html><![CDATA[ <font color="gray" size="2"
+								face="arial">publicaciones realizadas</font> ]]></html>
+						
+						<vbox id="idEstadisticasVbox" align="center" pack="center">
+
+							<panel border="normal" height="64px"
+								width="148px" style="margin-top:3px;">
+								<panelchildren
+									style="color:black;font-size:15px;cursor:pointer">
+									
+									<hbox align="start" pack="center"
+										height="90%" width="100%">
+										<image
+											src="imagen/imageDefault.png" width="64px" height="64px">
+										</image>
+										<html>											
+											<![CDATA[ <font
+											color="black" size="1"
+											face="arial">parla es una ciudad española situada enn</font> ]]>
+											</html>
+											</hbox>						
+											
+								</panelchildren>
+							</panel>
+
+	
+						</vbox>
+						</vbox>
+					</panelchildren>
+				</panel>
+			</div>
+		</center>
+	</borderlayout>
+</zk>

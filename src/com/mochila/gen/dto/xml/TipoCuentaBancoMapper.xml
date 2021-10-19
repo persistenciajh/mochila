@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TipoCuentaBanco">
+	<select id="obtenerListadoTipoCuentaBanco" parameterType="java.util.Map" resultType="com.mochila.dto.TipoCuentaBanco">
+		SELECT
+			TIPO_CUENTA_BANCO 									AS TIPOCUENTABANCO,
+			NOMBRE												AS NOMBRE,
+			DECODE (ESTADO, 'A', 'Activo', 'I', 'Inactivo') 	AS ESTADO,
+			DESCRIPCION             							AS DESCRIPCION
+		FROM
+			TED_TIPO_CUENTA_BANCO
+		WHERE
+			TIPO_CUENTA_BANCO LIKE NVL (#{CODIGO,jdbcType=VARCHAR},'%')
+	</select>
+</mapper>

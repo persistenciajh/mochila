@@ -1,0 +1,124 @@
+<?link rel="icon" type="image/x-icon" href="/imagenes/cliente/favicon.ico"?>
+<?page title="Portal Financiero"?>
+<?link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" ?>
+<?link rel="stylesheet" href="/css/iceberg.css" ?>
+<?link rel="stylesheet" href="/css/login.css" ?>
+<zk xmlns:w="client" xmlns:n="native">
+	<div zclass="none" style="background-color: #f8f9fa!important;"
+		apply="org.zkoss.bind.BindComposer"
+			viewModel="@id('vm') @init('com.mochila.viewModel.IniciarSesionViewModel')">
+		<n:nav
+			class="navbar navbar-light bg-light sticky-top flex-sm-nowrap  flex-md-nowrap  bg-white border-bottom shadow-sm"
+			style="height: 80px;padding-top: 0;padding-bottom: 0;">
+			<n:div class="row"
+				style="display: flex;align-items:center;width: 100%;">
+				<n:div class="col-xs-2 col-sm-3 col-md-3 col-lg-2"
+					style="margin-right: 0;padding: 0;display: flex;justify-content: center;">
+
+					<image src="/imagen/logoCliente.png"
+						class="img-fluid" style="max-height: 50px; max-width: 150px;">
+					</image>
+				</n:div>
+				<n:div class="col-xs-8 col-sm-9 col-md-9 col-lg-10"
+					style="padding: 0;margin: 0;display: flex;justify-content: center;">
+					<n:span>
+						<n:label
+							style="color:gray;font-size:14px;font-weight: bold ; ">
+							DAFFA - Adminsitrativo
+						</n:label>
+						<n:label
+							style="color:red;font-size:10px;font-weight: bold ; ">
+							[Pruebas]
+						</n:label>
+					</n:span>
+
+				</n:div>
+
+			</n:div>
+
+		</n:nav>
+
+		<n:div class="global-container">
+			<n:div class="card login-form">
+				<n:div class="card-body">
+					<n:h3 class="card-title text-center">
+						Autenticación
+					</n:h3>
+					<n:hr class="my-4" />
+					<n:div class="card-text"
+						style="display: flex; justify-content: center;">
+						<grid sclass="mx-auto" zclass="none"
+							id="gridFormularioIniciarSesion">
+							<columns>
+								<column />
+								<column />
+							</columns>
+							<rows>
+								<row hflex="true"
+									style="margin-bottom:20px !important">
+									<cell colspan="2" align="center">
+										<div align="center">
+											<vbox hflex="1">
+												<hbox>
+													<label value="*"
+														style="color:red" />
+													<label
+														value="Usuario: " focus="true" />
+												</hbox>
+												<longbox hflex="true" tooltiptext="Ingrese su Identificacion"
+													 value="@bind(vm.usuario.nombreUsuario)" constraint="no empty"
+													maxlength="15" focus="true"
+													onOK="" />
+											</vbox>
+										</div>
+										<separator />
+									</cell>
+								</row>
+								<row hflex="true">
+									<cell colspan="2" align="center">
+										<div align="center">
+											<vbox hflex="1">
+												<hbox>
+													<label value="*" style="color:red" />
+													<label value="Contraseña: " />
+												</hbox>
+												<textbox
+													id="idCVigTbxPass" value="@bind(vm.usuario.clave)" tooltiptext="Ingrese su clave"
+													type="password" constraint="no empty" hflex="true"
+													maxlength="15" onOK="" />
+											</vbox>
+										</div>
+										<separator />
+									</cell>
+								</row>
+								
+								<row>
+									<cell colspan="2" align="center"
+										zclass="none">
+										<div align="center">
+											<button
+												sclass="btn btn-primary btn-block" label="Ingresar"
+												onClick="@command('iniciarSesion')"
+												 />
+										</div>
+										<separator />
+										<separator />
+										<separator />
+
+									</cell>
+								</row>
+							</rows>
+						</grid>
+					</n:div>
+				</n:div>
+			</n:div>
+		</n:div>
+	</div>
+
+
+	<?script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js" ?>
+	<?script src="/js/jquery-3.5.1.slim.min.js" ?>
+	<?script src="/js/popper-1.16.1.min.js" ?>
+	<?script src="/bootstrap/js/bootstrap.min.js" ?>
+
+</zk>

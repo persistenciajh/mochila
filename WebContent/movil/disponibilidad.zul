@@ -1,0 +1,159 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+<borderlayout>
+		<north height="32px" border="0">
+			<borderlayout>
+				<east width="5px" border="0"></east>
+				<west width="5px" border="0"></west>
+				<center border="0">
+					<borderlayout>
+						<east width="64px" border="0">
+							<panel  height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image
+											src="../imagen/xsearch.png" height="16px" visible="false" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</east>
+						<west width="64px" border="0">
+							<panel height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/menu.png"
+											visible="false" height="32px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</west>
+						<center border="0">
+							<panel height="32px" width="100%" border="0">
+								<panelchildren>
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<image src="../imagen/logo.png"
+											height="24px" />
+									</vbox>
+								</panelchildren>
+							</panel>
+
+						</center>
+					</borderlayout>
+				</center>
+			</borderlayout>
+		</north>
+		<east width="5px" border="0"></east>
+		<west width="5px" border="0"></west>
+		<center>
+	<borderlayout id="idBorderlayoutDiponibilidad"
+		use="com.mochila.gen.action.DisponibilidadAction">
+		<north height="105px" border="0">
+			<borderlayout>
+				
+				<center border="0">
+					<panel height="100px" width="100%">
+						<panelchildren
+							style="background:#E5E5E5;color:white;font-size:15px;">
+							<vbox align="start" pack="center"
+								height="90%" width="100%">
+								<separator />
+								<html width="100%">
+
+									
+									<![CDATA[ <font color="gray"
+									size="2" face="arial"> <div><b> No
+									dudes en ponerte en contacto con
+									nosotros</b></div></font> ]]>
+									
+										
+						
+							</html>
+								<separator />
+								<vbox align="start" pack="center">
+									<html width="100%">
+
+										
+										<![CDATA[ <font color="gray"
+										size="2" face="arial"> <div>
+										Diligencia los campos para
+										refinar tu búsqueda:
+										</div></font> ]]>
+										
+										
+						
+							</html>
+							<hbox align="center" pack="center">
+									<listbox
+										id="idWindowDiponibilidadBusqueda" mold="select">
+										<listitem
+											label="numero de contacto" selected="true" />
+										<listitem
+											label="ciudad de contacto" />
+										<listitem
+											label="nombre de contacto" />
+
+									</listbox>
+
+									<textbox
+										id="idWindowDiponibilidadTxtBusqueda" width="120px"
+										height="5px" />
+							
+									<panel height="20px"
+										width="60px">
+										<panelchildren
+											style="background:gray;color:white;font-size:15px;cursor:pointer"
+											onClick='idBorderlayoutDiponibilidad.mostrarInfoPersona()'>
+											<vbox align="center"
+												pack="center" height="90%" width="100%">
+
+												<html width="100%">
+
+													
+													<![CDATA[ <font
+													color="white"
+													size="2"
+													face="arial">
+													<div>validar</div></font>
+													]]>
+													
+						
+						
+							</html>
+											</vbox>
+										</panelchildren>
+									</panel>
+								</hbox>
+								</vbox>
+							</vbox>
+						</panelchildren>
+					</panel>
+				</center>
+				<south height="5px" border="0"></south>
+			</borderlayout>
+		</north>
+		
+		<center style="background:#f7f7f7" border="0">
+			<vbox align="center" pack="center">
+				<separator />
+				<grid width="100%" height="100%">
+					<columns>
+						<column align="center" />
+						<column align="center" />
+						<column align="center" />
+					</columns>
+					<rows id="idWindowDiponibilidadRowResultado">
+
+					</rows>
+				</grid>
+			</vbox>
+		</center>
+		<south height="20px" border="0"></south>
+	</borderlayout>
+	</center>
+	</borderlayout>
+
+</zk>

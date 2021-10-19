@@ -1,0 +1,20 @@
+<?page title="productoExistencia" contentType="text/html;charset=UTF-8"?>
+<zk>
+<borderlayout id="idProductoExistencia" use="com.mochila.inv.action.ProductoExistenciaAction" >
+<center>
+
+<listbox id="idProductoExistenciaLbxInvSalida" width="100%" vflex="true">
+						<listhead visible="true">
+							<listheader label="codigo"  align="center"  />
+							<listheader label="nombre"  align="center"  />
+							<listheader label="tipo"  align="center"  />
+							<listheader label="existencia"  align="center"  />
+							<listheader label="precio compra,"  align="center"  />
+							<listheader label="precio venta"  align="center"  />
+							<listheader label="diferencia"  align="center"  />
+						</listhead>
+</listbox>
+					
+</center>
+</borderlayout>
+</zk>

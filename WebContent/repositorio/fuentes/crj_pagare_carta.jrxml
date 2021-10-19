@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<jasperReport
+		 name="crj_pagare_carta"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="Aplicacion"
+		 whenResourceMissingType="Empty">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CRP_SEC_SOLICITUD" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select sec_solicitud from crt_solicitud 
+where sec_solicitud =nvl(to_number($P{CRP_SEC_SOLICITUD}),sec_solicitud)
+order by sec_solicitud]]></queryString>
+
+	<field name="SEC_SOLICITUD" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="33"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="33"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="11"
+						width="535"
+						height="20"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["PagarÃ© CrÃ©dito Educativo- Persona Natural"]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="277"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="29"
+						width="535"
+						height="20"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nosotros_______________________________________________"+
+"Y___________________________________________ Vecinos de ________________"+
+", identificados como aparece al pie de nuestras firmas, por medio del presente"+ 
+"pagarÃ© hacemos constar: PRIMERO: Que como deudores solidarios nos obligamos,"+ 
+"a pagar incondicional e irrevocablemente a la "+ $R{ger.rplantilla.nombreCliente}+
+", o a su orden, en sus Oficinas de"+
+"______________________________________, la suma total de"+
+" _____________________________________________ ($_______________)"+
+"moneda legal, de la cual, corresponde de la suma de "+
+"________________________________________________________________________________________________(_$ ___________)"+
+" moneda legal a capital, la suma de ____________________________________________________________________________($_________________)"+
+" moneda legal, a otras obligaciones, la suma de _________________________________________________________ ($_____________ )"+
+" moneda legal, a intereses corrientes, sobre los saldos de la obligación, a la tasa del"+
+" _____ por ciento (  %) nominal anual liquidado mes vencido y la suma de"+
+" __________________________________________________________________ ($_____________ ) moneda legal"+
+", a intereses de mora a la tasa del _________ por ciento ( %) nominal anual liquidado mes"+
+" vencido. SEGUNDO: Que autorizamos irrevocablemente a la "+
+$R{ger.rplantilla.nombreCliente}+ 
+" o a quien represente sus derechos u ostente en el futuro la calidad de acreedor"+ 
+" para reportar, procesar, solicitar, suministrar y divulgar a la Central de Información"+
+" del Sector Financiero que administra la Asociación Bancaria y de entidades financieras"+
+" de Colombia, a cualquier otra entidad que administre o maneje bases de datos pÃºblica"+
+" o privada o a cualquier entidad financiera, todo lo relativo a la información comercial"+ 
+" de que se disponga en cualquier tiempo y al cumplimiento o no de mis obligaciones presentes"+
+" , pasadas y futuras en los tÃ©rminos legales. TERCERO: en caso de cobro judicial o"+
+" extrajudicial de este pagarÃ©, serÃ¡n de mi cuenta los gastos y costas que se ocasionen"+
+" por la cobranza; por tanto en el evento de un cobro judicial, las gastos no se limitarÃ¡n"+
+" a las costas judiciales que decrete el juez, sino tambiÃ©n serÃ¡n de mi cargo, el valor"+
+" del impuesto de timbre, todos los honorarios de abogados de acuerdo con la autorización"+
+" que he impartido a la "+ $R{ger.rplantilla.nombreCliente}+", así como las comisiones por"+
+" concepto de seguros que se causen hasta el momento de pago."+
+" CUARTO: Este pagarÃ© podrÃ¡ ser llenado por la "+$R{ger.rplantilla.nombreCliente}+
+" segÃºn las instrucciones impartidas por nosotros en la carta de instrucciones"+
+" que se encuentra adjunta, de conformidad con lo dispuesto en el Artículo 622 inciso 2Âº"+
+" del Código de Comercio. QUINTO: Que reconocemos el derecho que le asiste a la "+
+$R{ger.rplantilla.nombreCliente}+", para que en el caso de presentar mora en el"+
+" cumplimiento de cualquiera de las obligaciones que tenga con el mismo pueda declarar"+
+" extinguido el plazo y de esta manera exigir anticipadamente, extrajudicial o judicialmente,"+
+" sin necesidad de requerimiento alguno, el pago de la totalidad del saldo adeudado de la obligación"+
+" incorporada en el presente pagarÃ©, así como sus intereses, los gastos de cobranza incluyendo"+
+" los honorarios de abogado que hayan sido pactados por la "+ 
+$R{ger.rplantilla.nombreCliente}+ " y las demÃ¡s obligaciones a nuestro cargo,"+
+" constituidas a favor del mismo. SEXTO: En caso de pÃ©rdida, deterioro o destrucción"+
+" de este documento sin perjuicio de ofrecernos las seguridades tendientes a evitar su uso"+
+" fraudulento, nos comprometemos a suscribir uno nuevo, obligación que podrÃ¡ ser exigida aÃºn"+
+" por la vía ejecutiva. La obligación de suscribir el documento serÃ¡ exigible desde el momento"+
+" en que así lo requiera la "+ $R{ger.rplantilla.nombreCliente}+
+"En constancia firmamos en _____________________, a los _____________________________________________"+
+"\n"+"\n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="11"
+						width="535"
+						height="18"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["PagarÃ© NÂº "+$F{SEC_SOLICITUD}.toString()+" VALOR $_____________________M/CTE"+"\n"+ 
+"VENCE______________"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="52"
+						width="535"
+						height="16"
+						key="textField-4"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["______________________________________________   _______________________________________________"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="69"
+						width="252"
+						height="19"
+						key="textField-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["EL BENEFICIARIO (nombre y firma)"+"\n"+
+"Identificacion No. "+"\n"+
+"Dirección: "+"\n"+
+"TelÃ©fono casa: "+"\n"+
+"TelÃ©fono oficina:____________"+"\n"+ 
+"TelÃ©fono celular: ___________ "+"\n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="257"
+						y="69"
+						width="278"
+						height="19"
+						key="textField-6"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["EL DEUDOR SOLIDARIO y/o"+"\n"+
+"Representante Legal Persona Jurídica(nombre y firma)"+"\n"+ 
+"CÃ©dula de Ciudadania y/o NIT No."+"\n"+
+"Direccion: "+"\n"+
+"TelÃ©fono oficina:___________"+"\n"+
+"TelÃ©fono celular: __________"+"\n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="92"
+						width="535"
+						height="18"
+						key="textField-7"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["\n"+"Representante Legal cuando el beneficiario es menor de edad "+"\n"+
+"C.C. No. __________________________"+"\n"+
+"TelÃ©fono casa:_____________________"+"\n"+ 
+"TelÃ©fono Oficina:__________________"+"\n"+ 
+"TelÃ©fono celular: _________________"+"\n"+
+"Direccion y Ciudad: ________________________________________________ \n\n\n\n\n\n\n\n\n\n\n\n\n\n"]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="90"
+						width="535"
+						height="0"
+						key="line-1"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="0"
+						y="129"
+						width="535"
+						height="19"
+						key="staticText-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Cartas de Instrucciones (Articulo 622 C.Co.)]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="148"
+						width="535"
+						height="27"
+						key="textField-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["\n\nSeÃ±ores"+"\n"+
+$R{ger.rplantilla.nombreCliente}+"\n"+
+"Ciudad \n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="175"
+						width="535"
+						height="18"
+						key="textField-9"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Ref. PAGARÃ‰ No."+$F{SEC_SOLICITUD}.toString()+"\n\n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="193"
+						width="535"
+						height="24"
+						key="textField-10"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nosotros,  ___________________________________  Y ___________________________________Identificados como aparece al pie de nuestras firmas "+
+" quienes actuamos como deudores solidarios, habida cuenta que la "+$R{ger.rplantilla.nombreCliente}+ " nos ha otorgado crÃ©dito educativo " +
+" las cuales declaramos conocer y aceptar, por medio del presente escrito y de conformidad con lo establecido en el Artículo 622 del Código de Comercio"+
+" autorizamos de manera expresa e irrevocable a la "+$R{ger.rplantilla.nombreCliente}+", para llenar en cualquier tiempo y sin previo aviso"+ 
+"los espacios dejados en blanco en el pagarÃ© de la referencia, debidamente suscrito por nosotros , de acuerdo con las siguientes instrucciones:\n\n"+ 
+"1. En â€œPor la suma de $â€� se debe colocar en nÃºmeros la cuantía del pagarÃ©, que serÃ¡ igual al monto total de las obligaciones exigibles a nuestro cargo"+
+"y a favor de la "+$R{ger.rplantilla.nombreCliente}+", que existan al momento de ser llenado el título y, en general, por cualquier obligación"+ 
+" o concepto que cualquiera de los firmantes estemos adeudando, a cualquier título, conjunta o separadamente, directa o indirectamente, obligaciones que"+
+" desde ya asumimos y nos obligamos a pagar solidariamente. En este sentido, la cuantía del título, incluye, sin que se limite a los mismos, los siguientes"+
+" conceptos: capital, intereses corrientes, intereses moratorios, los costos y o primas de los seguros u otros de características similares si hubiere lugar"+ 
+"a ellos. "+"\n\n"+ 
+"2. En el espacio destinado a â€œFecha de vencimientoâ€�, se colocarÃ¡ la fecha en que sea llenado el pagarÃ© por la "+ $R{ger.rplantilla.nombreCliente}+". "+"\n\n"+ 
+"3. En el espacio asignado â€œen sus oficinas deâ€� serÃ¡ la ciudad que, en el momento de llenar o completar el pagarÃ© considere pertinente la"+$R{ger.rplantilla.nombreCliente}+". "+ "\n\n" +
+"4. En el espacio destinado para â€œla suma total deâ€� se debe colocar en letras y nÃºmeros el valor total de la suma adeudada, de acuerdo con lo seÃ±alado "+ 
+"en el numeral 1 de esta carta de instrucciones. "+"\n\n"+
+"5. En el espacio asignado a la cuantía por â€œcapitalâ€� se debe colocar en letras y nÃºmeros, el valor total a nuestro cargo por concepto del capital adeudado, al día en que se diligencie el pagarÃ©.  \n\n"+
+"6. En el espacio asignado a la cuantía por â€œotras obligacionesâ€� se debe colocar en letras y nÃºmeros, el valor total a nuestro cargo por concepto de otras obligaciones adeudadas"+ "seÃ±aladas en el numeral 1 de esta carta de instrucciones, diferentes a capital, al día en que se diligencie el pagarÃ©."+"\n\n"+
+"7. En el espacio destinado a los â€œintereses corrientesâ€� se debe colocar en letras y nÃºmeros, el valor total de las sumas que por concepto de intereses corrientes causados y no pagados, que adeudemos a la "+$R{ger.rplantilla.nombreCliente}+" a la fecha en que se diligencie el pagarÃ©."+"\n\n"+
+"8. En el espacio destinado a los â€œintereses moratoriosâ€� se debe colocar en letras y nÃºmeros, el valor total de las sumas que por concepto de intereses moratorios causados y no pagados, que adeudemos a la "+$R{ger.rplantilla.nombreCliente}+" a la fecha en que se diligencie el pagarÃ©."+"\n\n"+ 
+"9. En el espacio asignado para la â€œtasa de Intereses corrientesâ€� serÃ¡ la establecida por la "+$R{ger.rplantilla.nombreCliente}+", y demÃ¡s normas que lo aclaren, modifiquen o complementen, sin exceder el límite legal."+"\n\n"+
+"10. En el espacio asignado para la â€œtasa de Intereses moratoriosâ€� serÃ¡ la establecida por la "+$R{ger.rplantilla.nombreCliente}+", y demÃ¡s normas que lo aclaren, modifiquen o complementen, sin exceder el límite legal."+"\n\n" +
+"11. En el espacio asignado para â€œEn constancia firmamos enâ€� se colocarÃ¡ el lugar y fecha en que sea llenado el pagarÃ©. "+"\n\n"+
+"Atentamente;"+"\n\n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="233"
+						width="252"
+						height="19"
+						key="textField-12"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nombre y firma Beneficiario \n"+
+"Identificacion No.______________ \n"+
+"de _______________ \n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="257"
+						y="233"
+						width="278"
+						height="19"
+						key="textField-13"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nombre y firma Deudor Solidario y/o \n"+
+"Representante Legal Persona Jurídica \n"+
+"C.C y/o NIT No._____________ \n"+ 
+"de _____________ \n"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="217"
+						width="535"
+						height="16"
+						key="textField-14"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["______________________________________________   _______________________________________________"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="252"
+						width="534"
+						height="18"
+						key="textField-15"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Representante Legal cuando el beneficiario es menor de edad "+"\n"+
+"C.C. No. _______________________ \n"]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

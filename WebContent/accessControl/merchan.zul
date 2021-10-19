@@ -1,0 +1,361 @@
+<?link rel="icon" type="image/x-icon" href="/imagen/favicon.ico"?>
+<?page title="TuMochila" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+
+	<borderlayout id="idMenu" use="com.mochila.MenuAction">
+		<north height="50px" border="0">
+			<borderlayout>
+				<west id="idMenuWestMenuNorte" width="250px"
+					border="0">
+					<borderlayout>
+						<west width="64px" border="0">
+							<panel border="0" height="40px" width="50px"
+								style="margin-top:3px;">
+								<panelchildren
+									style="color:black;font-size:15px;cursor:pointer">
+									<vbox align="center" pack="center"
+										height="100%" width="100%">
+										<image
+											src="imagen/userSettings.png" width="24px" height="24px"
+											onClick='verMenu();' />
+										<zscript><![CDATA[
+	public void verMenu() {
+
+		if (idMenuWestMenu.isOpen()) {
+			idMenuWestMenu.setOpen(false);
+			idMenuWestMenu.setVisible(false);
+
+		} else {
+			idMenuWestMenu.setVisible(true);
+			idMenuWestMenu.setOpen(true);
+
+		}
+
+	}
+]]>
+    </zscript>
+									</vbox>
+								</panelchildren>
+
+							</panel>
+						</west>
+						<center border="0">
+							<panel border="0" height="50px" width="100%"
+								style="margin-top:3px;">
+								<panelchildren
+									style="color:black;font-size:15px;cursor:pointer">
+									<vbox align="start" pack="center"
+										height="90%" width="100%">
+										<image src="/imagen/logo.png"
+											onClick='Executions.sendRedirect("home.zul")'
+											style="cursor:pointer" width="100%">
+										</image>
+									</vbox>
+								</panelchildren>
+							</panel>
+						</center>
+						<east width="10%" border="0"></east>
+					</borderlayout>
+
+				</west>
+				<center border="0">
+					<div></div>
+
+				</center>
+			</borderlayout>
+		</north>
+		<west id="idMenuWestMenu" width="250px" border="0"
+			visible="true" collapsible="true">
+
+			<borderlayout>
+				<north height="64px" style="background:#E5E5E5"
+					border="0">
+					<!-- 			cabeza de menu -->
+					<borderlayout>
+						<!-- 						<west width="64px" style="background:#E5E5E5" -->
+						<!-- 							border="0"> -->
+						<!-- 							<panel border="0" height="64px" width="64px" -->
+						<!-- 								style="margin-top:3px;"> -->
+						<!-- 								<panelchildren -->
+						<!-- 									style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer"> -->
+						<!-- 									<vbox align="center" pack="center" -->
+						<!-- 										height="100%" width="100%"> -->
+						<!-- 										<image src="imagen/userSettings.png" width="32px" height="32px" -->
+						<!-- 											onClick='idMenuWestMenu.setWidth("64px")' /> -->
+						<!-- 									</vbox> -->
+						<!-- 								</panelchildren> -->
+						<!-- 							</panel> -->
+						<!-- 						</west> -->
+						<center style="background:#E5E5E5" border="0">
+							<panel border="0" height="50px" width="100%"
+								style="margin-top:3px;">
+								<panelchildren
+									style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer">
+									<vbox align="center" pack="center"
+										height="90%" width="100%">
+										<label
+											id="idMenuLbxNombreUsuario"
+											value="jherson abraham arroyo herrera"
+											style="color:black;font-size:15px;" />
+									</vbox>
+								</panelchildren>
+							</panel>
+						</center>
+						<east width="10%" style="background:#E5E5E5"
+							border="0">
+						</east>
+					</borderlayout>
+				</north>
+
+				<center border="0">
+					<!-- 			cuerpo menu -->
+					<borderlayout>
+
+						<center border="0">
+							<listbox id="idMenuLbx" height="100%"
+								width="100%" vflex="true">
+								<listitem>
+									<listcell>
+										<div height="30px">
+											<borderlayout>
+												<west width="56px"
+													border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer">
+															<vbox
+																align="center" pack="center" height="100%"
+																width="100%">
+																<image
+																	height="32px" width="32px" src="imagen/inventario.png"
+																	onClick="idMenuWestMenu.setOpen(false)" />
+															</vbox>
+														</panelchildren>
+													</panel>
+												</west>
+												<center border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer">
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<h:h>
+																	Inventario
+																</h:h>
+															</vbox>
+														</panelchildren>
+													</panel>
+
+												</center>
+												<east width="42px"
+													border="0">
+												</east>
+											</borderlayout>
+										</div>
+									</listcell>
+
+								</listitem>
+								
+								<listitem>
+									<listcell>
+										<div height="30px">
+											<borderlayout>
+												<west width="56px"
+													border="0">
+												</west>
+												<center border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer"
+															onClick='idMenu.abrirPagina("mochila/inv/producto.zul");'>
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<h:h>
+																	Producto
+																</h:h>
+															</vbox>
+														</panelchildren>
+													</panel>
+
+												</center>
+												<east width="42px"
+													border="0">
+												</east>
+											</borderlayout>
+										</div>
+									</listcell>
+								</listitem>
+								<listitem>
+									<listcell>
+										<div height="30px">
+											<borderlayout>
+												<west width="56px"
+													border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer">
+															<vbox
+																align="center" pack="center" height="100%"
+																width="100%">
+																<image
+																	height="32px" width="32px" src="imagen/config.png"
+																	onClick="idMenuWestMenu.setOpen(false)" />
+															</vbox>
+														</panelchildren>
+													</panel>
+												</west>
+												<center border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer">
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<h:h>
+																	Utilidades
+																</h:h>
+															</vbox>
+														</panelchildren>
+													</panel>
+
+												</center>
+												<east width="42px"
+													border="0">
+												</east>
+											</borderlayout>
+										</div>
+									</listcell>
+
+								</listitem>
+
+
+
+								<listitem>
+									<listcell>
+										<div height="30px">
+											<borderlayout>
+												<west width="56px"
+													border="0">
+												</west>
+												<center border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer"
+															onClick='idMenu.abrirPagina("mochila/inv/FotoProducto.zul");'>
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<h:h>
+																	Galeria
+																</h:h>
+															</vbox>
+														</panelchildren>
+													</panel>
+
+												</center>
+												<east width="42px"
+													border="0">
+												</east>
+											</borderlayout>
+										</div>
+									</listcell>
+
+								</listitem>
+
+								<listitem>
+									<listcell>
+										<div height="30px">
+											<borderlayout>
+												<west width="56px"
+													border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer">
+															<vbox
+																align="center" pack="center" height="100%"
+																width="100%">
+																<image
+																	height="20px" width="20px" src="imagen/salir.png"
+																	onClick="idMenuWestMenu.setOpen(false)" />
+															</vbox>
+														</panelchildren>
+													</panel>
+												</west>
+												<center border="0">
+													<panel border="0"
+														height="100%" width="100%" style="margin-top:3px;">
+														<panelchildren
+															style="color:black;font-size:15px;cursor:pointer"
+															onClick='idMenu.cerrarSesion();'>
+															<vbox
+																align="start" pack="center" height="90%" width="100%">
+																<h:h>
+																	Salir
+																</h:h>
+															</vbox>
+														</panelchildren>
+													</panel>
+
+												</center>
+												<east width="42px"
+													border="0">
+												</east>
+											</borderlayout>
+										</div>
+									</listcell>
+
+								</listitem>
+
+
+
+
+							</listbox>
+
+						</center>
+
+					</borderlayout>
+				</center>
+			</borderlayout>
+
+
+
+
+
+
+
+
+
+		</west>
+
+		<center style="" border="0" autoscroll="true">
+
+			<div align="center" height="100%">
+
+
+
+				<!-- 			 contenido -->
+
+				<include id="include" width="100%" src="estadistica.zul" />
+
+
+
+
+
+
+				<!-- 		fin	 contenido -->
+
+
+			</div>
+
+		</center>
+
+
+	</borderlayout>
+
+</zk>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TipoProductoMapper">
+
+<resultMap id="resMapTipoProducto" type="aliasTipoProducto">
+<result property="secuencia"  column="secuencia" /> 
+<result property="nombre"  column="nombre" /> 
+<result property="estado"  column="estado" /> 
+<result property="descripcion"  column="descripcion" /> 
+<result property="img" column="img" />
+<result property="fechaCreacion"  column="fecha_creacion" /> 
+<result property="fechaActualizacion"  column="fecha_actualizacion" /> 
+<result property="usuarioCreacion.secuencia"  column="secuencia_usuario_creacion" /> 
+<result property="usuarioActualizacion.secuencia"  column="secuencia_usuario_actualizacion" /> 
+</resultMap>
+
+<select id="getTipoProducto" parameterType="aliasTipoProducto" resultMap="resMapTipoProducto">
+
+SELECT
+tipoProducto.secuencia,
+tipoProducto.nombre,
+tipoProducto.estado,
+tipoProducto.descripcion,
+tipoProducto.img,
+tipoProducto.fecha_creacion,
+tipoProducto.fecha_actualizacion,
+tipoProducto.secuencia_usuario_creacion,
+tipoProducto.secuencia_usuario_actualizacion
+FROM inv_tipo_producto tipoProducto 
+WHERE 
+
+<if test="nombre != null">
+				 nombre like #{nombre,jdbcType=VARCHAR}
+</if>
+
+</select>
+
+<select id="postTipoProducto" parameterType="aliasTipoProducto" resultMap="resMapTipoProducto">
+<![CDATA[
+INSERT INTO inv_tipo_producto( 
+
+nombre,
+img,
+estado,
+descripcion,
+fecha_creacion,
+fecha_actualizacion,
+secuencia_usuario_creacion,
+secuencia_usuario_actualizacion)
+VALUES
+(
+
+#{nombre,jdbcType=VARCHAR},
+#{img,jdbcType=BINARY},
+#{estado,jdbcType=VARCHAR},
+#{descripcion,jdbcType=VARCHAR},
+#{fechaCreacion,jdbcType=DATE},
+#{fechaActualizacion,jdbcType=DATE},
+#{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+#{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+)
+]]>
+</select>
+
+<select id="putTipoProducto" parameterType="aliasTipoProducto" resultMap="resMapTipoProducto">
+<![CDATA[
+UPDATE inv_tipo_producto SET
+secuencia= #{secuencia,jdbcType=NUMERIC},
+nombre= #{nombre,jdbcType=VARCHAR},
+img= #{img,jdbcType=BINARY},
+estado= #{estado,jdbcType=VARCHAR},
+descripcion= #{descripcion,jdbcType=VARCHAR},
+fecha_creacion= #{fechaCreacion,jdbcType=DATE},
+fecha_actualizacion= #{fechaActualizacion,jdbcType=DATE},
+secuencia_usuario_creacion= #{usuarioCreacion.secuencia,jdbcType=NUMERIC},
+secuencia_usuario_actualizacion= #{usuarioActualizacion.secuencia,jdbcType=NUMERIC}
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC} 
+]]>
+</select>
+
+<select id="deleteTipoProducto" parameterType="aliasTipoProducto" resultMap="resMapTipoProducto">
+<![CDATA[
+DELETE FROM inv_tipo_producto
+WHERE secuencia = #{secuencia,jdbcType=NUMERIC}
+]]>
+</select>
+
+</mapper>
+ 

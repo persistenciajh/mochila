@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="R_MATRICULA_SUBREPORT11_UNITEC"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="572"
+		 pageHeight="141"
+		 columnWidth="572"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CCP_REFERENCIA5" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT
+	T4.orden					NUMERO_CREDITO_SALDO,
+	T4.organizacion				ORGANIZACION_SALDO,
+	T4.documento				DOCUMENTO_SALDO,
+	T4.documento				DOCUMENTO2,
+	T4.cliente_solicitado			CLIENTE2,
+	T4.periodo				PERIODO2,
+	T4.orden					NUMERO_CREDITO,
+	T4.fecha_orden				FECHA_DOCUMENTO,
+	CN.concepto_nota				CONCEPTO,
+	' '					NOMBRE_CONCEPTO_OBL,
+	0	 				SALDO_DOCUMENTO_OBL,
+	--CN.nombre_concepto			NOMBRE_CONCEPTO_DED,
+	NVL(ts.nombre, CN.nombre_concepto)				NOMBRE_CONCEPTO_DED,
+	ABS ( DRC.valor )				VALOR_DED,
+	DRC.recibo_consignacion recibo,
+	DRC.secuencia 
+FROM
+	orden 				T4,
+	detalle_recibo_consignacion	DRC,
+	recibo_consignacion		RC,
+	concepto_nota			CN
+	, tipo_solicitud_nota 		ts
+WHERE
+	$P{CCP_REFERENCIA5} = DRC.recibo_consignacion
+AND	DRC.valor < 0
+AND	DRC.documento_orden = T4.documento (+)
+AND	DRC.organizacion_orden = T4.organizacion (+)
+AND	DRC.orden = T4.orden (+)
+AND	RC.estado = 'I'
+AND	RC.recibo_consignacion = DRC.recibo_consignacion
+AND	CN.concepto_nota = DRC.concepto_nota
+AND	ts.concepto_nota (+) = drc.concepto_nota
+AND	ts.causa_nota (+) = drc.causa_nota
+ORDER BY 1,15]]></queryString>
+
+	<field name="NUMERO_CREDITO_SALDO" class="java.math.BigDecimal"/>
+	<field name="ORGANIZACION_SALDO" class="java.lang.String"/>
+	<field name="DOCUMENTO_SALDO" class="java.lang.String"/>
+	<field name="DOCUMENTO2" class="java.lang.String"/>
+	<field name="CLIENTE2" class="java.math.BigDecimal"/>
+	<field name="PERIODO2" class="java.lang.String"/>
+	<field name="NUMERO_CREDITO" class="java.math.BigDecimal"/>
+	<field name="FECHA_DOCUMENTO" class="java.sql.Timestamp"/>
+	<field name="CONCEPTO" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_CONCEPTO_OBL" class="java.lang.String"/>
+	<field name="SALDO_DOCUMENTO_OBL" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_CONCEPTO_DED" class="java.lang.String"/>
+	<field name="VALOR_DED" class="java.math.BigDecimal"/>
+	<field name="RECIBO" class="java.math.BigDecimal"/>
+	<field name="SECUENCIA" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="14"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="175"
+						height="12"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[DEDUCCIONES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="224"
+						y="0"
+						width="72"
+						height="12"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VALOR]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="5"
+						y="1"
+						width="170"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE_CONCEPTO_DED}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="231"
+						y="1"
+						width="65"
+						height="11"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{VALOR_DED}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

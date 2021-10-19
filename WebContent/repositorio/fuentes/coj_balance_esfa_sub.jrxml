@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="coj_balance_esfa_sub" pageWidth="504" pageHeight="28" orientation="Landscape" columnWidth="504" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="41013c33-ded4-4c7c-ac9f-061ed40deaee">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="COP_CODIGO_INICIAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_CODIGO_FINAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_CODIGO_INICIALN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_CODIGO_FINALN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_ORDEN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_PRESENTACION_CIFRAS" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("K")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COP_CANTIDAD_DECIMALES" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(2)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(saldo_final), 0)/1000, 'M', NVL(SUM(saldo_final), 0)/1000000, NVL(SUM(saldo_final), 0)) AS saldo_final,
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(debito_reclasificacion), 0)/1000, 'M', NVL(SUM(debito_reclasificacion), 0)/1000000, NVL(SUM(debito_reclasificacion), 0)) AS debito_reclasificacion,
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(credito_reclasificacion), 0)/1000, 'M', NVL(SUM(credito_reclasificacion), 0)/1000000, NVL(SUM(credito_reclasificacion), 0)) AS credito_reclasificacion,
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(debito_ajuste), 0)/1000, 'M', NVL(SUM(debito_ajuste), 0)/1000000, NVL(SUM(debito_ajuste), 0)) AS debito_ajuste,
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(credito_ajuste), 0)/1000, 'M', NVL(SUM(credito_ajuste), 0)/1000000, NVL(SUM(credito_ajuste), 0)) AS credito_ajuste,
+DECODE($P{COP_PRESENTACION_CIFRAS}, 'K', NVL(SUM(saldo_inicial), 0)/1000, 'M', NVL(SUM(saldo_inicial), 0)/1000000, NVL(SUM(saldo_inicial), 0)) AS saldo_inicial
+FROM
+(SELECT
+ (SELECT COUNT (
+    codigo_contable
+   )
+  FROM plan_contable
+  CONNECT BY PRIOR codigo_contable = codigo_contable_predecesor
+  START WITH codigo_contable = esfa.codigo_contable) valida,
+ esfa.sec_balance_esfa,
+  esfa.codigo_contable,
+  esfa.nombre_cuenta,
+  esfa.saldo_final,
+  esfa.debito_reclasificacion,
+  esfa.credito_reclasificacion,
+  esfa.debito_ajuste,
+  esfa.credito_ajuste,
+  esfa.saldo_inicial,
+  esfa.sec_libro_contable,
+  esfa.nivel,
+  esfa.orden,
+  esfa.longitud_codigo
+FROM cor_balance_esfa esfa
+WHERE
+ (esfa.codigo_contable>=NVL($P{COP_CODIGO_INICIAL},esfa.codigo_contable) OR $P{COP_CODIGO_INICIAL}='TODOS' )
+  AND (esfa.codigo_contable<=NVL($P{COP_CODIGO_FINAL},esfa.codigo_contable) OR $P{COP_CODIGO_FINAL}='TODOS')
+AND esfa.sec_libro_contable   =1
+AND $P{COP_ORDEN}>=3
+UNION ALL
+SELECT
+ (SELECT COUNT (
+    codigo_contable
+   )
+  FROM plan_contable
+  CONNECT BY PRIOR codigo_contable = codigo_contable_predecesor
+  START WITH codigo_contable = esfa.codigo_contable) valida,
+  esfa.sec_balance_esfa,
+  esfa.codigo_contable,
+  esfa.nombre_cuenta,
+  esfa.saldo_final,
+  esfa.debito_reclasificacion,
+  esfa.credito_reclasificacion,
+  esfa.debito_ajuste,
+  esfa.credito_ajuste,
+  esfa.saldo_inicial,
+  esfa.sec_libro_contable,
+  esfa.nivel,
+  esfa.orden,
+  esfa.longitud_codigo
+FROM cor_balance_esfa esfa
+WHERE
+ (esfa.codigo_contable>=NVL($P{COP_CODIGO_INICIALN},esfa.codigo_contable) OR $P{COP_CODIGO_INICIALN}='TODOS' )
+  AND (esfa.codigo_contable<=NVL($P{COP_CODIGO_FINALN},esfa.codigo_contable) OR $P{COP_CODIGO_FINALN}='TODOS')
+AND esfa.sec_libro_contable   =2
+AND $P{COP_ORDEN}>=3
+)
+WHERE valida=1]]>
+	</queryString>
+	<field name="SALDO_FINAL" class="java.math.BigDecimal"/>
+	<field name="DEBITO_RECLASIFICACION" class="java.math.BigDecimal"/>
+	<field name="CREDITO_RECLASIFICACION" class="java.math.BigDecimal"/>
+	<field name="DEBITO_AJUSTE" class="java.math.BigDecimal"/>
+	<field name="CREDITO_AJUSTE" class="java.math.BigDecimal"/>
+	<field name="SALDO_INICIAL" class="java.math.BigDecimal"/>
+	<variable name="V_SALDO_FINAL" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{SALDO_FINAL}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_DEBITO_RECLASIFICACION" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{DEBITO_RECLASIFICACION}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_CREDITO_RECLASIFICACION" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{CREDITO_RECLASIFICACION}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_DEBITO_AJUSTE" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{DEBITO_AJUSTE}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_CREDITO_AJUSTE" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{CREDITO_AJUSTE}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<variable name="V_SALDO_INICIAL" class="java.lang.String">
+		<variableExpression><![CDATA[new DecimalFormat("###,###,##0.00").format($F{SALDO_INICIAL}.setScale($P{COP_CANTIDAD_DECIMALES}.intValue(), BigDecimal.ROUND_HALF_UP))]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="8bdc13da-81c3-46a0-8edb-d9fe54a0396f" x="86" y="0" width="84" height="12"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_DEBITO_RECLASIFICACION}==null?0:$V{V_DEBITO_RECLASIFICACION})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="324e93c1-7ad7-4de8-8f4a-5039f4683cf6" x="170" y="0" width="83" height="12"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_CREDITO_RECLASIFICACION}==null?0:$V{V_CREDITO_RECLASIFICACION})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="a8d591b5-9741-473d-91e7-10fc3b44d2a3" x="253" y="0" width="83" height="12"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_DEBITO_AJUSTE}==null?0:$V{V_DEBITO_AJUSTE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="6e8897aa-87df-48f8-b6e9-1b0fd2a72382" x="336" y="0" width="83" height="12"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_CREDITO_AJUSTE}==null?0:$V{V_CREDITO_AJUSTE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="812d611a-c490-48e7-b722-9ff43c3f9a0b" x="420" y="0" width="83" height="12"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_SALDO_INICIAL}==null?0:$V{V_SALDO_INICIAL})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="446d70bc-35ee-4f9c-9df6-af5d23d85697" x="3" y="0" width="83" height="12"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{V_SALDO_FINAL}==null?0:$V{V_SALDO_FINAL})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

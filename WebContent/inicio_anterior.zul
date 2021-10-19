@@ -1,0 +1,301 @@
+<?page title="TuMochila" contentType="text/html;charset=UTF-8"?>
+<?link rel="icon" type="image/x-icon" href="/imagen/favicon.ico"?>
+<zk xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+
+	<borderlayout id="idWin" use="com.mochila.gen.action.IndexAction">
+		<north height="38px" style="" border="0">
+			<borderlayout>
+				<north height="8px" style="background:#E5E5E5"
+					border="0">
+				</north>
+				<west width="40%" style="background:#E5E5E5"
+					border="0">
+
+
+
+					<panel height="32px" width="100%">
+						<panelchildren style="background:#E5E5E5">
+							<vbox align="start" pack="center"
+								height="90%" width="100%">
+								<hbox>
+									<image src="/imagen/logo.png"
+										height="24px">
+									</image>
+
+									<bandbox id="idWinTbxBusqueda"
+										visible="true" placeholder="Que estas buscando?" width="320px"
+										height="20px" tooltiptext="Que estas buscando?" mold="rounded"
+										autodrop="true"
+										onChanging="idWin.llenarBandboxBusqueda(self.value);">
+										<bandpopup>
+											<vbox>
+												<listbox height="86px"
+													width="320px" mold="paging" pageSize="5"
+													id="idWinlistboxBandboxProducto"
+													onSelect="idWinTbxBusqueda.value=self.selectedItem.label;idWinTbxBusqueda.close();">
+												</listbox>
+
+											</vbox>
+										</bandpopup>
+
+									</bandbox>
+
+
+
+								</hbox>
+							</vbox>
+						</panelchildren>
+					</panel>
+				</west>
+				<east width="40%" border="0"
+					style="background:#E5E5E5">
+					<div align="right">
+						
+						<panel border="0" height="30px"
+											width="190px">
+											<panelchildren
+												style="background:#E5E5E5;color:black;font-size:15px;cursor:pointer"
+												onClick='idWin.winUsuario()'>
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													<hbox>
+													<image width="10px" height="10px" src="imagen/connection.png" />	
+													<html>														
+														<![CDATA[ <font
+														color="gray"
+														size="3"
+														face="arial"><div>
+														<u><b>Iniciar sesión</b></u>
+														</div></font>
+														]]>
+														
+													</html>
+													</hbox>
+												</vbox>
+											</panelchildren>
+										</panel>
+					</div>
+
+				</east>
+				<center style="background:#E5E5E5" border="0">
+
+				</center>
+
+			</borderlayout>
+
+		</north>
+		<center border="0">
+			<borderlayout>
+				<north height="40px" border="0">
+					<borderlayout>
+
+						<center border="none">
+							<!-- 		categorias -->
+							<borderlayout>
+								<west id="idWinWestFiltroNorte"
+									width="15%" border="0">
+									<panel border="0" height="30px"
+										width="100%" style="margin-top:3px;">
+										<panelchildren
+											style="color:black;font-size:15px;cursor:pointer"
+											onClick='verFiltro()'>
+											<zscript><![CDATA[
+	public void verFiltro() {
+
+		if (idWinWestFiltroSur.isOpen()) {
+			idWinImageOffOn.setSrc("imagen/off.png");
+			idWinWestFiltroSur.setOpen(false);
+			idWinCentral.setWidth("10%");
+
+		} else {
+			idWinImageOffOn.setSrc("imagen/on.png");
+			idWinWestFiltroSur.setOpen(true);
+			idWinCentral.setWidth("20px");
+		}
+
+	}
+]]>
+    </zscript>
+											<vbox align="center"
+												pack="center" height="90%" width="100%">
+												<hbox>
+													<h:h>
+														menú de filtro
+													</h:h>
+													<image
+														id="idWinImageOffOn" src="imagen/on.png" height="16px"
+														width="16px" />
+												</hbox>
+
+											</vbox>
+										</panelchildren>
+									</panel>
+								</west>
+								<east width="25%" border="0">
+									<hbox>
+										<panel border="none"
+											height="30px" width="100px">
+											<panelchildren
+												id="idCategoriaNovedad"
+												style="background:#E5E5E5;color:white;font-size:15px;cursor:pointer"
+												onClick='idWin.cargarNovedades()'>
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+
+													<html>
+														
+														<![CDATA[ <font
+														
+														size="2"
+														face="arial"><div>
+														<b>Las novedades</b>
+														</div></font>
+														]]>
+														
+													</html>
+												</vbox>
+											</panelchildren>
+										</panel>
+										<separator width="5px"/>
+										<panel border="0" height="30px"
+											width="140px">
+											<panelchildren
+												style="color:black;font-size:15px;cursor:pointer"
+												onClick='showSelect()'>
+												<vbox align="center"
+													pack="center" height="90%" width="100%">
+													
+														
+													<html>
+														
+														<![CDATA[ <font
+														
+														size="2"
+														face="arial"><div>
+														<u><b>Todo sobre
+														nosotros</b></u>
+														</div></font>
+														]]>
+														
+													</html>
+												</vbox>
+											</panelchildren>
+										</panel>
+										<zscript><![CDATA[
+	public void showSelect() {
+		Window window = (Window) Executions.createComponents("queEsTuMochila.zul", null, null);
+		window.setMaximizable(true);
+		window.doModal();
+	}
+]]>
+    </zscript>
+									</hbox>
+								</east>
+								<center border="0">
+									<hbox id="idWinHboxCategorias">
+
+
+									</hbox>
+								</center>
+
+							</borderlayout>
+						</center>
+					</borderlayout>
+
+				</north>
+				<west id="idWinWestFiltroSur" width="15%" border="0"
+					collapsible="true">
+					<vbox align="center">
+
+						<panel border="normal" height="80px"
+							width="100%" style="margin-top:3px;">
+							<panelchildren>
+								<vbox align="start" pack="center"
+									height="90%" width="100%">
+									<h:h>Genero</h:h>
+									<separator />
+									<div class="btn-group">
+										<button>Hombre</button>
+										<button>Mujer</button>
+										<button>Todos</button>
+									</div>
+
+								</vbox>
+							</panelchildren>
+						</panel>
+
+						<panel border="normal" height="80px"
+							width="100%" style="margin-top:3px;">
+							<panelchildren>
+								<vbox align="start" pack="center"
+									height="90%" width="100%">
+									<h:h>Edad</h:h>
+									<separator />
+									<div class="btn-group">
+										<button>niño</button>
+										<button>Adulto</button>
+										<button>Todos</button>
+									</div>
+
+								</vbox>
+							</panelchildren>
+						</panel>
+
+						<panel border="normal" height="80px"
+							width="100%" style="margin-top:3px;">
+							<panelchildren>
+								<vbox align="start" pack="center"
+									height="90%" width="100%">
+									<h:h>Rango de precios:</h:h>
+									<html id="idWinHtmlRangoPrecio">
+										Precio
+									</html>
+									<separator />
+									<!-- 									<slider   id="idWinSlider"  mold="sphere"  pageIncrement="500" /> -->
+									<hbox pack="center"
+										align="center">
+										<h:h>Presupuesto:$</h:h>
+										<intbox id="idWinSlider"
+											placeholder="ejemplo 1080"
+											onChanging="idWin.cargarProductoporPrecioTopes(idWinSlider.getValue())" />
+									</hbox>
+								</vbox>
+							</panelchildren>
+						</panel>
+
+					</vbox>
+				</west>
+				<center style="background:#E5E5E5" border="0"
+					autoscroll="true">
+
+					<borderlayout>
+						<north height="10px" border="0"
+							style="background:#E5E5E5">
+						</north>
+						<west id="idWinCentral" width="20px" border="0"
+							style="background:#E5E5E5">
+						</west>
+
+						<center border="0" style="background:#E5E5E5"
+							autoscroll="true">
+							<vbox id="idWinVboxProductos" align="center" pack="start" height="90%" width="100%">
+							</vbox>
+						</center>
+					</borderlayout>
+
+
+
+
+				</center>
+
+			</borderlayout>
+
+
+
+
+
+		</center>
+
+	</borderlayout>
+</zk>

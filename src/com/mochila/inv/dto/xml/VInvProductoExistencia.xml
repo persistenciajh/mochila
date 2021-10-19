@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VInvProductoExistenciaMapper">
+
+	<resultMap id="resMapVInvProductoExistencia" type="aliasVInvProductoExistencia">
+		<result property="producto.secuencia" column="secuencia" />
+		<result property="producto.tipoProducto.secuencia" column="secuencia_tipo_producto" />
+		<result property="producto.tipoProducto.nombre" column="tipo_nombre" />
+		<result property="producto.codigo" column="codigo" />
+		<result property="producto.nombre" column="nombre" />
+		<result property="producto.precioVenta" column="precio_venta" />
+		<result property="producto.ultPrecioCompra" column="ult_precio_compra" />
+		<result property="producto.cantidadMin" column="cantidad_min" />
+		<result property="producto.descuentoMax" column="descuento_max" />
+		<result property="producto.estado" column="estado" />
+		<result property="producto.descripcion" column="descripcion" />
+		<result property="producto.fechaCreacion" column="fecha_creacion" />
+		<result property="producto.fechaActualizacion" column="fecha_actualizacion" />
+		<result property="producto.usuarioCreacion.secuencia" column="secuencia_usuario_creacion" />
+		<result property="producto.usuarioActualizacion.secuencia" column="secuencia_usuario_actualizacion" />
+		<result property="tipoProducto.secuencia" column="secuencia_tipo_producto" />
+		<result property="tipoProducto.nombre" column="tipo_nombre" />
+		
+		<result property="entradas" column="ingresos" />
+		<result property="salidas" column="salidas" />
+		<result property="existencia" column="existencia" />
+		
+	</resultMap>
+
+	<select id="getVInvProductoExistencia" parameterType="aliasVInvProductoExistencia"
+		resultMap="resMapVInvProductoExistencia">
+		
+select 
+vpe.secuencia_producto,
+ip.secuencia,
+ip.codigo,
+ip.nombre,
+ip.secuencia_tipo_producto,
+ip.descripcion,
+ip.edad_consumidor,
+ip.genero_consumidor,
+ip.ult_precio_compra,
+ip.precio_venta,
+vpe.secuencia_tipo_producto,
+itp.nombre tipo_nombre,
+vpe.ingresos,
+vpe.salida salidas,
+vpe.existencia
+from vinv_producto_existencia vpe
+left join  inv_producto ip on ip.secuencia=vpe.secuencia_producto
+left join  inv_tipo_producto itp on itp.secuencia=ip.secuencia_tipo_producto
+	</select>
+
+
+
+</mapper>
+ 

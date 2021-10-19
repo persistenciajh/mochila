@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="adicion_activos_sub" pageWidth="650" pageHeight="802" columnWidth="650" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ca46ed4f-92fd-47b7-9ef0-54acf5571d88">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="ACTIVO" class="java.math.BigDecimal"/>
+	<queryString>
+		<![CDATA[SELECT adc.operacion,
+  din.referencia,
+  adc.valor,
+  adc.fecha_movimiento,
+  adc.cantidad,
+  adc.vida_util,
+  din.secuencia_inventario
+FROM ppt_adicion_activo_niif adc
+LEFT OUTER JOIN detalle_inventario din
+ON din.secuencia_detalle = adc.secuencia_detalle
+WHERE  EXISTS
+  (SELECT 'X'
+  FROM ppt_activo ppa
+  WHERE ppa.secuencia_activo=$P{ACTIVO}
+  AND ppa.sec_activo        =adc.sec_activo
+  )
+ORDER BY 1,4]]>
+	</queryString>
+	<field name="OPERACION" class="java.lang.String"/>
+	<field name="REFERENCIA" class="java.math.BigDecimal"/>
+	<field name="VALOR" class="java.math.BigDecimal"/>
+	<field name="FECHA_MOVIMIENTO" class="java.sql.Timestamp"/>
+	<field name="CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="VIDA_UTIL" class="java.math.BigDecimal"/>
+	<field name="SECUENCIA_INVENTARIO" class="java.math.BigDecimal"/>
+	<variable name="VALOR_TOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="OPERACION" calculation="Sum">
+		<variableExpression><![CDATA[$F{VALOR}.multiply( $F{CANTIDAD} )]]></variableExpression>
+	</variable>
+	<variable name="SUMA_ADICION" class="java.math.BigDecimal" incrementType="Group" incrementGroup="OPERACION" calculation="Sum">
+		<variableExpression><![CDATA[$F{OPERACION}.equals( "A" )?$V{VALOR_TOTAL}:0.0]]></variableExpression>
+	</variable>
+	<variable name="SUMA_DEDUCCION" class="java.math.BigDecimal" incrementType="Group" incrementGroup="OPERACION" calculation="Sum">
+		<variableExpression><![CDATA[$F{OPERACION}.equals( "R" )?$V{VALOR_TOTAL}:0.0]]></variableExpression>
+	</variable>
+	<group name="OPERACION">
+		<groupExpression><![CDATA[$F{OPERACION}]]></groupExpression>
+		<groupHeader>
+			<band height="10" splitType="Stretch">
+				<textField isBlankWhenNull="false">
+					<reportElement uuid="beea390e-2dd4-4bd1-a90f-054a180821fa" key="textField" mode="Opaque" x="0" y="0" width="650" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+						<font fontName="DejaVu Sans" size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{OPERACION}.equals( "A" )?"ADICIONES":"REVERSIONES"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="19" splitType="Stretch">
+				<staticText>
+					<reportElement uuid="a4239cac-ac9d-4240-bd68-a2a1196fd947" key="staticText" mode="Transparent" x="0" y="0" width="492" height="12" forecolor="#006699" backcolor="#E6E6E6"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SUB TOTAL:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="9b1c337b-1fd9-42aa-8fe8-673f0bc76399" key="textField" x="492" y="0" width="158" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{VALOR_TOTAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="11" splitType="Stretch">
+			<line>
+				<reportElement uuid="13de19ac-6d6f-4c08-9eca-41733e396277" key="line" x="0" y="9" width="650" height="2" forecolor="#666666"/>
+			</line>
+			<staticText>
+				<reportElement uuid="caefb6d6-96c0-4839-9b68-700c69a703e8" key="staticText" mode="Opaque" x="0" y="0" width="55" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="94d18a34-94d4-4aa9-bd81-f802b11eb179" key="staticText" mode="Opaque" x="321" y="0" width="109" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="85dc020f-27b9-4138-8af9-5650c902eaea" key="staticText" mode="Opaque" x="163" y="0" width="93" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ FECHA MOVIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0a0e6c7d-45f2-4965-8024-6c890b66a852" key="staticText" mode="Opaque" x="430" y="0" width="62" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c7b3b1e9-3d02-4925-a140-153627078a43" key="staticText" mode="Opaque" x="492" y="0" width="158" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="98fef724-3f12-4a40-b9b8-141b7ac57027" key="staticText" mode="Opaque" x="55" y="0" width="108" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SECUENCIA INVENTARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="85dc020f-27b9-4138-8af9-5650c902eaea" key="staticText" mode="Opaque" x="256" y="0" width="65" height="10" forecolor="#000000" backcolor="#FAF3F3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VIDA ÚTIL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="c029383e-2295-425d-bbd6-a45b636060fa" key="textField" x="0" y="0" width="60" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REFERENCIA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="ce7ce616-91bf-4de3-9e98-b0850e79e700" key="textField" x="163" y="0" width="93" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_MOVIMIENTO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="28a6cca2-34d8-4601-8359-80099b194708" key="textField" x="430" y="0" width="62" height="11"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="52a3592a-16da-49b5-bca0-640688244f31" key="textField" x="321" y="0" width="109" height="11"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="63148651-7d69-4989-ba78-dc859b93cf52" key="textField" x="492" y="0" width="158" height="11"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR}.multiply( $F{CANTIDAD} )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7ec7b885-1e94-4c55-b6e6-1ac205a05f00" key="textField" x="62" y="0" width="101" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SECUENCIA_INVENTARIO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="ce7ce616-91bf-4de3-9e98-b0850e79e700" key="textField" x="256" y="0" width="65" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VIDA_UTIL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="24" splitType="Stretch">
+			<textField isStretchWithOverflow="true" evaluationTime="Page" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="dea21a5b-6557-4434-8a00-14905e3831c6" key="textField" x="492" y="0" width="158" height="12"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMA_ADICION}.subtract( $V{SUMA_DEDUCCION} )]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="392dc8d4-e45d-4c6b-b566-b4cc9a8c995e" key="staticText" mode="Transparent" x="0" y="0" width="492" height="12" forecolor="#006699" backcolor="#E6E6E6"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

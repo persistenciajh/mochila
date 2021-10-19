@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<jasperReport
+		 name="R_MATRICULA_SUBREPORT2"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="560"
+		 pageHeight="141"
+		 columnWidth="560"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CCP_REFERENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_LIQUIDACION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_DOCUMENTO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CCP_ORGANIZACION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT 
+CASE
+WHEN PORCENTAJE < 0 THEN
+'MATRICULA PAGO CON DESCUENTO HASTA'
+WHEN
+PORCENTAJE = 0 THEN
+'MATRICULA PAGO ORDINARIO HASTA'
+ELSE
+'MATRICULA PAGO CON RECARGO HASTA'
+END  MENSAJE,
+to_date(VENCIMIENTO0),
+VENCIMIENTO1,
+SUMA1,
+RECIBO,
+PORCENTAJE
+FROM(
+SELECT
+          sd_vencimiento_periodo.vencimiento
+    	(
+       orden.grupo,
+        orden.periodo,
+        vencimiento.fila,
+        orden.condicion_comercial,
+        SYSDATE--SYSDATE --orden.fecha_vencimiento
+        )                                                       VENCIMIENTO0,
+         
+         
+         sd_vencimiento_periodo.vencimiento
+    	(
+       orden.grupo,
+        orden.periodo,
+        vencimiento.fila,
+        orden.condicion_comercial,
+        SYSDATE--SYSDATE --orden.fecha_vencimiento
+        )                                                       VENCIMIENTO1,
+   SUM ( recibo.valor ) +
+    (
+    SUM (
+    DECODE    (
+        recibo.orden,
+        NULL,
+        DECODE     (
+            SIGN    (
+                sd_vencimiento_periodo.porcentaje (
+                        orden.grupo,
+                        sd_vencimiento_periodo.vencimiento (
+                            orden.grupo,
+                            orden.periodo,
+                            vencimiento.fila,
+                            orden.condicion_comercial,
+                          SYSDATE-- SYSDATE --orden.fecha_vencimiento
+                        ),
+                        orden.periodo,
+                        orden.condicion_comercial,
+                        vencimiento.fila
+                )
+            ),
+            -1,
+            DECODE    (
+                recibo.incluye_pronto_pago,
+                'S',
+                1,
+                0
+            ),
+            DECODE    (
+                recibo.incluye_liquidacion_extra,
+                'S',
+                1,
+                0
+            )
+        ),
+        1
+    ) * recibo.valor  ) *
+        sd_vencimiento_periodo.porcentaje (
+                    orden.grupo,
+                    sd_vencimiento_periodo.vencimiento (
+                        orden.grupo,
+                        orden.periodo,
+                        vencimiento.fila,
+                        orden.condicion_comercial,
+                      SYSDATE-- SYSDATE --orden.fecha_vencimiento
+                    ),
+                    orden.periodo,
+                    orden.condicion_comercial,
+                    vencimiento.fila
+         ) / 100 )
+    SUMA1 ,
+    RECIBO.recibo,
+     sd_vencimiento_periodo.porcentaje (
+                    orden.grupo,
+                    sd_vencimiento_periodo.vencimiento (
+                        orden.grupo,
+                        orden.periodo,
+                        vencimiento.fila,
+                        orden.condicion_comercial,
+                     SYSDATE--  SYSDATE --orden.fecha_vencimiento
+                    ),
+                    orden.periodo,
+                    orden.condicion_comercial,
+                    vencimiento.fila
+         ) porcentaje
+FROM
+        orden        ORDEN,
+    (
+        select
+               rownum fila
+        from   orden
+               , vencimiento_periodo vencimiento
+        WHERE
+            ORDEN.documento = $P{CCP_DOCUMENTO}
+        AND    ORDEN.organizacion = $P{CCP_ORGANIZACION}
+        AND    ORDEN.orden = $P{CCP_LIQUIDACION}
+        and     vencimiento.periodo = orden.periodo
+        and     vencimiento.grupo = orden.grupo
+        ORDER BY 1
+    ) VENCIMIENTO,
+    (
+        -- Solo suma los detalles que se incluyen en el calculo de la extraordinaria como base de calculo
+        SELECT
+            NVL ( ts.incluye_liquidacion_extra,'S') incluye_liquidacion_extra,
+            NVL ( ts.incluye_pronto_pago,'N') incluye_pronto_pago,
+           DRC.valor   valor,
+               RC.recibo_consignacion recibo,
+                drc.orden,
+                drc.concepto_nota,
+                drc.causa_nota
+           FROM
+               detalle_recibo_consignacion DRC,
+               recibo_consignacion RC
+               , tipo_solicitud_nota ts
+           WHERE   DRC.recibo_consignacion = $P{CCP_REFERENCIA}
+           AND     RC.estado = 'I'
+           AND     RC.recibo_consignacion = DRC.recibo_consignacion
+           AND       ts.concepto_nota (+) = drc.concepto_nota
+           AND       ts.causa_nota (+) = drc.causa_nota
+    ) recibo
+WHERE
+    ORDEN.documento = $P{CCP_DOCUMENTO}
+AND    ORDEN.organizacion = $P{CCP_ORGANIZACION}
+AND    ORDEN.orden = $P{CCP_LIQUIDACION}
+AND    ORDEN.grupo IS NOT NULL
+AND    sd_vencimiento_periodo.vencimiento
+    (
+        orden.grupo,
+        orden.periodo,
+        vencimiento.fila,
+        orden.condicion_comercial,
+      SYSDATE 
+     -- SYSDATE --orden.fecha_vencimiento
+    ) IS NOT NULL 
+AND    VENCIMIENTO.fila BETWEEN 1 and 3  /* Solo TRES fechas */
+GROUP BY
+  sd_vencimiento_periodo.vencimiento
+    (
+        orden.grupo,
+        orden.periodo,
+        vencimiento.fila,
+        orden.condicion_comercial,
+        SYSDATE--SYSDATE --orden.fecha_vencimiento
+        ),
+    RECIBO.recibo,
+        sd_vencimiento_periodo.porcentaje (
+                    orden.grupo,
+                    sd_vencimiento_periodo.vencimiento (
+                       orden.grupo,
+        orden.periodo,
+        vencimiento.fila,
+        orden.condicion_comercial,
+        SYSDATE--SYSDATE --orden.fecha_vencimiento
+                    ),
+                    orden.periodo,
+                    orden.condicion_comercial,
+                    vencimiento.fila
+         )
+         
+         )
+ORDER BY
+        2]]></queryString>
+
+	<field name="MENSAJE" class="java.lang.String"/>
+	<field name="TO_DATE(VENCIMIENTO0)" class="java.sql.Timestamp"/>
+	<field name="VENCIMIENTO1" class="java.sql.Timestamp"/>
+	<field name="SUMA1" class="java.math.BigDecimal"/>
+	<field name="RECIBO" class="java.math.BigDecimal"/>
+	<field name="PORCENTAJE" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="14"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="241"
+						y="0"
+						width="94"
+						height="10"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{VENCIMIENTO1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="388"
+						y="0"
+						width="166"
+						height="10"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Times-Roman" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUMA1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="0"
+						width="240"
+						height="10"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{MENSAJE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>
